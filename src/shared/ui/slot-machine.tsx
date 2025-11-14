@@ -16,7 +16,6 @@ export interface SlotMachineRef {
 const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
   ({ sponsors, onComplete, className, ...props }, ref) => {
     const [isSpinning, setIsSpinning] = React.useState(false);
-    const [currentBrand, setCurrentBrand] = React.useState<string>("");
     const [progress, setProgress] = React.useState(0);
     const [isComplete, setIsComplete] = React.useState(false);
     const [isWin, setIsWin] = React.useState(false);
@@ -52,10 +51,7 @@ const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
         Math.floor(Math.random() * sponsors.length),
       ];
 
-      setCurrentBrand(sponsors[winners[1]].name);
-
-      const winResult = 
-      true;
+      const winResult = true;
       // winners.every((w) => w === winners[0]);
       setIsWin(winResult);
 
@@ -149,7 +145,7 @@ const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
       >
         {/* Spinning Status */}
         <h2 className="text-3xl md:text-5xl lg:text-[101px] font-heading text-[#163446] text-center mb-6 leading-[1.14]">
-          Spinning for {currentBrand}
+          Spinning
         </h2>
 
         {/* Slot Machine Container */}
