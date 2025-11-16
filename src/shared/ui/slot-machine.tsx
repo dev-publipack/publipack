@@ -44,16 +44,34 @@ const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
 
       void document.body.offsetHeight;
 
-      // Select random winners
-      const winners: [number, number, number] = [
-        Math.floor(Math.random() * sponsors.length),
-        Math.floor(Math.random() * sponsors.length),
-        Math.floor(Math.random() * sponsors.length),
-      ];
-
-      const winResult = true;
-      // winners.every((w) => w === winners[0]);
+      // 50/50 chance to win or lose
+      const winResult = Math.random() < 0.5;
       setIsWin(winResult);
+
+      // Select winners based on result
+      let winners: [number, number, number];
+      let winningSponsorIndex: number;
+
+      if (winResult) {
+        // Win: all 3 slots show the same sponsor (3 in a row)
+        winningSponsorIndex = Math.floor(Math.random() * sponsors.length);
+        winners = [winningSponsorIndex, winningSponsorIndex, winningSponsorIndex];
+      } else {
+        // Lose: all 3 slots show different sponsors
+        const availableIndices = Array.from({ length: sponsors.length }, (_, i) => i);
+        const selected: number[] = [];
+        
+        // Select 3 different random indices
+        while (selected.length < 3) {
+          const randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+          if (!selected.includes(randomIndex)) {
+            selected.push(randomIndex);
+          }
+        }
+        
+        winners = [selected[0], selected[1], selected[2]] as [number, number, number];
+        winningSponsorIndex = -1; // Not used for lose case
+      }
 
       const SPIN_DURATION = 3000;
       const RESULT_DISPLAY_DURATION = 1500;
@@ -88,7 +106,7 @@ const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
             if (onComplete) {
               setTimeout(() => {
                 onComplete({
-                  winner: winResult ? sponsors[winners[1]] : null,
+                  winner: winResult ? sponsors[winningSponsorIndex] : null,
                   isWin: winResult,
                 });
               }, 500);
