@@ -57,6 +57,7 @@ export function useCountdown(initialSeconds: number) {
 
   const resume = useCallback(() => {
     isActiveRef.current = true;
+    // Note: useEffect will restart the interval when seconds > 0 and isActiveRef is true
   }, []);
 
   return { seconds, reset, pause, resume };

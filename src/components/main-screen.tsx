@@ -5,9 +5,10 @@ interface MainScreenProps {
   sponsors: Sponsor[];
   countdownSeconds: number;
   onSpin: () => void;
+  showCooldown?: boolean;
 }
 
-export function MainScreen({ sponsors, countdownSeconds, onSpin }: MainScreenProps) {
+export function MainScreen({ sponsors, countdownSeconds, onSpin, showCooldown = false }: MainScreenProps) {
   return (
     <main
       className="min-h-screen w-full justify-center flex flex-col items-center overflow-x-hidden"
@@ -51,6 +52,7 @@ export function MainScreen({ sponsors, countdownSeconds, onSpin }: MainScreenPro
         {/* Spin Now Button */}
         <Button
           onClick={onSpin}
+          disabled={showCooldown}
           className="w-full max-w-[600px] mx-auto h-14 sm:h-16 md:h-20 lg:h-24 rounded-full text-white text-lg sm:text-xl md:text-3xl lg:text-4xl font-heading leading-[1.4] hover:opacity-90 px-6 mb-4 sm:mb-5 md:mb-6"
           style={{
             background:
@@ -63,9 +65,9 @@ export function MainScreen({ sponsors, countdownSeconds, onSpin }: MainScreenPro
 
         {/* Countdown Section */}
         <div className="flex flex-col items-center justify-center gap-3 sm:gap-4 w-full">
-          <CountdownTimer seconds={countdownSeconds} />
+          <CountdownTimer seconds={countdownSeconds} showCooldown={showCooldown} />
           <p className="text-sm sm:text-base md:text-lg lg:text-xl font-body-semibold text-black text-center leading-[1.362]">
-            Or wait for the countdown
+            {showCooldown ? "Come back tomorrow for another spin" : "Or wait for the countdown"}
           </p>
         </div>
       </div>

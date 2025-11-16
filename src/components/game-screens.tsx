@@ -2,6 +2,7 @@ import {
   SlotMachine,
   YouWon,
   YouLost,
+  DidntWin,
   ClaimReward,
   FailedAnimation,
   SuccessConfettiAnimation,
@@ -20,6 +21,7 @@ interface GameScreensProps {
   onClaimSubmit: (data: { fullName: string; phone: string; email: string }) => void;
   onBackFromClaim: () => void;
   onSpinAgain: () => void;
+  showCooldown?: boolean;
 }
 
 export function GameScreens({
@@ -33,6 +35,7 @@ export function GameScreens({
   onClaimSubmit,
   onBackFromClaim,
   onSpinAgain,
+  showCooldown = false,
 }: GameScreensProps) {
   if (currentScreen === "claimReward" && winner) {
     return (
@@ -84,6 +87,7 @@ export function GameScreens({
             onClaim={onClaim}
             onSpinAgain={onSpinAgain}
             brandLink="https://example.com"
+            showCooldown={showCooldown}
           />
         </div>
       </main>
@@ -101,6 +105,22 @@ export function GameScreens({
       >
         <div className="w-full max-w-[1080px] flex flex-col items-center justify-center py-4 sm:py-6 md:py-8">
           <FailedAnimation onComplete={onFailedAnimationComplete} />
+        </div>
+      </main>
+    );
+  }
+
+  if (currentScreen === "didntWin") {
+    return (
+      <main
+        className="min-h-screen w-full flex flex-col items-center justify-center overflow-x-hidden px-4 sm:px-6 md:px-8"
+        style={{
+          background:
+            "linear-gradient(136deg, rgba(246, 248, 251, 1) 19%, rgba(255, 207, 178, 1) 100%)",
+        }}
+      >
+        <div className="w-full max-w-[1080px] flex flex-col items-center justify-center py-4 sm:py-6 md:py-8">
+          <DidntWin onSpinAgain={onSpinAgain} />
         </div>
       </main>
     );

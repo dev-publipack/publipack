@@ -23,13 +23,14 @@ export interface SponsorDetailProps {
   onClose?: () => void;
   onClaim?: () => void;
   onSpinAgain?: () => void;
+  showCooldown?: boolean;
   className?: string;
 }
 
 export const SponsorDetail = React.forwardRef<
   HTMLDivElement,
   SponsorDetailProps
->(({ sponsor, onClose, onClaim, onSpinAgain, className, ...props }, ref) => {
+>(({ sponsor, onClose, onClaim, onSpinAgain, showCooldown = false, className, ...props }, ref) => {
   const [giftData, setGiftData] = React.useState<LottieAnimationData | null>(null);
   const lottieRef = React.useRef<any>(null);
 
@@ -131,7 +132,7 @@ export const SponsorDetail = React.forwardRef<
 
       {/* Win Buttons - outside container */}
       <div className="w-full max-w-[700px] mt-6 sm:mt-8">
-        <WinButtons onClaim={onClaim} onSpinAgain={onSpinAgain} />
+        <WinButtons onClaim={onClaim} onSpinAgain={onSpinAgain} showCooldown={showCooldown} />
       </div>
     </div>
   );

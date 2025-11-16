@@ -4,11 +4,12 @@ import { cn } from "../lib/utils";
 export interface WinButtonsProps {
   onClaim?: () => void;
   onSpinAgain?: () => void;
+  showCooldown?: boolean;
   className?: string;
 }
 
 export const WinButtons = React.forwardRef<HTMLDivElement, WinButtonsProps>(
-  ({ onClaim, onSpinAgain, className, ...props }, ref) => {
+  ({ onClaim, onSpinAgain, showCooldown = false, className, ...props }, ref) => {
     return (
       <div
         ref={ref}
@@ -32,7 +33,7 @@ export const WinButtons = React.forwardRef<HTMLDivElement, WinButtonsProps>(
           </button>
         )}
 
-        {/* SPIN AGAIN Button */}
+        {/* SPIN AGAIN / Play Again 24h Button */}
         {onSpinAgain && (
           <button
             onClick={onSpinAgain}
@@ -41,7 +42,7 @@ export const WinButtons = React.forwardRef<HTMLDivElement, WinButtonsProps>(
               border: "4px solid #FF9442",
             }}
           >
-            SPIN AGAIN
+            {showCooldown ? "Play Again 24h" : "SPIN AGAIN"}
           </button>
         )}
       </div>

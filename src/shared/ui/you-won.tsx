@@ -9,11 +9,12 @@ export interface YouWonProps {
   onClaim?: () => void;
   onSpinAgain?: () => void;
   brandLink?: string;
+  showCooldown?: boolean;
   className?: string;
 }
 
 const YouWon = React.forwardRef<HTMLDivElement, YouWonProps>(
-  ({ winner, onClaim, onSpinAgain, brandLink, className, ...props }, ref) => {
+  ({ winner, onClaim, onSpinAgain, brandLink, showCooldown = false, className, ...props }, ref) => {
     const [showSponsorDetail, setShowSponsorDetail] = React.useState(false);
 
     // Auto-transition to SponsorDetail after 3 seconds
@@ -40,6 +41,7 @@ const YouWon = React.forwardRef<HTMLDivElement, YouWonProps>(
           onClose={handleCloseDetail}
           onClaim={onClaim}
           onSpinAgain={onSpinAgain}
+          showCooldown={showCooldown}
         />
       );
     }

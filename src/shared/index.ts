@@ -26,6 +26,8 @@ export type { YouWonProps } from './ui/you-won';
 export type { Sponsor } from './types';
 export { YouLost } from './ui/you-lost';
 export type { YouLostProps } from './ui/you-lost';
+export { DidntWin } from './ui/didnt-win';
+export type { DidntWinProps } from './ui/didnt-win';
 export { PrizeCard } from './ui/prize-card';
 export type { PrizeCardProps } from './ui/prize-card';
 export { WinButtons } from './ui/win-buttons';
