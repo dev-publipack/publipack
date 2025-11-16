@@ -79,7 +79,7 @@ const YouWon = React.forwardRef<HTMLDivElement, YouWonProps>(
             {[0, 1, 2].map((slotIndex) => (
               <div
                 key={slotIndex}
-                className="relative w-full max-w-[200px] sm:max-w-[240px] md:max-w-[280px] lg:max-w-[320px] xl:max-w-[350px] h-[280px] sm:h-[320px] md:h-[360px] lg:h-[400px] xl:h-[450px] overflow-hidden rounded-xl sm:rounded-2xl md:rounded-[22.88px]"
+                className="relative w-full max-w-[200px] sm:max-w-[240px] md:max-w-[280px] lg:max-w-[320px] xl:max-w-[350px] h-[154px] sm:h-[176px] md:h-[198px] lg:h-[220px] xl:h-[248px] overflow-hidden rounded-xl sm:rounded-2xl md:rounded-[22.88px]"
                 style={{
                   background:
                     "linear-gradient(180deg, rgba(63, 210, 161, 1) 0%, rgba(68, 209, 248, 1) 100%)",
@@ -87,8 +87,8 @@ const YouWon = React.forwardRef<HTMLDivElement, YouWonProps>(
                 }}
               >
                 {/* Winner Sponsor Logo */}
-                <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center p-3 sm:p-4">
-                  <div className="relative w-[120px] h-[40px] sm:w-[150px] sm:h-[50px] md:w-[180px] md:h-[55px] lg:w-[200px] lg:h-[60px] xl:w-[214.52px] xl:h-[67.22px]">
+                <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center p-2 sm:p-3">
+                  <div className="relative w-[100px] h-[30px] sm:w-[120px] sm:h-[35px] md:w-[140px] md:h-[40px] lg:w-[160px] lg:h-[45px] xl:w-[180px] xl:h-[50px]">
                     <img
                       src={winner.logo}
                       alt={winner.name}

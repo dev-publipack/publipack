@@ -89,13 +89,13 @@ const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
 
       // Get card height based on viewport - matches the responsive heights in the render
       const getCardHeight = () => {
-        if (typeof window === "undefined") return 450;
+        if (typeof window === "undefined") return 248;
         const width = window.innerWidth;
-        if (width >= 1280) return 450;
-        if (width >= 1024) return 400;
-        if (width >= 768) return 360;
-        if (width >= 640) return 320;
-        return 280;
+        if (width >= 1280) return 248;
+        if (width >= 1024) return 220;
+        if (width >= 768) return 198;
+        if (width >= 640) return 176;
+        return 154;
       };
       const CARD_HEIGHT = getCardHeight();
       const startTime = Date.now();
@@ -228,7 +228,7 @@ const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
             {[0, 1, 2].map((slotIndex) => (
               <div
                 key={slotIndex}
-                className="relative w-full max-w-[200px] sm:max-w-[240px] md:max-w-[280px] lg:max-w-[320px] xl:max-w-[350px] h-[280px] sm:h-[320px] md:h-[360px] lg:h-[400px] xl:h-[450px] overflow-hidden rounded-xl sm:rounded-2xl md:rounded-[22.88px]"
+                className="relative w-full max-w-[200px] sm:max-w-[240px] md:max-w-[280px] lg:max-w-[320px] xl:max-w-[350px] h-[154px] sm:h-[176px] md:h-[198px] lg:h-[220px] xl:h-[248px] overflow-hidden rounded-xl sm:rounded-2xl md:rounded-[22.88px]"
                 style={{
                   background:
                     isComplete && isWin
@@ -248,9 +248,9 @@ const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
                   {extendedSponsors.map((sponsor, index) => (
                     <div
                       key={index}
-                      className="w-full h-[280px] sm:h-[320px] md:h-[360px] lg:h-[400px] xl:h-[450px] flex flex-col items-center justify-center p-3 sm:p-4"
+                      className="w-full h-[154px] sm:h-[176px] md:h-[198px] lg:h-[220px] xl:h-[248px] flex flex-col items-center justify-center p-2 sm:p-3"
                     >
-                      <div className="relative w-[120px] h-[40px] sm:w-[150px] sm:h-[50px] md:w-[180px] md:h-[55px] lg:w-[200px] lg:h-[60px] xl:w-[214.52px] xl:h-[67.22px] mb-2 sm:mb-3 md:mb-4">
+                      <div className="relative w-[100px] h-[30px] sm:w-[120px] sm:h-[35px] md:w-[140px] md:h-[40px] lg:w-[160px] lg:h-[45px] xl:w-[180px] xl:h-[50px]">
                         <img
                           src={sponsor.logo}
                           alt={sponsor.name}
