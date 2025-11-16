@@ -162,13 +162,13 @@ const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
         {...props}
       >
         {/* Spinning Status */}
-        <h2 className="text-3xl md:text-5xl lg:text-[101px] font-heading text-[#163446] text-center mb-6 leading-[1.14]">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading text-[#163446] text-center mb-6 sm:mb-8 leading-[1.14]">
           Spinning
         </h2>
 
         {/* Slot Machine Container */}
         <div
-          className="relative w-full max-w-[1200px] mx-auto rounded-2xl sm:rounded-3xl md:rounded-[29px] p-4 sm:p-5 md:p-6 lg:p-8"
+          className="relative w-full max-w-[900px] rounded-2xl sm:rounded-3xl md:rounded-[29px] p-4 sm:p-5 md:p-6 lg:p-8"
           style={{
             background:
               "linear-gradient(137deg, rgba(11, 141, 217, 1) 4%, rgba(45, 195, 248, 1) 100%)",
@@ -218,8 +218,9 @@ const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
 
           {/* Progress Indicator - Below slots */}
         </div>
-        <div className="pt-10 flex justify-center items-center w-full">
-          <div className="relative w-[120px] h-[120px] sm:w-[150px] sm:h-[150px] md:w-[180px] md:h-[180px] lg:w-[220px] lg:h-[220px] xl:w-[303px] xl:h-[303px]">
+        
+        <div className="pt-6 sm:pt-8 md:pt-10 flex justify-center items-center w-full">
+          <div className="relative w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 lg:w-40 lg:h-40">
             <div
               className="absolute inset-0 rounded-full"
               style={{
@@ -228,7 +229,7 @@ const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
               }}
             />
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-[93.17px] font-heading text-black">
+              <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-heading text-black">
                 {Math.round(progress)}%
               </span>
             </div>

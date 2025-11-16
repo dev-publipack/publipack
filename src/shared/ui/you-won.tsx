@@ -17,6 +17,15 @@ const YouWon = React.forwardRef<HTMLDivElement, YouWonProps>(
   ({ winner, onClaim, onSpinAgain, brandLink, className, ...props }, ref) => {
     const [showSponsorDetail, setShowSponsorDetail] = React.useState(false);
 
+    // Auto-transition to SponsorDetail after 3 seconds
+    React.useEffect(() => {
+      const timer = setTimeout(() => {
+        setShowSponsorDetail(true);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }, []);
+
     const handleGiftClick = () => {
       setShowSponsorDetail(true);
     };
@@ -48,18 +57,18 @@ const YouWon = React.forwardRef<HTMLDivElement, YouWonProps>(
         {/* <ConfettiBackground /> */}
 
         {/* Brand Link at top */}
-        <div className="pb-4 flex flex-col items-center">
+        <div className="mb-4 sm:mb-6 flex flex-col items-center">
           <BrandLinkAnimation brandLink={brandLink} onClick={handleGiftClick} />
         </div>
 
         {/* YOU WON! Title */}
-        <h1 className="pb-10 text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[101px] font-heading text-[#163446] leading-[1.14] text-center ">
+        <h1 className="mb-6 sm:mb-8 md:mb-10 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading text-[#163446] leading-[1.14] text-center">
           YOU WON!
         </h1>
 
         {/* Main Container */}
         <div
-          className="relative z-10 w-full max-w-[1003px] mx-[36px] sm:mx-4 md:mx-6 lg:mx-9 rounded-2xl sm:rounded-3xl md:rounded-[29px] p-4 sm:p-5 md:p-6 lg:p-8 "
+          className="relative z-10 w-full max-w-[900px] rounded-2xl sm:rounded-3xl md:rounded-[29px] p-4 sm:p-5 md:p-6 lg:p-8"
           style={{
             background:
               "linear-gradient(134deg, rgba(11, 141, 217, 1) 15%, rgba(45, 195, 248, 1) 100%)",
@@ -84,7 +93,7 @@ const YouWon = React.forwardRef<HTMLDivElement, YouWonProps>(
         </div>
 
         {/* Congratulations Text - below container */}
-        <p className="text-lg w-[80%] sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-[57.44px] font-body-semibold text-black text-center leading-[1.362] px-4 sm:px-6 mt-8 sm:mt-10 md:mt-12 lg:mt-16">
+        <p className="text-base sm:text-lg md:text-xl lg:text-2xl max-w-[85%] font-body-semibold text-black text-center leading-[1.362] px-4 sm:px-6 mt-6 sm:mt-8 md:mt-10">
           Congratulations - You&apos;ve{" "}
           <span className="text-black font-bold">
             won {winner.name} {winner.reward}

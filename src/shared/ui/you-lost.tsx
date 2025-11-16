@@ -58,30 +58,28 @@ const YouLost = React.forwardRef<HTMLDivElement, YouLostProps>(
           animationData={sadEmojiData}
           loop={true}
           autoplay={true}
-          style={{
-            width: "50%",
-            height: "50%",
-          }}
+          className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 lg:w-72 lg:h-72 mb-6"
         />
+        
         <div
-          className="relative z-10 w-full max-w-[1003px] rounded-[29px] p-6 md:p-8 mb-8"
+          className="relative z-10 w-full max-w-[900px] rounded-2xl sm:rounded-3xl md:rounded-[29px] p-4 sm:p-6 md:p-8 mb-6 sm:mb-8"
           style={{
             background:
               "linear-gradient(137deg, rgba(11, 141, 217, 1) 4%, rgba(45, 195, 248, 1) 100%)",
             boxShadow: "0px 4.24px 35.10px 0px rgba(0, 0, 0, 0.25)",
           }}
         >
-          <h1 className="text-3xl md:text-5xl lg:text-[101px] font-heading text-white leading-[1.14] text-center mb-8">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading text-white leading-[1.14] text-center mb-4 sm:mb-6">
             Try again tomorrow!
           </h1>
-          <p className="text-lg md:text-2xl lg:text-[51.55px] font-body-semibold text-white text-center leading-[1.362] mb-8">
+          <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-body-semibold text-white text-center leading-[1.362]">
             Better luck next time. Come back tomorrow for another spin
           </p>
         </div>
 
         <button
           onClick={onTryAgain}
-          className="relative z-10 w-full max-w-[784px] h-[80px] sm:h-[100px] md:h-[130px] lg:h-[166px] xl:h-[200px] rounded-full sm:rounded-[60px] md:rounded-[80px] lg:rounded-[110px] text-white text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-[69px] font-heading leading-[1.4] hover:opacity-90 transition-opacity"
+          className="relative z-10 w-full max-w-[700px] h-14 sm:h-16 md:h-20 lg:h-24 rounded-full text-white text-lg sm:text-xl md:text-3xl lg:text-4xl font-heading leading-[1.4] hover:opacity-90 transition-opacity px-6"
           style={{ background: "#FF9442" }}
         >
           Spin Again

@@ -46,7 +46,7 @@ export const SuccessConfettiAnimation = React.forwardRef<
     loadAnimation();
   }, []);
 
-  // Auto complete after 3 seconds
+  // Auto complete after 1.5 seconds
   React.useEffect(() => {
     if (onComplete) {
       const timeout = setTimeout(() => {
@@ -54,7 +54,7 @@ export const SuccessConfettiAnimation = React.forwardRef<
           hasCompletedRef.current = true;
           onComplete();
         }
-      }, 3000);
+      }, 1500);
 
       return () => clearTimeout(timeout);
     }

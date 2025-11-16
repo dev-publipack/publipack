@@ -14,8 +14,8 @@ const CountdownTimer = React.forwardRef<HTMLDivElement, CountdownTimerProps>(
         className={cn("relative flex items-center justify-center", className)}
         {...props}
       >
-        <div className="w-[120px] h-[120px] md:w-[150px] md:h-[150px] lg:w-[197px] lg:h-[197px] rounded-full bg-white border-[6px] md:border-[8px] lg:border-[11px] border-[#0C97E4] flex items-center justify-center">
-          <span className="text-2xl md:text-4xl lg:text-[76.57px] font-heading text-black leading-[1.4]">
+        <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 rounded-full bg-white border-4 sm:border-[5px] md:border-[6px] border-[#0C97E4] flex items-center justify-center">
+          <span className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-heading text-black leading-[1.4]">
             {seconds}s
           </span>
         </div>

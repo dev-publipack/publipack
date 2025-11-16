@@ -71,7 +71,7 @@ export const SponsorDetail = React.forwardRef<
       {...props}
     >
       {/* Close button */}
-      {onClose && (
+      {/* {onClose && (
         <button
           onClick={onClose}
           className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white flex items-center justify-center shadow-lg hover:opacity-80 transition-opacity"
@@ -79,32 +79,32 @@ export const SponsorDetail = React.forwardRef<
         >
           <span className="text-2xl sm:text-3xl">×</span>
         </button>
-      )}
+      )} */}
 
-      {/* White Container - according to Figma */}
+      {/* White Container */}
       <div
-        className="relative w-full max-w-[975px] mx-auto rounded-[41px] p-6 sm:p-8 md:p-10 lg:p-12"
+        className="relative w-full max-w-[900px] rounded-2xl sm:rounded-3xl md:rounded-[32px] p-6 sm:p-8 md:p-10"
         style={{
           background: "#FFFFFF",
           boxShadow: "0px 4px 33.10px 0px rgba(0, 0, 0, 0.25)",
         }}
       >
-        {/* YOU WON! Title - according to Figma */}
-        <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[117.62px] font-heading text-[#0A5980] leading-[1.4] text-center mb-6 sm:mb-8 md:mb-10">
+        {/* YOU WON! Title */}
+        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading text-[#0A5980] leading-[1.4] text-center mb-4 sm:mb-6">
           YOU WON!
         </h1>
 
-        {/* Congratulations Text - according to Figma */}
-        <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-[55.81px] font-body-semibold text-black text-center leading-[1.362] mb-8 sm:mb-10 md:mb-12 px-4">
+        {/* Congratulations Text */}
+        <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-body-semibold text-black text-center leading-[1.362] mb-6 sm:mb-8 px-4">
           Congratulations - You&apos;ve{" "}
           <span className="font-bold">
             won a Gift Card of {sponsor.name} {sponsor.reward}
           </span>
         </p>
 
-        {/* Sponsor Logo above gift */}
+        {/* Sponsor Logo */}
         <div className="flex items-center justify-center mb-4 sm:mb-6 w-full">
-          <div className="relative w-[200px] h-[60px] sm:w-[250px] sm:h-[75px] md:w-[300px] md:h-[90px] lg:w-[368px] lg:h-[115px]">
+          <div className="relative w-40 h-12 sm:w-48 sm:h-14 md:w-56 md:h-16 lg:w-64 lg:h-20">
             <img
               src={sponsor.logo}
               alt={sponsor.name}
@@ -113,24 +113,24 @@ export const SponsorDetail = React.forwardRef<
           </div>
         </div>
 
-            {/* Gift Animation - Lottie */}
-            {giftData && (
-              <div className="flex items-center justify-center w-full">
-                <div className="w-full max-w-[655px] h-[400px] sm:h-[500px] md:h-[600px] lg:h-[636px] flex items-center justify-center">
-                  <Lottie
-                    lottieRef={lottieRef}
-                    animationData={giftData}
-                    loop={false}
-                    autoplay={true}
-                    className="w-full h-full"
-                  />
-                </div>
-              </div>
-            )}
+        {/* Gift Animation - Lottie */}
+        {giftData && (
+          <div className="flex items-center justify-center w-full">
+            <div className="w-full max-w-[500px] h-64 sm:h-80 md:h-96 lg:h-[28rem] flex items-center justify-center">
+              <Lottie
+                lottieRef={lottieRef}
+                animationData={giftData}
+                loop={false}
+                autoplay={true}
+                className="w-full h-full"
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Win Buttons - outside container */}
-      <div className="w-full max-w-[720px] mx-auto mt-6 sm:mt-8 md:mt-10">
+      <div className="w-full max-w-[700px] mt-6 sm:mt-8">
         <WinButtons onClaim={onClaim} onSpinAgain={onSpinAgain} />
       </div>
     </div>
