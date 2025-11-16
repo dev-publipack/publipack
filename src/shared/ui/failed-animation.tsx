@@ -1,7 +1,6 @@
 import * as React from "react";
 import Lottie from "lottie-react";
 import { cn } from "../lib/utils";
-import failedAnimationData from "../../../public/animations/Failed.json";
 
 type LottieAnimationData = {
   v?: string;
@@ -26,7 +25,26 @@ export const FailedAnimation = React.forwardRef<
   HTMLDivElement,
   FailedAnimationProps
 >(({ className, onComplete, ...props }, ref) => {
+  const [failedData, setFailedData] = React.useState<LottieAnimationData | null>(null);
   const hasCompletedRef = React.useRef(false);
+
+  React.useEffect(() => {
+    const loadAnimation = async () => {
+      try {
+        const response = await fetch("/animations/Failed.json");
+        if (response.ok) {
+          const data = await response.json();
+          if (data && (data.v || data.layers)) {
+            setFailedData(data);
+          }
+        }
+      } catch (error) {
+        console.warn("Failed to load animation:", error);
+      }
+    };
+
+    loadAnimation();
+  }, []);
 
   // Auto complete after 3 seconds
   React.useEffect(() => {
@@ -49,6 +67,8 @@ export const FailedAnimation = React.forwardRef<
     }
   }, [onComplete]);
 
+  if (!failedData) return null;
+
   return (
     <div
       ref={ref}
@@ -60,7 +80,7 @@ export const FailedAnimation = React.forwardRef<
     >
       <Lottie
         key="failed-once"
-        animationData={failedAnimationData}
+        animationData={failedData}
         loop={false}
         autoplay={true}
         onComplete={handleComplete}

@@ -1,7 +1,6 @@
 import * as React from "react";
 import Lottie from "lottie-react";
 import { cn } from "../lib/utils";
-import confettiAnimationData from "../../../public/animations/success confetti.json";
 
 type LottieAnimationData = {
   v?: string;
@@ -26,7 +25,26 @@ export const SuccessConfettiAnimation = React.forwardRef<
   HTMLDivElement,
   SuccessConfettiAnimationProps
 >(({ className, onComplete, ...props }, ref) => {
+  const [confettiData, setConfettiData] = React.useState<LottieAnimationData | null>(null);
   const hasCompletedRef = React.useRef(false);
+
+  React.useEffect(() => {
+    const loadAnimation = async () => {
+      try {
+        const response = await fetch("/animations/success confetti.json");
+        if (response.ok) {
+          const data = await response.json();
+          if (data && (data.v || data.layers)) {
+            setConfettiData(data);
+          }
+        }
+      } catch (error) {
+        console.warn("Failed to load animation:", error);
+      }
+    };
+
+    loadAnimation();
+  }, []);
 
   // Auto complete after 3 seconds
   React.useEffect(() => {
@@ -49,6 +67,8 @@ export const SuccessConfettiAnimation = React.forwardRef<
     }
   }, [onComplete]);
 
+  if (!confettiData) return null;
+
   return (
     <div
       ref={ref}
@@ -60,7 +80,7 @@ export const SuccessConfettiAnimation = React.forwardRef<
     >
       <Lottie
         key="success-confetti-once"
-        animationData={confettiAnimationData}
+        animationData={confettiData}
         loop={false}
         autoplay={true}
         onComplete={handleComplete}

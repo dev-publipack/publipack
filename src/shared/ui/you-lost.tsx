@@ -1,7 +1,6 @@
 import * as React from "react";
 import { cn } from "../lib/utils";
 import Lottie from "lottie-react";
-import sadEmojiAnimationData from "../../../public/animations/Sad Emoji.json";
 
 type LottieAnimationData = {
   v?: string;
@@ -24,6 +23,28 @@ export interface YouLostProps {
 
 const YouLost = React.forwardRef<HTMLDivElement, YouLostProps>(
   ({ onTryAgain, className, ...props }, ref) => {
+    const [sadEmojiData, setSadEmojiData] = React.useState<LottieAnimationData | null>(null);
+
+    React.useEffect(() => {
+      const loadAnimation = async () => {
+        try {
+          const response = await fetch("/animations/Sad Emoji.json");
+          if (response.ok) {
+            const data = await response.json();
+            if (data && (data.v || data.layers)) {
+              setSadEmojiData(data);
+            }
+          }
+        } catch (error) {
+          console.warn("Failed to load animation:", error);
+        }
+      };
+
+      loadAnimation();
+    }, []);
+
+    if (!sadEmojiData) return null;
+
     return (
       <div
         ref={ref}
@@ -34,7 +55,7 @@ const YouLost = React.forwardRef<HTMLDivElement, YouLostProps>(
         {...props}
       >
         <Lottie
-          animationData={sadEmojiAnimationData}
+          animationData={sadEmojiData}
           loop={true}
           autoplay={true}
           style={{
