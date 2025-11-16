@@ -1,28 +1,64 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 export function useCountdown(initialSeconds: number) {
   const [seconds, setSeconds] = useState(initialSeconds);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const isActiveRef = useRef(true);
+
+  const reset = useCallback(
+    (newSeconds: number = initialSeconds) => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+      isActiveRef.current = true;
+      setSeconds(newSeconds);
+    },
+    [initialSeconds]
+  );
 
   useEffect(() => {
-    if (seconds <= 0) return;
+    if (seconds <= 0 || !isActiveRef.current) {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+      return;
+    }
 
-    const timer = setInterval(() => {
+    intervalRef.current = setInterval(() => {
       setSeconds((prev) => {
         if (prev <= 1) {
-          clearInterval(timer);
+          if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+          }
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
 
-    return () => clearInterval(timer);
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
   }, [seconds]);
 
-  const reset = (newSeconds: number = initialSeconds) => {
-    setSeconds(newSeconds);
-  };
+  const pause = useCallback(() => {
+    isActiveRef.current = false;
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  }, []);
 
-  return { seconds, reset };
+  const resume = useCallback(() => {
+    isActiveRef.current = true;
+  }, []);
+
+  return { seconds, reset, pause, resume };
 }
 

@@ -1,6 +1,5 @@
 import * as React from "react";
 import { cn } from "../lib/utils";
-import { PrizeCard } from "./prize-card";
 import { BrandLinkAnimation } from "./brand-link-animation";
 import { SponsorDetail } from "./sponsor-detail";
 import type { Sponsor } from "../types";
@@ -75,19 +74,29 @@ const YouWon = React.forwardRef<HTMLDivElement, YouWonProps>(
             boxShadow: "0px 4.24px 35.10px 0px rgba(0, 0, 0, 0.25)",
           }}
         >
-          {/* Trophy Animation */}
-          <div className="flex flex-col items-center mb-4 sm:mb-6 md:mb-8"></div>
-
-          {/* Prize Cards - Show 3 green cards in a row when winning */}
-          <div className="flex flex-row gap-1 sm:gap-1.5 md:gap-2 lg:gap-2.5 xl:gap-3 justify-center items-start mb-4 sm:mb-6 md:mb-8 w-full px-1 sm:px-2">
-            {[0, 1, 2].map((index) => (
-              <PrizeCard
-                key={index}
-                sponsor={winner}
-                isHighlighted={true}
-                showGiftIcon={true}
-                className="flex-1 min-w-0 basis-0"
-              />
+          {/* Winning Slots - Show 3 identical slots in a row */}
+          <div className="flex gap-2 sm:gap-3 md:gap-4 justify-center items-center mb-4 sm:mb-6 md:mb-8">
+            {[0, 1, 2].map((slotIndex) => (
+              <div
+                key={slotIndex}
+                className="relative w-full max-w-[200px] sm:max-w-[240px] md:max-w-[280px] lg:max-w-[320px] xl:max-w-[350px] h-[280px] sm:h-[320px] md:h-[360px] lg:h-[400px] xl:h-[450px] overflow-hidden rounded-xl sm:rounded-2xl md:rounded-[22.88px]"
+                style={{
+                  background:
+                    "linear-gradient(180deg, rgba(63, 210, 161, 1) 0%, rgba(68, 209, 248, 1) 100%)",
+                  border: "3.52px solid #111D21",
+                }}
+              >
+                {/* Winner Sponsor Logo */}
+                <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center p-3 sm:p-4">
+                  <div className="relative w-[120px] h-[40px] sm:w-[150px] sm:h-[50px] md:w-[180px] md:h-[55px] lg:w-[200px] lg:h-[60px] xl:w-[214.52px] xl:h-[67.22px]">
+                    <img
+                      src={winner.logo}
+                      alt={winner.name}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
         </div>

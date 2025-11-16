@@ -19,6 +19,9 @@ const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
     const [progress, setProgress] = React.useState(0);
     const [isComplete, setIsComplete] = React.useState(false);
     const [isWin, setIsWin] = React.useState(false);
+    const [completedSlots, setCompletedSlots] = React.useState<Set<number>>(new Set());
+    
+    const spinResultRef = React.useRef<{ winner: Sponsor | null; isWin: boolean } | null>(null);
 
     const spinRefs = [
       React.useRef<HTMLDivElement>(null),
@@ -33,6 +36,8 @@ const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
       setIsComplete(false);
       setIsWin(false);
       setProgress(0);
+      setCompletedSlots(new Set());
+      spinResultRef.current = null;
 
       // Reset all slots to initial position
       spinRefs.forEach((slotRef) => {
@@ -75,6 +80,13 @@ const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
 
       const SPIN_DURATION = 3000;
       const RESULT_DISPLAY_DURATION = 1500;
+      
+      // Store result for later use when animation completes
+      spinResultRef.current = {
+        winner: winResult ? sponsors[winningSponsorIndex] : null,
+        isWin: winResult,
+      };
+
       // Get card height based on viewport - matches the responsive heights in the render
       const getCardHeight = () => {
         if (typeof window === "undefined") return 450;
@@ -99,20 +111,29 @@ const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
           // Spin complete, show result
           setIsSpinning(false);
           setProgress(100);
-
-          setTimeout(() => {
-            setIsComplete(true);
-
-            if (onComplete) {
-              setTimeout(() => {
-                onComplete({
-                  winner: winResult ? sponsors[winningSponsorIndex] : null,
-                  isWin: winResult,
-                });
-              }, 500);
-            }
-          }, RESULT_DISPLAY_DURATION);
         }
+      };
+
+      // Handle slot animation completion
+      const handleSlotComplete = (slotIndex: number) => {
+        setCompletedSlots((prev) => {
+          const newSet = new Set(prev);
+          newSet.add(slotIndex);
+          
+          // When all 3 slots are complete, show result and trigger onComplete
+          if (newSet.size === 3) {
+            setIsComplete(true);
+            
+            // Wait for visual result display, then call onComplete
+            setTimeout(() => {
+              if (onComplete && spinResultRef.current) {
+                onComplete(spinResultRef.current);
+              }
+            }, RESULT_DISPLAY_DURATION);
+          }
+          
+          return newSet;
+        });
       };
 
       // Animate each slot
@@ -123,10 +144,23 @@ const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
           const totalSpins = minFullRotations * sponsors.length + targetIndex;
           const targetPosition = -(totalSpins * CARD_HEIGHT);
 
+          // Remove previous event listeners
+          const currentSlot = slotRef.current;
+          const handleTransitionEnd = (e: TransitionEvent) => {
+            // Only handle transform transitions
+            if (e.propertyName === "transform") {
+              handleSlotComplete(index);
+              currentSlot.removeEventListener("transitionend", handleTransitionEnd);
+            }
+          };
+
           setTimeout(() => {
             if (slotRef.current) {
               slotRef.current.style.transition = `transform ${SPIN_DURATION}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
               slotRef.current.style.transform = `translateY(${targetPosition}px)`;
+              
+              // Listen for transition end
+              slotRef.current.addEventListener("transitionend", handleTransitionEnd);
             }
           }, 10);
         }
@@ -139,6 +173,21 @@ const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
     React.useImperativeHandle(ref, () => ({
       startSpin,
     }));
+
+    // Cleanup event listeners on unmount
+    React.useEffect(() => {
+      return () => {
+        spinRefs.forEach((slotRef) => {
+          if (slotRef.current) {
+            // Remove any remaining event listeners
+            const clone = slotRef.current.cloneNode(true);
+            if (slotRef.current.parentNode) {
+              slotRef.current.parentNode.replaceChild(clone, slotRef.current);
+            }
+          }
+        });
+      };
+    }, []);
 
     // Auto-start spin on mount
     React.useEffect(() => {
@@ -153,7 +202,6 @@ const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
 
     const containerRef = React.useRef<HTMLDivElement>(null);
 
-    const showResultOverlay = !isSpinning && progress === 100;
 
     return (
       <div
