@@ -12,7 +12,7 @@ const WheelOfFortune = React.forwardRef<HTMLDivElement, WheelOfFortuneProps>(
       <div
         ref={ref}
         className={cn(
-          "relative w-full max-w-[1203px] h-auto aspect-[1203/854] -ml-5 md:-ml-20",
+          "relative w-full justify-center items-center flex max-w-[1203px] h-auto aspect-[1203/854] -ml-5 md:-ml-20",
           className
         )}
         {...props}

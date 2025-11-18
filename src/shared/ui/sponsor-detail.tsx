@@ -90,19 +90,6 @@ export const SponsorDetail = React.forwardRef<
           boxShadow: "0px 4px 33.10px 0px rgba(0, 0, 0, 0.25)",
         }}
       >
-        {/* YOU WON! Title */}
-        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading text-[#0A5980] leading-[1.4] text-center mb-4 sm:mb-6">
-          YOU WON!
-        </h1>
-
-        {/* Congratulations Text */}
-        <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-body-semibold text-black text-center leading-[1.362] mb-6 sm:mb-8 px-4">
-          Congratulations - You&apos;ve{" "}
-          <span className="font-bold">
-            won a Gift Card of {sponsor.name} {sponsor.reward}
-          </span>
-        </p>
-
         {/* Sponsor Logo */}
         <div className="flex items-center justify-center mb-4 sm:mb-6 w-full">
           <div className="relative w-40 h-12 sm:w-48 sm:h-14 md:w-56 md:h-16 lg:w-64 lg:h-20">

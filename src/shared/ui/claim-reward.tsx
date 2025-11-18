@@ -1,6 +1,7 @@
 import * as React from "react";
 import { cn } from "../lib/utils";
 import type { Sponsor } from "../types";
+import { pipedreamClient } from "../api/pipedream-client";
 
 export interface ClaimRewardProps {
   winner: Sponsor;
@@ -15,11 +16,50 @@ const ClaimReward = React.forwardRef<HTMLDivElement, ClaimRewardProps>(
     const [phone, setPhone] = React.useState("");
     const [email, setEmail] = React.useState("");
     const [focusedField, setFocusedField] = React.useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = React.useState(false);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      if (onSubmit && fullName && phone && email) {
-        onSubmit({ fullName, phone, email });
+      e.stopPropagation();
+      
+      console.log("🚀 Form submit triggered", { fullName, phone, email });
+      
+      if (!fullName || !phone || !email) {
+        console.warn("⚠️ Form validation failed - missing fields");
+        return;
+      }
+
+      setIsSubmitting(true);
+      console.log("📤 Submitting to Google Sheets...");
+
+      try {
+        // Submit to Google Sheets via Pipedream (production-ready, zero CORS issues)
+        const success = await pipedreamClient.submitLead({
+          fullName,
+          phone,
+          email,
+          sponsorName: winner.name,
+          sponsorReward: winner.reward,
+        });
+
+        if (success) {
+          console.log("✅ Lead submitted successfully to Google Sheets");
+        } else {
+          console.error("⚠️ Failed to submit lead, but continuing...");
+        }
+
+        // Call original onSubmit callback
+        if (onSubmit) {
+          onSubmit({ fullName, phone, email });
+        }
+      } catch (error) {
+        console.error("❌ Error during submission:", error);
+        // Still call onSubmit to not block user flow
+        if (onSubmit) {
+          onSubmit({ fullName, phone, email });
+        }
+      } finally {
+        setIsSubmitting(false);
       }
     };
 
@@ -31,7 +71,7 @@ const ClaimReward = React.forwardRef<HTMLDivElement, ClaimRewardProps>(
       >
         {/* Title */}
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading text-[#163446] leading-[1.16] text-center mb-3 sm:mb-4 px-4">
-          Claim your Reward
+          Claim your <span className="text-[#44D2FD]">Reward</span>
         </h1>
 
         {/* Subtitle */}
@@ -42,28 +82,19 @@ const ClaimReward = React.forwardRef<HTMLDivElement, ClaimRewardProps>(
         {/* Reward Info Card */}
         <div className="w-full max-w-[280px] sm:max-w-[320px] md:max-w-[350px] mb-6 sm:mb-8 px-4">
           <div
-            className="w-full h-16 sm:h-18 md:h-20 rounded-2xl flex items-center justify-between px-4 sm:px-5 md:px-6"
-            style={{ background: "#C3ECFF" }}
+            className="w-full h-16 sm:h-18 md:h-20 rounded-2xl sm:px-5 md:px-6 flex items-center justify-сenter gap-3 sm:gap-4"
           >
-            <span className="text-[#124258] text-base sm:text-lg md:text-xl lg:text-2xl font-heading">
+            <span
+              style={{ background: "#C3ECFF" }}
+              className="text-[#124258] border rounded-md p-2 sm:p-3 text-base sm:text-lg md:text-xl lg:text-2xl font-heading whitespace-nowrap">
               Your Reward
             </span>
             <div className="flex items-center gap-2 sm:gap-3">
               {/* Calendar icon */}
-              <svg
-                className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                style={{ color: "#0E3347" }}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
+              <svg width="32" height="32" viewBox="0 0 39 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M34.7211 9.594H30.4424C31.9673 8.6367 32.9678 7.062 32.9678 5.2815C32.9678 2.36865 30.2973 0 27.0146 0C24.2285 0 20.9297 4.7725 19.0883 7.85895C17.2471 4.7733 13.9483 0 11.1622 0C7.88092 0 5.20896 2.3694 5.20896 5.2815C5.20896 7.062 6.20946 8.6367 7.73436 9.594H3.4569C2.54047 9.59493 1.66184 9.95935 1.01376 10.6073C0.365689 11.2553 0.0011052 12.1338 0 13.0503V18.531C0.000834404 19.1757 0.181926 19.8074 0.522821 20.3546C0.863716 20.9018 1.35083 21.3428 1.92915 21.6278V34.1697C1.93022 35.0862 2.29479 35.9649 2.94288 36.613C3.59097 37.2611 4.46966 37.6257 5.3862 37.6267H33.0468C33.9634 37.6259 34.8423 37.2615 35.4904 36.6133C36.1385 35.9652 36.503 35.0863 36.5039 34.1697V21.4863C37.0141 21.1801 37.4365 20.7471 37.7299 20.2294C38.0233 19.7117 38.1777 19.1268 38.1781 18.5317V13.0503C38.177 12.1338 37.8125 11.2552 37.1644 10.6073C36.5163 9.95932 35.6376 9.5949 34.7211 9.594ZM3.4569 18.8387C3.37544 18.8387 3.29731 18.8064 3.23965 18.7488C3.182 18.6913 3.14954 18.6132 3.1494 18.5317V13.0503C3.1497 12.969 3.18223 12.8911 3.23987 12.8337C3.29751 12.7763 3.37556 12.7441 3.4569 12.7442H17.5135V18.8379H3.4569V18.8387ZM20.663 12.7442H35.0031C35.0099 12.7442 35.0164 12.7469 35.0212 12.7517C35.026 12.7565 35.0287 12.763 35.0287 12.7698V18.8123C35.0287 18.8191 35.0261 18.8256 35.0213 18.8304C35.0165 18.8352 35.01 18.8379 35.0032 18.8379H20.663V12.7442ZM27.0131 3.14865C28.5336 3.14865 29.8183 4.12575 29.8183 5.2815C29.8183 6.438 28.5336 7.4151 27.0131 7.4151H23.1225C24.7162 5.1138 26.354 3.28575 27.0131 3.14865ZM11.1195 3.14655C11.8125 3.28425 13.4574 5.1138 15.0527 7.41585H11.1621C9.64305 7.41585 8.3583 6.43875 8.3583 5.28225C8.3583 4.1265 9.64305 3.14865 11.1195 3.14655ZM5.08005 34.4518V21.9873H17.5135V34.4773H5.10556C5.0988 34.4773 5.09232 34.4746 5.08754 34.4698C5.08276 34.4651 5.08006 34.4586 5.08005 34.4518ZM33.3303 34.4773H20.663V21.9874H33.3559V34.4518C33.3559 34.4585 33.3532 34.4651 33.3484 34.4699C33.3436 34.4747 33.3371 34.4773 33.3303 34.4773Z" fill="#124258" />
               </svg>
+
               <span className="text-[#0E3347] text-sm sm:text-base md:text-lg lg:text-xl font-heading whitespace-nowrap">
                 {winner.name}
               </span>
@@ -148,12 +179,18 @@ const ClaimReward = React.forwardRef<HTMLDivElement, ClaimRewardProps>(
           {/* Get My Voucher Button */}
           <button
             type="submit"
-            className="w-full h-14 sm:h-16 md:h-20 lg:h-24 rounded-full text-white text-lg sm:text-xl md:text-3xl lg:text-4xl font-heading leading-[1.4] hover:opacity-90 transition-opacity px-6"
+            disabled={isSubmitting}
+            onClick={(e) => {
+              // Debug: ensure button click is registered
+              console.log("🔘 Button clicked", { isSubmitting, fullName, phone, email });
+              // Let form handle submit naturally
+            }}
+            className="mt-8 w-full h-14 sm:h-16 md:h-20 lg:h-24 rounded-full text-white text-lg sm:text-xl md:text-3xl lg:text-4xl font-heading leading-[1.4] hover:opacity-90 transition-opacity px-6 disabled:opacity-50 disabled:cursor-not-allowed"
             style={{
               background: "#FF9442",
             }}
           >
-            Get My Voucher
+            {isSubmitting ? "Submitting..." : "Get My Voucher"}
           </button>
         </form>
       </div>

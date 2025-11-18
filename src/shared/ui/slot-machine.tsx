@@ -206,7 +206,7 @@ const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
     return (
       <div
         ref={containerRef}
-        className={cn("relative w-full", className)}
+        className={cn("relative w-full mx-auto justify-center items-center flex flex-col", className)}
         {...props}
       >
         {/* Spinning Status */}
