@@ -45,7 +45,6 @@ export { SuccessConfettiAnimation } from './ui/success-confetti-animation';
 export type { SuccessConfettiAnimationProps } from './ui/success-confetti-animation';
 export { SponsorDetail } from './ui/sponsor-detail';
 export type { SponsorDetailProps } from './ui/sponsor-detail';
-export { TestEmailForm } from './ui/test-email-form';
 
 // Utilities
 export { cn } from './lib/utils';
