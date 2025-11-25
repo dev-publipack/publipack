@@ -45,6 +45,7 @@ export { SuccessConfettiAnimation } from './ui/success-confetti-animation';
 export type { SuccessConfettiAnimationProps } from './ui/success-confetti-animation';
 export { SponsorDetail } from './ui/sponsor-detail';
 export type { SponsorDetailProps } from './ui/sponsor-detail';
+export { TestEmailForm } from './ui/test-email-form';
 
 // Utilities
 export { cn } from './lib/utils';
@@ -52,4 +53,6 @@ export { cn } from './lib/utils';
 // API
 export { apiClient, ApiClient } from './api/api-client';
 export type { ApiError } from './api/api-client';
+export { brevoClient } from './api/brevo-client';
+export type { EmailData, BrevoEmailResponse } from './api/brevo-client';
 

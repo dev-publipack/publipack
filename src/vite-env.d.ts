@@ -17,6 +17,11 @@ interface ImportMetaEnv {
   
   // Common
   readonly VITE_CAMPAIGN_ID?: string;
+  
+  // Brevo Email via Pipedream (secure - API key hidden)
+  readonly VITE_PIPEDREAM_EMAIL_WEBHOOK?: string;
+  readonly VITE_BREVO_FROM_EMAIL?: string;
+  readonly VITE_BREVO_FROM_NAME?: string;
 }
 
 interface ImportMeta {

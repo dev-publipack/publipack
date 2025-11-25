@@ -2,6 +2,7 @@ import * as React from "react";
 import { cn } from "../lib/utils";
 import type { Sponsor } from "../types";
 import { pipedreamClient } from "../api/pipedream-client";
+import { brevoClient } from "../api/brevo-client";
 
 export interface ClaimRewardProps {
   winner: Sponsor;
@@ -34,7 +35,7 @@ const ClaimReward = React.forwardRef<HTMLDivElement, ClaimRewardProps>(
 
       try {
         // Submit to Google Sheets via Pipedream (production-ready, zero CORS issues)
-        const success = await pipedreamClient.submitLead({
+        const pipedreamSuccess = await pipedreamClient.submitLead({
           fullName,
           phone,
           email,
@@ -42,10 +43,81 @@ const ClaimReward = React.forwardRef<HTMLDivElement, ClaimRewardProps>(
           sponsorReward: winner.reward,
         });
 
-        if (success) {
+        if (pipedreamSuccess) {
           console.log("✅ Lead submitted successfully to Google Sheets");
         } else {
           console.error("⚠️ Failed to submit lead, but continuing...");
+        }
+
+        // Send confirmation email via Brevo
+        const emailSuccess = await brevoClient.sendEmail({
+          to: email,
+          subject: "🎉 Thanks for playing with app.publipacks.com",
+          htmlContent: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
+              <h1 style="color: #163446; text-align: center; margin-bottom: 30px;">🎉 Thanks for playing!</h1>
+              
+              <p>Hi ${fullName},</p>
+              
+              <p>Thank you for playing with publipacks.com! The safest platform to win amazing awards near you!</p>
+              
+              <div style="background: #E9F9FF; padding: 20px; border-radius: 12px; margin: 20px 0; border-left: 4px solid #44D2FD;">
+                <p style="margin: 0; font-weight: bold; color: #124258;">👉 Congratulations — you've won a prize!</p>
+                <p style="margin: 10px 0 0 0; color: #154F6A;">${winner.name}: ${winner.reward}</p>
+              </div>
+              
+              <p>Enjoy free prizes and exclusive discounts all around the world.</p>
+              
+              <p>
+                Sign up to receive free offers directly to your email, — 
+                <a href="https://app.publipacks.com" style="color: #44D2FD; text-decoration: none;"> click here to join</a>.
+              </p>
+              
+              <p>Keep playing, keep winning, and keep discovering amazing rewards!</p>
+              
+              <p style="margin-top: 30px;">
+                Cheers,<br>
+                <strong>The app.publipacks.com Team</strong><br>
+                <a href="https://app.publipacks.com" style="color: #44D2FD; text-decoration: none;">app.publipacks.com</a>
+              </p>
+              
+              <hr style="border: none; border-top: 1px solid #ddd; margin: 40px 0 20px 0;">
+              
+              <div style="text-align: center; font-size: 12px; color: #666; margin-top: 20px;">
+                <p style="margin: 5px 0;">©️ 2025 Publicpacks.com. All rights reserved.</p>
+                <p style="margin: 5px 0;">
+                  <a href="#" style="color: #666; text-decoration: none; margin: 0 10px;">Terms & Conditions</a> |
+                  <a href="#" style="color: #666; text-decoration: none; margin: 0 10px;">Privacy Policy</a> |
+                  <a href="#" style="color: #666; text-decoration: none; margin: 0 10px;">Data Protection Policy</a>
+                </p>
+              </div>
+            </div>
+          `,
+          textContent: `Hi ${fullName},
+
+Thank you for playing with publipacks.com! The safest platform to win amazing awards near you!
+
+👉 Congratulations — you've won a prize!
+${winner.name}: ${winner.reward}
+
+Enjoy free prizes and exclusive discounts all around the world.
+
+Sign up to receive free offers directly to your email, — click here to join: https://app.publipacks.com
+
+Keep playing, keep winning, and keep discovering amazing rewards!
+
+Cheers,
+The app.publipacks.com Team
+app.publipacks.com
+
+©️ 2025 Publicpacks.com. All rights reserved.
+Terms & Conditions | Privacy Policy | Data Protection Policy`,
+        });
+
+        if (emailSuccess) {
+          console.log("✅ Confirmation email sent successfully");
+        } else {
+          console.warn("⚠️ Failed to send confirmation email, but continuing...");
         }
 
         // Call original onSubmit callback
