@@ -92,10 +92,17 @@ export const SponsorDetail = React.forwardRef<
       >
         {/* Sponsor Logo */}
         <div className="flex items-center justify-center mb-4 sm:mb-6 w-full">
-          <div className="relative w-72 h-24 sm:w-48 sm:h-32 md:w-56 md:h-40 lg:w-64 lg:h-48">
+          <div
+            className={cn(
+              "relative",
+              sponsor.name === "Disney"
+                ? "w-48 h-16 sm:w-36 sm:h-24 md:w-42 md:h-28 lg:w-48 lg:h-32"
+                : "w-72 h-24 sm:w-48 sm:h-32 md:w-56 md:h-40 lg:w-64 lg:h-48"
+            )}
+          >
             <img
               src={sponsor.logo}
-             alt={sponsor.name}
+              alt={sponsor.name}
               className="w-full h-full object-contain"
             />
           </div>
@@ -104,7 +111,7 @@ export const SponsorDetail = React.forwardRef<
         {/* Gift Animation - Lottie */}
         {giftData && (
           <div className="flex items-center justify-center w-full">
-            <div className="w-full max-w-[500px] h-64 sm:h-80 md:h-96 lg:h-[28rem] flex items-center justify-center">
+            <div className="w-full max-w-[500px] h-64 sm:h-80 md:h-96 lg:h-112 flex items-center justify-center">
               <Lottie
                 lottieRef={lottieRef}
                 animationData={giftData}

@@ -76,12 +76,12 @@ const YouWon = React.forwardRef<HTMLDivElement, YouWonProps>(
             boxShadow: "0px 4.24px 35.10px 0px rgba(0, 0, 0, 0.25)",
           }}
         >
-          {/* Winning Slots - Show 3 identical slots in a row */}
-          <div className="flex gap-2 sm:gap-3 md:gap-4 justify-center items-center mb-4 sm:mb-6 md:mb-8">
-            {[0, 1, 2].map((slotIndex) => (
+          {/* Winning Slots - Show 5 identical slots in a row */}
+          <div className="flex gap-2 sm:gap-3 md:gap-4 justify-center items-center mb-4 sm:mb-6 md:mb-8 flex-wrap">
+            {[0, 1, 2, 3, 4].map((slotIndex) => (
               <div
                 key={slotIndex}
-                className="relative w-full max-w-[200px] sm:max-w-[240px] md:max-w-[280px] lg:max-w-[320px] xl:max-w-[350px] h-[154px] sm:h-[176px] md:h-[198px] lg:h-[220px] xl:h-[248px] overflow-hidden rounded-xl sm:rounded-2xl md:rounded-[22.88px]"
+                className="relative w-full max-w-[150px] sm:max-w-[180px] md:max-w-[200px] lg:max-w-[220px] xl:max-w-[240px] h-[120px] sm:h-[140px] md:h-[160px] lg:h-[180px] xl:h-[200px] overflow-hidden rounded-xl sm:rounded-2xl md:rounded-[22.88px]"
                 style={{
                   background:
                     "linear-gradient(180deg, rgba(63, 210, 161, 1) 0%, rgba(68, 209, 248, 1) 100%)",
@@ -90,7 +90,14 @@ const YouWon = React.forwardRef<HTMLDivElement, YouWonProps>(
               >
                 {/* Winner Sponsor Logo */}
                 <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center p-2 sm:p-3">
-                  <div className="relative w-[100px] h-[30px] sm:w-[120px] sm:h-[35px] md:w-[140px] md:h-[40px] lg:w-[160px] lg:h-[45px] xl:w-[180px] xl:h-[50px]">
+                  <div
+                    className={cn(
+                      "relative",
+                      winner.name === "Disney"
+                        ? "w-[60px] h-[18px] sm:w-[75px] sm:h-[22px] md:w-[90px] md:h-[26px] lg:w-[105px] lg:h-[30px] xl:w-[120px] xl:h-[34px]"
+                        : "w-[80px] h-[24px] sm:w-[100px] sm:h-[30px] md:w-[120px] md:h-[35px] lg:w-[140px] lg:h-[40px] xl:w-[160px] xl:h-[45px]"
+                    )}
+                  >
                     <img
                       src={winner.logo}
                       alt={winner.name}

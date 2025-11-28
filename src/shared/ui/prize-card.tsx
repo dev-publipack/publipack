@@ -73,7 +73,14 @@ export const PrizeCard = React.forwardRef<HTMLDivElement, PrizeCardProps>(
           )}
 
           {/* Sponsor Logo - larger */}
-          <div className="relative w-[100px] h-[40px] sm:w-[140px] sm:h-[55px] md:w-[180px] md:h-[70px] lg:w-[240px] lg:h-[90px] xl:w-[280px] xl:h-[110px] 2xl:w-[340px] 2xl:h-[130px]">
+          <div
+            className={cn(
+              "relative",
+              sponsor.name === "Disney"
+                ? "w-[75px] h-[30px] sm:w-[105px] sm:h-[41px] md:w-[135px] md:h-[53px] lg:w-[180px] lg:h-[68px] xl:w-[210px] xl:h-[83px] 2xl:w-[255px] 2xl:h-[98px]"
+                : "w-[100px] h-[40px] sm:w-[140px] sm:h-[55px] md:w-[180px] md:h-[70px] lg:w-[240px] lg:h-[90px] xl:w-[280px] xl:h-[110px] 2xl:w-[340px] 2xl:h-[130px]"
+            )}
+          >
             <img
               src={sponsor.logo}
               alt={sponsor.name}

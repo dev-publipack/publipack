@@ -250,7 +250,14 @@ const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
                       key={index}
                       className="w-full h-[154px] sm:h-[176px] md:h-[198px] lg:h-[220px] xl:h-[248px] flex flex-col items-center justify-center p-2 sm:p-3"
                     >
-                      <div className="relative w-[140px] h-[42px] sm:w-[160px] sm:h-[48px] md:w-[180px] md:h-[54px] lg:w-[200px] lg:h-[60px] xl:w-[220px] xl:h-[66px]">
+                      <div
+                        className={cn(
+                          "relative",
+                          sponsor.name === "Disney"
+                            ? "w-[105px] h-[32px] sm:w-[120px] sm:h-[36px] md:w-[135px] md:h-[40px] lg:w-[150px] lg:h-[45px] xl:w-[165px] xl:h-[50px]"
+                            : "w-[140px] h-[42px] sm:w-[160px] sm:h-[48px] md:w-[180px] md:h-[54px] lg:w-[200px] lg:h-[60px] xl:w-[220px] xl:h-[66px]"
+                        )}
+                      >
                         <img
                           src={sponsor.logo}
                           alt={sponsor.name}

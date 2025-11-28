@@ -21,7 +21,14 @@ const RewardCard = React.forwardRef<HTMLDivElement, RewardCardProps>(
         {...props}
       >
         {logoUrl && (
-          <div className="relative w-[70px] h-[70px] sm:w-[80px] sm:h-[80px] md:w-[90px] md:h-[90px] lg:w-[100px] lg:h-[100px] mb-1 sm:mb-1.5 md:mb-2 flex-shrink-0">
+          <div
+            className={cn(
+              "relative mb-1 sm:mb-1.5 md:mb-2 shrink-0",
+              sponsorName === "Disney"
+                ? "w-[52px] h-[52px] sm:w-[60px] sm:h-[60px] md:w-[68px] md:h-[68px] lg:w-[75px] lg:h-[75px]"
+                : "w-[70px] h-[70px] sm:w-[80px] sm:h-[80px] md:w-[90px] md:h-[90px] lg:w-[100px] lg:h-[100px]"
+            )}
+          >
             <img
               src={logoUrl}
               alt={logoAlt || sponsorName}
