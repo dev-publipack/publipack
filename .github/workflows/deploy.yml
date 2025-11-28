@@ -22,6 +22,12 @@ jobs:
           npm rebuild
 
       - name: Build
+        env:
+          VITE_PIPEDREAM_WEBHOOK: ${{ secrets.VITE_PIPEDREAM_WEBHOOK }}
+          VITE_PIPEDREAM_EMAIL_WEBHOOK: ${{ secrets.VITE_PIPEDREAM_EMAIL_WEBHOOK }}
+          VITE_BREVO_FROM_EMAIL: ${{ secrets.VITE_BREVO_FROM_EMAIL }}
+          VITE_BREVO_FROM_NAME: ${{ secrets.VITE_BREVO_FROM_NAME }}
+          VITE_CAMPAIGN_ID: ${{ secrets.VITE_CAMPAIGN_ID }}
         run: npm run build
 
       - name: Copy .htaccess

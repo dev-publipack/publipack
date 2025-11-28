@@ -78,7 +78,7 @@ const YouWon = React.forwardRef<HTMLDivElement, YouWonProps>(
         >
           {/* Winning Slots - Show 5 identical slots in a row */}
           <div className="flex gap-2 sm:gap-3 md:gap-4 justify-center items-center mb-4 sm:mb-6 md:mb-8 flex-wrap">
-            {[0, 1, 2, 3, 4].map((slotIndex) => (
+            {[0, 1, 2].map((slotIndex) => (
               <div
                 key={slotIndex}
                 className="relative w-full max-w-[150px] sm:max-w-[180px] md:max-w-[200px] lg:max-w-[220px] xl:max-w-[240px] h-[120px] sm:h-[140px] md:h-[160px] lg:h-[180px] xl:h-[200px] overflow-hidden rounded-xl sm:rounded-2xl md:rounded-[22.88px]"
