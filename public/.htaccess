@@ -1,43 +1,27 @@
-# Set MIME types for JavaScript files (critical for module scripts)
+# Set MIME types for JavaScript files
 <IfModule mod_mime.c>
   AddType application/javascript .js
   AddType application/javascript .mjs
   AddType text/css .css
   AddType application/json .json
-  AddType image/svg+xml .svg
-  AddType image/png .png
-  AddType image/jpeg .jpg .jpeg
-  AddType image/gif .gif
-  AddType image/webp .webp
-  AddType image/x-icon .ico
-  AddType application/wasm .wasm
 </IfModule>
 
-# Set headers for proper content types
-<IfModule mod_headers.c>
-  <FilesMatch "\.(css)$">
-    Header set Content-Type "text/css; charset=utf-8"
-  </FilesMatch>
-  
-  <FilesMatch "\.(js|mjs)$">
-    Header set Content-Type "application/javascript; charset=utf-8"
-  </FilesMatch>
-  
-  <FilesMatch "\.(json)$">
-    Header set Content-Type "application/json; charset=utf-8"
-  </FilesMatch>
-</IfModule>
-
-# SPA fallback - redirect all requests to index.html (but NOT for existing files)
+# SPA fallback - redirect all requests to index.html
 <IfModule mod_rewrite.c>
   RewriteEngine On
+  RewriteBase /
   
-  # Don't rewrite if file exists (prevents rewriting existing JS/CSS/JSON/image files)
-  RewriteCond %{REQUEST_FILENAME} !-f
-  # Don't rewrite if directory exists
-  RewriteCond %{REQUEST_FILENAME} !-d
-  # Don't rewrite files with extensions (extra safety for assets)
-  RewriteCond %{REQUEST_URI} !\.(js|mjs|css|json|png|jpg|jpeg|gif|svg|ico|webp|woff|woff2|ttf|eot)$ [NC]
+  # Allow direct access to assets, images, animations
+  RewriteCond %{REQUEST_URI} ^/(assets|images|animations)/ [NC]
+  RewriteRule ^ - [L]
+  
+  # Allow direct access to existing files
+  RewriteCond %{REQUEST_FILENAME} -f
+  RewriteRule ^ - [L]
+  
+  # Allow direct access to existing directories
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
   
   # Rewrite everything else to index.html
   RewriteRule ^ index.html [L]

@@ -39,6 +39,35 @@ jobs:
             echo "Warning: public/.htaccess not found"
           fi
 
+      - name: Verify build output
+        run: |
+          echo "Checking build output structure..."
+          ls -la dist/
+          echo ""
+          echo "Checking for index.html..."
+          if [ -f dist/index.html ]; then
+            echo "✅ index.html exists"
+          else
+            echo "❌ index.html NOT FOUND"
+            exit 1
+          fi
+          echo ""
+          echo "Checking for assets directory..."
+          if [ -d dist/assets ]; then
+            echo "✅ assets directory exists"
+            ls -la dist/assets/ | head -10
+          else
+            echo "❌ assets directory NOT FOUND"
+            exit 1
+          fi
+          echo ""
+          echo "Checking for .htaccess..."
+          if [ -f dist/.htaccess ]; then
+            echo "✅ .htaccess exists"
+          else
+            echo "⚠️ .htaccess NOT FOUND"
+          fi
+
       - name: Deploy to FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
