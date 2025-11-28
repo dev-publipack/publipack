@@ -47,8 +47,8 @@ jobs:
           echo "=== Checking for index.html ==="
           if [ -f dist/index.html ]; then
             echo "✅ index.html exists"
-            echo "First 20 lines of index.html:"
-            head -20 dist/index.html
+            echo "Content of index.html (showing script tags):"
+            grep -E "(script|link)" dist/index.html || cat dist/index.html
           else
             echo "❌ index.html NOT FOUND"
             exit 1
@@ -57,14 +57,8 @@ jobs:
           echo "=== Checking for assets directory ==="
           if [ -d dist/assets ]; then
             echo "✅ assets directory exists"
-            echo "Files in assets directory:"
+            echo "All files in assets directory:"
             ls -la dist/assets/
-            echo ""
-            echo "Checking for JS files:"
-            ls -la dist/assets/*.js 2>/dev/null || echo "No JS files found!"
-            echo ""
-            echo "Checking for CSS files:"
-            ls -la dist/assets/*.css 2>/dev/null || echo "No CSS files found!"
           else
             echo "❌ assets directory NOT FOUND"
             exit 1
@@ -76,9 +70,6 @@ jobs:
           else
             echo "⚠️ .htaccess NOT FOUND"
           fi
-          echo ""
-          echo "=== Full directory tree ==="
-          find dist -type f | head -20
 
       - name: Deploy to FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
@@ -88,8 +79,9 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./dist/
           server-dir: ${{ secrets.FTP_PATH }}
-          dangerous-clean-slate: false
+          dangerous-clean-slate: true
           log-level: verbose
+          dry-run: false
           exclude: |
             **/.git*
             **/.git*/**
@@ -97,4 +89,6 @@ jobs:
             **/.next/**
             **/_next/**
             **/out/**
+          include: |
+            **/*
 
