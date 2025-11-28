@@ -22,6 +22,7 @@ function App() {
           currentScreen={game.currentScreen}
           sponsors={SPONSORS}
           winner={game.winner}
+          claimEmail={game.claimEmail}
           onSlotComplete={game.handleSlotComplete}
           onFailedAnimationComplete={game.handleFailedAnimationComplete}
           onSuccessConfettiComplete={game.handleSuccessConfettiComplete}
@@ -29,6 +30,7 @@ function App() {
           onClaimSubmit={game.handleClaimSubmit}
           onBackFromClaim={game.handleBackFromClaim}
           onSpinAgain={game.handleSpinAgain}
+          onPlayAgainFromSuccess={game.handlePlayAgainFromSuccess}
           showCooldown={game.isCooldown}
         />
       )}

@@ -9,7 +9,8 @@ export type GameScreen =
   | "failedAnimation"
   | "didntWin"
   | "youLost"
-  | "claimReward";
+  | "claimReward"
+  | "claimSuccess";
 
 interface GameState {
   currentScreen: GameScreen;

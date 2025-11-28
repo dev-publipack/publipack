@@ -11,6 +11,7 @@ interface GameState {
   attempts: number;
   countdownSeconds: number;
   isCountdownActive: boolean;
+  claimEmail: string | null;
 }
 
 export function useGame() {
@@ -20,6 +21,7 @@ export function useGame() {
     attempts: 0,
     countdownSeconds: COUNTDOWN_INITIAL,
     isCountdownActive: true,
+    claimEmail: null,
   });
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -132,6 +134,7 @@ export function useGame() {
       attempts: 0,
       countdownSeconds: COUNTDOWN_INITIAL,
       isCountdownActive: true,
+      claimEmail: null,
     });
     wasOnOtherScreenRef.current = false;
   }, []);
@@ -208,6 +211,7 @@ export function useGame() {
     isMainScreen,
     maxAttempts: MAX_ATTEMPTS,
     remainingAttempts: MAX_ATTEMPTS - state.attempts,
+    claimEmail: state.claimEmail,
 
     // Actions
     handleSpin,
@@ -218,7 +222,11 @@ export function useGame() {
     handleClaim: () => goToScreen("claimReward"),
     handleClaimSubmit: (data: { fullName: string; phone: string; email: string }) => {
       console.log("Claim data:", data);
-      reset();
+      setState((prev) => ({
+        ...prev,
+        claimEmail: data.email,
+        currentScreen: "claimSuccess",
+      }));
     },
     handleBackFromClaim: () => {
       if (state.winner) {
@@ -226,6 +234,9 @@ export function useGame() {
       } else {
         reset();
       }
+    },
+    handlePlayAgainFromSuccess: () => {
+      reset();
     },
   };
 }

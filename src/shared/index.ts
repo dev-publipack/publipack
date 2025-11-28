@@ -21,6 +21,8 @@ export { SlotMachine } from './ui/slot-machine';
 export type { SlotMachineProps, SlotMachineRef } from './ui/slot-machine';
 export { ClaimReward } from './ui/claim-reward';
 export type { ClaimRewardProps } from './ui/claim-reward';
+export { ClaimSuccess } from './ui/claim-success';
+export type { ClaimSuccessProps } from './ui/claim-success';
 export { YouWon } from './ui/you-won';
 export type { YouWonProps } from './ui/you-won';
 export type { Sponsor } from './types';

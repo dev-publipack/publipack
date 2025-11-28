@@ -4,6 +4,7 @@ import {
   YouLost,
   DidntWin,
   ClaimReward,
+  ClaimSuccess,
   FailedAnimation,
   SuccessConfettiAnimation,
 } from "../shared";
@@ -14,6 +15,7 @@ interface GameScreensProps {
   currentScreen: GameScreen;
   sponsors: Sponsor[];
   winner: Sponsor | null;
+  claimEmail: string | null;
   onSlotComplete: (result: { winner: Sponsor | null; isWin: boolean }) => void;
   onFailedAnimationComplete: () => void;
   onSuccessConfettiComplete: () => void;
@@ -21,6 +23,7 @@ interface GameScreensProps {
   onClaimSubmit: (data: { fullName: string; phone: string; email: string }) => void;
   onBackFromClaim: () => void;
   onSpinAgain: () => void;
+  onPlayAgainFromSuccess?: () => void;
   showCooldown?: boolean;
 }
 
@@ -28,6 +31,7 @@ export function GameScreens({
   currentScreen,
   sponsors,
   winner,
+  claimEmail,
   onSlotComplete,
   onFailedAnimationComplete,
   onSuccessConfettiComplete,
@@ -35,8 +39,20 @@ export function GameScreens({
   onClaimSubmit,
   onBackFromClaim,
   onSpinAgain,
+  onPlayAgainFromSuccess,
   showCooldown = false,
 }: GameScreensProps) {
+  if (currentScreen === "claimSuccess" && claimEmail) {
+    return (
+      <main className="min-h-screen w-full flex flex-col items-center justify-center overflow-x-hidden">
+        <ClaimSuccess
+          email={claimEmail}
+          onPlayAgain={onPlayAgainFromSuccess}
+        />
+      </main>
+    );
+  }
+
   if (currentScreen === "claimReward" && winner) {
     return (
       <main
