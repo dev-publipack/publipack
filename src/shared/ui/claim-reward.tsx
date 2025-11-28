@@ -1,4 +1,5 @@
 import * as React from "react";
+import { z } from "zod";
 import { cn } from "../lib/utils";
 import type { Sponsor } from "../types";
 import { pipedreamClient } from "../api/pipedream-client";
@@ -11,6 +12,30 @@ export interface ClaimRewardProps {
   className?: string;
 }
 
+// Validation schema
+const ClaimRewardSchema = z.object({
+  fullName: z
+    .string()
+    .min(1, "Full name is required")
+    .min(2, "Full name must be at least 2 characters")
+    .max(80, "Full name must be less than 80 characters")
+    .regex(/^[a-zA-Z\s'-]+$/, "Full name can only contain letters, spaces, hyphens, and apostrophes"),
+  phone: z
+    .string()
+    .min(1, "Phone number is required")
+    .regex(/^[\d\s+\-()]+$/, "Phone number contains invalid characters")
+    .refine(
+      (val) => val.replace(/\D/g, "").length >= 10,
+      "Phone number must contain at least 10 digits"
+    ),
+  email: z
+    .string()
+    .min(1, "Email is required")
+    .email("Please enter a valid email address"),
+});
+
+type ClaimRewardFormData = z.infer<typeof ClaimRewardSchema>;
+
 const ClaimReward = React.forwardRef<HTMLDivElement, ClaimRewardProps>(
   ({ winner, onSubmit, className, ...props }, ref) => {
     const [fullName, setFullName] = React.useState("");
@@ -18,6 +43,51 @@ const ClaimReward = React.forwardRef<HTMLDivElement, ClaimRewardProps>(
     const [email, setEmail] = React.useState("");
     const [focusedField, setFocusedField] = React.useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = React.useState(false);
+    const [errors, setErrors] = React.useState<Partial<Record<keyof ClaimRewardFormData, string>>>({});
+    const [touched, setTouched] = React.useState<Partial<Record<keyof ClaimRewardFormData, boolean>>>({});
+
+    // Validate single field
+    const validateField = React.useCallback((fieldName: keyof ClaimRewardFormData, value: string) => {
+      // Get the field schema from the main schema
+      const fieldSchema = ClaimRewardSchema.shape[fieldName];
+      if (!fieldSchema) return;
+
+      // Validate the field value directly
+      const result = fieldSchema.safeParse(value);
+      if (!result.success) {
+        const errorMessage = result.error.issues[0]?.message || "Invalid value";
+        setErrors((prev) => ({ ...prev, [fieldName]: errorMessage }));
+      } else {
+        // Clear error for this field if validation passes
+        setErrors((prev) => {
+          const newErrors = { ...prev };
+          delete newErrors[fieldName];
+          return newErrors;
+        });
+      }
+    }, []);
+
+    // Handle field change with runtime validation
+    const handleFieldChange = React.useCallback(
+      (fieldName: keyof ClaimRewardFormData, value: string, setter: (value: string) => void) => {
+        setter(value);
+        // Validate in real-time if field was touched
+        if (touched[fieldName]) {
+          validateField(fieldName, value);
+        }
+      },
+      [touched, validateField]
+    );
+
+    // Handle field blur - mark as touched and validate
+    const handleFieldBlur = React.useCallback(
+      (fieldName: keyof ClaimRewardFormData, value: string) => {
+        setFocusedField(null);
+        setTouched((prev) => ({ ...prev, [fieldName]: true }));
+        validateField(fieldName, value);
+      },
+      [validateField]
+    );
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
@@ -25,11 +95,27 @@ const ClaimReward = React.forwardRef<HTMLDivElement, ClaimRewardProps>(
       
       console.log("🚀 Form submit triggered", { fullName, phone, email });
       
-      if (!fullName || !phone || !email) {
-        console.warn("⚠️ Form validation failed - missing fields");
+      // Validate with Zod
+      const result = ClaimRewardSchema.safeParse({
+        fullName,
+        phone,
+        email,
+      });
+
+      if (!result.success) {
+        const fieldErrors: Partial<Record<keyof ClaimRewardFormData, string>> = {};
+        result.error.issues.forEach((err) => {
+          if (err.path[0]) {
+            fieldErrors[err.path[0] as keyof ClaimRewardFormData] = err.message;
+          }
+        });
+        setErrors(fieldErrors);
+        console.warn("⚠️ Form validation failed", fieldErrors);
         return;
       }
 
+      // Clear errors if validation passes
+      setErrors({});
       setIsSubmitting(true);
       console.log("📤 Submitting to Google Sheets...");
 
@@ -186,20 +272,25 @@ Terms & Conditions | Privacy Policy | Data Protection Policy`,
                 "w-full h-16 sm:h-20 md:h-24 rounded-2xl flex items-center justify-center px-4 sm:px-5 md:px-6 transition-all duration-200",
                 focusedField === "fullName"
                   ? "border-4 border-[#16DC58] bg-[#E7FFEF]"
+                  : errors.fullName
+                  ? "border-4 border-red-500 bg-[#FFE7E7]"
                   : "border-4 border-[#38BEF4] bg-[#E9F9FF]"
               )}
             >
               <input
                 type="text"
                 value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
+                onChange={(e) => handleFieldChange("fullName", e.target.value, setFullName)}
                 onFocus={() => setFocusedField("fullName")}
-                onBlur={() => setFocusedField(null)}
+                onBlur={() => handleFieldBlur("fullName", fullName)}
                 placeholder="Full name"
                 className="w-full bg-transparent border-none outline-none text-center text-base sm:text-lg md:text-xl lg:text-2xl font-body-semibold text-[#154F6A] placeholder:text-[#154F6A] placeholder:opacity-70"
                 required
               />
             </div>
+            {errors.fullName && (
+              <p className="mt-1 text-sm text-red-500 text-center px-4">{errors.fullName}</p>
+            )}
           </div>
 
           {/* Phone Number Input - green when active, blue when inactive */}
@@ -209,20 +300,25 @@ Terms & Conditions | Privacy Policy | Data Protection Policy`,
                 "w-full h-16 sm:h-20 md:h-24 rounded-2xl flex items-center justify-center px-4 sm:px-5 md:px-6 transition-all duration-200",
                 focusedField === "phone"
                   ? "border-4 border-[#16DC58] bg-[#E7FFEF]"
+                  : errors.phone
+                  ? "border-4 border-red-500 bg-[#FFE7E7]"
                   : "border-4 border-[#38BEF4] bg-[#E9F9FF]"
               )}
             >
               <input
                 type="tel"
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={(e) => handleFieldChange("phone", e.target.value, setPhone)}
                 onFocus={() => setFocusedField("phone")}
-                onBlur={() => setFocusedField(null)}
+                onBlur={() => handleFieldBlur("phone", phone)}
                 placeholder="Phone Number"
                 className="w-full bg-transparent border-none outline-none text-center text-base sm:text-lg md:text-xl lg:text-2xl font-body-semibold text-[#154F6A] placeholder:text-[#154F6A] placeholder:opacity-70"
                 required
               />
             </div>
+            {errors.phone && (
+              <p className="mt-1 text-sm text-red-500 text-center px-4">{errors.phone}</p>
+            )}
           </div>
 
           {/* Email Address Input - green when active, blue when inactive */}
@@ -232,20 +328,25 @@ Terms & Conditions | Privacy Policy | Data Protection Policy`,
                 "w-full h-16 sm:h-20 md:h-24 rounded-2xl flex items-center justify-center px-4 sm:px-5 md:px-6 transition-all duration-200",
                 focusedField === "email"
                   ? "border-4 border-[#16DC58] bg-[#E7FFEF]"
+                  : errors.email
+                  ? "border-4 border-red-500 bg-[#FFE7E7]"
                   : "border-4 border-[#38BEF4] bg-[#E9F9FF]"
               )}
             >
               <input
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => handleFieldChange("email", e.target.value, setEmail)}
                 onFocus={() => setFocusedField("email")}
-                onBlur={() => setFocusedField(null)}
+                onBlur={() => handleFieldBlur("email", email)}
                 placeholder="Email Address"
                 className="w-full bg-transparent border-none outline-none text-center text-base sm:text-lg md:text-xl lg:text-2xl font-body-semibold text-[#154F6A] placeholder:text-[#154F6A] placeholder:opacity-70"
                 required
               />
             </div>
+            {errors.email && (
+              <p className="mt-1 text-sm text-red-500 text-center px-4">{errors.email}</p>
+            )}
           </div>
 
           {/* Get My Voucher Button */}

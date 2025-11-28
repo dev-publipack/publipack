@@ -21,7 +21,7 @@ const RewardCard = React.forwardRef<HTMLDivElement, RewardCardProps>(
         {...props}
       >
         {logoUrl && (
-          <div className="relative w-[50px] h-[50px] sm:w-[60px] sm:h-[60px] md:w-[70px] md:h-[70px] lg:w-[80px] lg:h-[80px] mb-1 sm:mb-1.5 md:mb-2 flex-shrink-0">
+          <div className="relative w-[70px] h-[70px] sm:w-[80px] sm:h-[80px] md:w-[90px] md:h-[90px] lg:w-[100px] lg:h-[100px] mb-1 sm:mb-1.5 md:mb-2 flex-shrink-0">
             <img
               src={logoUrl}
               alt={logoAlt || sponsorName}

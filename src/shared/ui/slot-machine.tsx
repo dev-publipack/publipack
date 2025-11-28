@@ -78,7 +78,7 @@ const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
         winningSponsorIndex = -1; // Not used for lose case
       }
 
-      const SPIN_DURATION = 3000;
+      const SPIN_DURATION = 7000;
       const RESULT_DISPLAY_DURATION = 1500;
       
       // Store result for later use when animation completes
@@ -156,7 +156,7 @@ const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
 
           setTimeout(() => {
             if (slotRef.current) {
-              slotRef.current.style.transition = `transform ${SPIN_DURATION}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
+              slotRef.current.style.transition = `transform ${SPIN_DURATION}ms cubic-bezier(0.15, 0.35, 0.25, 0.85)`;
               slotRef.current.style.transform = `translateY(${targetPosition}px)`;
               
               // Listen for transition end
@@ -250,7 +250,7 @@ const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
                       key={index}
                       className="w-full h-[154px] sm:h-[176px] md:h-[198px] lg:h-[220px] xl:h-[248px] flex flex-col items-center justify-center p-2 sm:p-3"
                     >
-                      <div className="relative w-[100px] h-[30px] sm:w-[120px] sm:h-[35px] md:w-[140px] md:h-[40px] lg:w-[160px] lg:h-[45px] xl:w-[180px] xl:h-[50px]">
+                      <div className="relative w-[140px] h-[42px] sm:w-[160px] sm:h-[48px] md:w-[180px] md:h-[54px] lg:w-[200px] lg:h-[60px] xl:w-[220px] xl:h-[66px]">
                         <img
                           src={sponsor.logo}
                           alt={sponsor.name}

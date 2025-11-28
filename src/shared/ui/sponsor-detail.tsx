@@ -92,10 +92,10 @@ export const SponsorDetail = React.forwardRef<
       >
         {/* Sponsor Logo */}
         <div className="flex items-center justify-center mb-4 sm:mb-6 w-full">
-          <div className="relative w-40 h-12 sm:w-48 sm:h-14 md:w-56 md:h-16 lg:w-64 lg:h-20">
+          <div className="relative w-72 h-24 sm:w-48 sm:h-32 md:w-56 md:h-40 lg:w-64 lg:h-48">
             <img
               src={sponsor.logo}
-              alt={sponsor.name}
+             alt={sponsor.name}
               className="w-full h-full object-contain"
             />
           </div>

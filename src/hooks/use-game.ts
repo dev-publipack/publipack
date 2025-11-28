@@ -3,7 +3,7 @@ import type { Sponsor } from "../shared/types";
 import type { GameScreen } from "./use-game-state";
 
 const MAX_ATTEMPTS = 3;
-const COUNTDOWN_INITIAL = 10;
+const COUNTDOWN_INITIAL = 5;
 
 interface GameState {
   currentScreen: GameScreen;
