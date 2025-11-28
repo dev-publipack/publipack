@@ -33,6 +33,7 @@ jobs:
           fi
 
       - name: Deploy to FTP
+        if: ${{ secrets.FTP_HOST != '' && secrets.FTP_USERNAME != '' && secrets.FTP_PASSWORD != '' && secrets.FTP_PATH != '' }}
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_HOST }}
@@ -48,4 +49,14 @@ jobs:
             **/.next/**
             **/_next/**
             **/out/**
+
+      - name: Skip deployment (secrets not configured)
+        if: ${{ secrets.FTP_HOST == '' || secrets.FTP_USERNAME == '' || secrets.FTP_PASSWORD == '' || secrets.FTP_PATH == '' }}
+        run: |
+          echo "⚠️ FTP deployment skipped: Required secrets are not configured"
+          echo "Please configure the following secrets in repository settings:"
+          echo "  - FTP_HOST"
+          echo "  - FTP_USERNAME"
+          echo "  - FTP_PASSWORD"
+          echo "  - FTP_PATH"
 
