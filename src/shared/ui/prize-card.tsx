@@ -77,8 +77,8 @@ export const PrizeCard = React.forwardRef<HTMLDivElement, PrizeCardProps>(
             className={cn(
               "relative",
               sponsor.name === "Disney"
-                ? "w-[75px] h-[30px] sm:w-[105px] sm:h-[41px] md:w-[135px] md:h-[53px] lg:w-[180px] lg:h-[68px] xl:w-[210px] xl:h-[83px] 2xl:w-[255px] 2xl:h-[98px]"
-                : "w-[100px] h-[40px] sm:w-[140px] sm:h-[55px] md:w-[180px] md:h-[70px] lg:w-[240px] lg:h-[90px] xl:w-[280px] xl:h-[110px] 2xl:w-[340px] 2xl:h-[130px]"
+                ? "w-[98px] h-[39px] sm:w-[137px] sm:h-[53px] md:w-[176px] md:h-[69px] lg:w-[234px] lg:h-[88px] xl:w-[273px] xl:h-[108px] 2xl:w-[332px] 2xl:h-[127px]"
+                : "w-[130px] h-[52px] sm:w-[182px] sm:h-[72px] md:w-[234px] md:h-[91px] lg:w-[312px] lg:h-[117px] xl:w-[364px] xl:h-[143px] 2xl:w-[442px] 2xl:h-[169px]"
             )}
           >
             <img

@@ -76,12 +76,12 @@ const YouWon = React.forwardRef<HTMLDivElement, YouWonProps>(
             boxShadow: "0px 4.24px 35.10px 0px rgba(0, 0, 0, 0.25)",
           }}
         >
-          {/* Winning Slots - Show 5 identical slots in a row */}
-          <div className="flex gap-2 sm:gap-3 md:gap-4 justify-center items-center mb-4 sm:mb-6 md:mb-8 flex-wrap">
+          {/* Winning Slots - Show 3 identical slots in a row */}
+          <div className="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4 justify-items-center items-center mb-4 sm:mb-6 md:mb-8 w-full">
             {[0, 1, 2].map((slotIndex) => (
               <div
                 key={slotIndex}
-                className="relative w-full max-w-[150px] sm:max-w-[180px] md:max-w-[200px] lg:max-w-[220px] xl:max-w-[240px] h-[120px] sm:h-[140px] md:h-[160px] lg:h-[180px] xl:h-[200px] overflow-hidden rounded-xl sm:rounded-2xl md:rounded-[22.88px]"
+                className="relative w-full h-[154px] sm:h-[176px] md:h-[198px] lg:h-[220px] xl:h-[248px] overflow-hidden rounded-xl sm:rounded-2xl md:rounded-[22.88px]"
                 style={{
                   background:
                     "linear-gradient(180deg, rgba(63, 210, 161, 1) 0%, rgba(68, 209, 248, 1) 100%)",
@@ -94,8 +94,8 @@ const YouWon = React.forwardRef<HTMLDivElement, YouWonProps>(
                     className={cn(
                       "relative",
                       winner.name === "Disney"
-                        ? "w-[60px] h-[18px] sm:w-[75px] sm:h-[22px] md:w-[90px] md:h-[26px] lg:w-[105px] lg:h-[30px] xl:w-[120px] xl:h-[34px]"
-                        : "w-[80px] h-[24px] sm:w-[100px] sm:h-[30px] md:w-[120px] md:h-[35px] lg:w-[140px] lg:h-[40px] xl:w-[160px] xl:h-[45px]"
+                        ? "w-[117px] h-[35px] sm:w-[147px] sm:h-[44px] md:w-[176px] md:h-[51px] lg:w-[206px] lg:h-[59px] xl:w-[234px] xl:h-[66px]"
+                        : "w-[156px] h-[47px] sm:w-[195px] sm:h-[59px] md:w-[234px] md:h-[69px] lg:w-[273px] lg:h-[78px] xl:w-[312px] xl:h-[89px]"
                     )}
                   >
                     <img

@@ -223,12 +223,12 @@ const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
             boxShadow: "0px 4.24px 35.10px 0px rgba(0, 0, 0, 0.25)",
           }}
         >
-          {/* Three Slot Columns */}
-          <div className="flex gap-2 sm:gap-3 md:gap-4 justify-center items-start mb-4 sm:mb-6 md:mb-8">
+          {/* Three Slot Columns - always 3 in a row */}
+          <div className="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4 justify-items-center items-start mb-4 sm:mb-6 md:mb-8 w-full">
             {[0, 1, 2].map((slotIndex) => (
               <div
                 key={slotIndex}
-                className="relative w-full max-w-[200px] sm:max-w-[240px] md:max-w-[280px] lg:max-w-[320px] xl:max-w-[350px] h-[154px] sm:h-[176px] md:h-[198px] lg:h-[220px] xl:h-[248px] overflow-hidden rounded-xl sm:rounded-2xl md:rounded-[22.88px]"
+                className="relative w-full h-[154px] sm:h-[176px] md:h-[198px] lg:h-[220px] xl:h-[248px] overflow-hidden rounded-xl sm:rounded-2xl md:rounded-[22.88px]"
                 style={{
                   background:
                     isComplete && isWin
@@ -254,8 +254,8 @@ const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
                         className={cn(
                           "relative",
                           sponsor.name === "Disney"
-                            ? "w-[105px] h-[32px] sm:w-[120px] sm:h-[36px] md:w-[135px] md:h-[40px] lg:w-[150px] lg:h-[45px] xl:w-[165px] xl:h-[50px]"
-                            : "w-[140px] h-[42px] sm:w-[160px] sm:h-[48px] md:w-[180px] md:h-[54px] lg:w-[200px] lg:h-[60px] xl:w-[220px] xl:h-[66px]"
+                            ? "w-[137px] h-[42px] sm:w-[156px] sm:h-[47px] md:w-[176px] md:h-[52px] lg:w-[195px] lg:h-[59px] xl:w-[215px] xl:h-[65px]"
+                            : "w-[182px] h-[55px] sm:w-[208px] sm:h-[62px] md:w-[234px] md:h-[70px] lg:w-[260px] lg:h-[78px] xl:w-[286px] xl:h-[86px]"
                         )}
                       >
                         <img
