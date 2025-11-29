@@ -96,8 +96,8 @@ export const SponsorDetail = React.forwardRef<
             className={cn(
               "relative",
               sponsor.name === "Disney"
-                ? "w-48 h-16 sm:w-36 sm:h-24 md:w-42 md:h-28 lg:w-48 lg:h-32"
-                : "w-72 h-24 sm:w-48 sm:h-32 md:w-56 md:h-40 lg:w-64 lg:h-48"
+                ? "w-[249px] h-[83px] sm:w-[187px] sm:h-[125px] md:w-[218px] md:h-[146px] lg:w-[249px] lg:h-[166px]"
+                : "w-[374px] h-[125px] sm:w-[249px] sm:h-[166px] md:w-[291px] md:h-[208px] lg:w-[333px] lg:h-[249px]"
             )}
           >
             <img
