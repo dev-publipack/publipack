@@ -19,21 +19,16 @@ class BrevoClient {
   private readonly apiBaseUrl = "https://api.brevo.com/v3";
 
   constructor() {
-    this.apiKey = import.meta.env.VITE_BREVO_API_KEY ?? "";
-    this.fromEmail = import.meta.env.VITE_BREVO_FROM_EMAIL || "publipack25@gmail.com";
-    this.fromName = import.meta.env.VITE_BREVO_FROM_NAME || "El Pack";
+    // Hardcoded values - only API key from env secret
+    this.apiKey = import.meta.env.VITE_BREVO_API_KEY
+    this.fromEmail = "publipack25@gmail.com";
+    this.fromName = "El Pack";
 
     // Log configuration on initialization (without sensitive data)
     console.log("🔧 BrevoClient initialized", {
       hasApiKey: !!this.apiKey,
-      hasFromEmail: !!this.fromEmail,
       fromEmail: this.fromEmail,
       fromName: this.fromName,
-      usingEnvVars: {
-        apiKey: !!import.meta.env.VITE_BREVO_API_KEY,
-        fromEmail: !!import.meta.env.VITE_BREVO_FROM_EMAIL,
-        fromName: !!import.meta.env.VITE_BREVO_FROM_NAME,
-      },
     });
   }
 
@@ -110,7 +105,7 @@ class BrevoClient {
 
     console.log("📧 BrevoClient.sendEmail called", {
       to: data.to,
-      from: fromEmail,
+      fromEmail: fromEmail,
       fromName: data.fromName || this.fromName,
       subject: data.subject,
       hasApiKey: !!this.apiKey,
