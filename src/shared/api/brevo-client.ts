@@ -21,7 +21,6 @@ class BrevoClient {
   constructor() {
     // API key from env secret only (required)
     const envApiKey = import.meta.env.VITE_BREVO_API_KEY;
-    console.log("envApiKey", envApiKey);
     if (!envApiKey) {
       throw new Error("VITE_BREVO_API_KEY is required but not set in environment variables");
     }
