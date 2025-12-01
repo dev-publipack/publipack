@@ -139,6 +139,7 @@ const ClaimReward = React.forwardRef<HTMLDivElement, ClaimRewardProps>(
         const emailSuccess = await brevoClient.sendEmail({
           to: email,
           subject: "🎉 Thanks for playing with app.publipacks.com",
+          fullName: fullName,
           htmlContent: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
               <h1 style="color: #163446; text-align: center; margin-bottom: 30px;">🎉 Thanks for playing!</h1>

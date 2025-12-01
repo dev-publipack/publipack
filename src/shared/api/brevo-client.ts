@@ -22,6 +22,28 @@ class BrevoClient {
     this.apiKey = import.meta.env.VITE_BREVO_API_KEY ?? "";
     this.fromEmail = import.meta.env.VITE_BREVO_FROM_EMAIL ?? "";
     this.fromName = import.meta.env.VITE_BREVO_FROM_NAME ?? "Publipack";
+
+    // Log configuration on initialization (without sensitive data)
+    console.log("🔧 BrevoClient initialization check:", {
+      hasApiKey: !!this.apiKey,
+      hasFromEmail: !!this.fromEmail,
+      fromEmail: this.fromEmail || "NOT SET",
+      fromName: this.fromName,
+      envCheck: {
+        VITE_BREVO_API_KEY: !!import.meta.env.VITE_BREVO_API_KEY,
+        VITE_BREVO_FROM_EMAIL: !!import.meta.env.VITE_BREVO_FROM_EMAIL,
+        VITE_BREVO_FROM_NAME: !!import.meta.env.VITE_BREVO_FROM_NAME,
+      },
+    });
+
+    if (!this.apiKey || !this.fromEmail) {
+      console.error("❌ BrevoClient: Missing required configuration!");
+      console.error("💡 Make sure .env file exists and contains:");
+      console.error("   VITE_BREVO_API_KEY=...");
+      console.error("   VITE_BREVO_FROM_EMAIL=publipack25@gmail.com");
+      console.error("   VITE_BREVO_FROM_NAME=Publipack");
+      console.error("💡 After adding to .env, RESTART the dev server!");
+    }
   }
 
   async sendEmail(data: EmailData): Promise<BrevoEmailResponse | null> {
@@ -31,10 +53,21 @@ class BrevoClient {
       return null;
     }
 
-    const fromEmail = data.from || this.fromEmail;
+    const fromEmail = (data.from || this.fromEmail)?.trim();
+    
     if (!fromEmail) {
       console.error("❌ Sender email not configured");
       console.error("💡 Set VITE_BREVO_FROM_EMAIL in environment variables");
+      console.error("Current fromEmail value:", this.fromEmail || "EMPTY");
+      console.error("Data.from value:", data.from || "NOT PROVIDED");
+      console.error("⚠️ IMPORTANT: After adding to .env, RESTART the dev server!");
+      return null;
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(fromEmail)) {
+      console.error("❌ Invalid sender email format:", fromEmail);
       return null;
     }
 
@@ -46,23 +79,54 @@ class BrevoClient {
       toRecipient.name = data.fullName;
     }
 
-    const payload = {
+    // Ensure we have at least htmlContent or textContent
+    const htmlContent = data.htmlContent || "";
+    const textContent = data.textContent || (htmlContent ? htmlContent.replace(/<[^>]*>/g, "").trim() : "");
+
+    if (!htmlContent && !textContent) {
+      console.error("❌ Email content is empty. Provide htmlContent or textContent.");
+      return null;
+    }
+
+    const payload: {
+      sender: { name: string; email: string };
+      to: Array<{ email: string; name?: string }>;
+      subject: string;
+      htmlContent?: string;
+      textContent?: string;
+    } = {
       sender: {
         name: data.fromName || this.fromName,
         email: fromEmail,
       },
       to: [toRecipient],
       subject: data.subject,
-      htmlContent: data.htmlContent || "",
-      textContent: data.textContent || data.htmlContent?.replace(/<[^>]*>/g, "").trim() || "",
     };
+
+    // Only include content fields if they have values
+    if (htmlContent) {
+      payload.htmlContent = htmlContent;
+    }
+    if (textContent) {
+      payload.textContent = textContent;
+    }
+
+    // Final validation before sending
+    if (!payload.sender.email || !payload.sender.email.includes("@")) {
+      console.error("❌ Invalid sender email in payload:", payload.sender);
+      return null;
+    }
 
     console.log("📧 BrevoClient.sendEmail called", {
       to: data.to,
       from: fromEmail,
       fromName: data.fromName || this.fromName,
       subject: data.subject,
+      hasApiKey: !!this.apiKey,
+      apiKeyPrefix: this.apiKey ? `${this.apiKey.substring(0, 10)}...` : "missing",
     });
+    console.log("📋 Full payload:", JSON.stringify(payload, null, 2));
+    console.log("📋 Sender email in payload:", payload.sender.email);
 
     try {
       const response = await fetch(`${this.apiBaseUrl}/smtp/email`, {
