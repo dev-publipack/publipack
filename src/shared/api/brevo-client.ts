@@ -19,8 +19,14 @@ class BrevoClient {
   private readonly apiBaseUrl = "https://api.brevo.com/v3";
 
   constructor() {
-    // Hardcoded values - only API key from env secret
-    this.apiKey = import.meta.env.VITE_BREVO_API_KEY
+    // API key from env secret only (required)
+    const envApiKey = import.meta.env.VITE_BREVO_API_KEY;
+    if (!envApiKey) {
+      throw new Error("VITE_BREVO_API_KEY is required but not set in environment variables");
+    }
+    this.apiKey = envApiKey;
+    
+    // Hardcoded values
     this.fromEmail = "publipack25@gmail.com";
     this.fromName = "El Pack";
 
