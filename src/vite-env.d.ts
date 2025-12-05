@@ -25,6 +25,9 @@ interface ImportMetaEnv {
   
   // Legacy: Brevo Email via Pipedream (deprecated)
   readonly VITE_PIPEDREAM_EMAIL_WEBHOOK?: string;
+  
+  // Microsoft Clarity Analytics
+  readonly VITE_CLARITY_ID?: string;
 }
 
 interface ImportMeta {

@@ -3,10 +3,20 @@ import { useGame } from "./hooks/use-game";
 import { MainScreen } from "./components/main-screen";
 import { GameScreens } from "./components/game-screens";
 import { SPONSORS } from "./shared/lib/constants";
-
+import { clarity } from 'react-microsoft-clarity';
+import { useEffect } from 'react';
 
 function App() {
   const game = useGame();
+
+  useEffect(() => {
+    const clarityId = import.meta.env.VITE_CLARITY_ID;
+    if (clarityId) {
+      clarity.init(clarityId);
+    } else {
+      console.warn('Clarity ID not configured - VITE_CLARITY_ID is missing');
+    }
+  }, []);
 
   return (
     <QueryProvider>
