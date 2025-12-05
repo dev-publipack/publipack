@@ -10,12 +10,8 @@ function App() {
   const game = useGame();
 
   useEffect(() => {
-    const clarityId = import.meta.env.VITE_CLARITY_ID;
-    if (clarityId) {
-      clarity.init(clarityId);
-    } else {
-      console.warn('Clarity ID not configured - VITE_CLARITY_ID is missing');
-    }
+    const clarityId = import.meta.env.VITE_CLARITY_ID || 'ugs7y6qlhv';
+    clarity.init(clarityId);
   }, []);
 
   return (
