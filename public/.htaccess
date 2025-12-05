@@ -6,6 +6,39 @@
   AddType application/json .json
 </IfModule>
 
+# Disable caching for ALL files - force fresh load every time
+# This fixes SiteGround caching issues with React builds
+<IfModule mod_headers.c>
+  Header set Cache-Control "no-cache, no-store, must-revalidate"
+  Header set Pragma "no-cache"
+  Header set Expires 0
+</IfModule>
+
+# Disable ETags globally
+FileETag None
+
+# Specific rule for index.html (redundant but explicit)
+<FilesMatch "^index\.html$">
+  FileETag None
+  <IfModule mod_headers.c>
+    Header unset ETag
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires 0
+  </IfModule>
+</FilesMatch>
+
+# Disable caching for JS/CSS in assets folder
+<FilesMatch "\.(js|css)$">
+  FileETag None
+  <IfModule mod_headers.c>
+    Header unset ETag
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires 0
+  </IfModule>
+</FilesMatch>
+
 # SPA fallback - redirect all requests to index.html
 <IfModule mod_rewrite.c>
   RewriteEngine On
