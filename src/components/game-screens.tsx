@@ -114,14 +114,14 @@ export function GameScreens({
         </div>
 
         {/* Activity Notifications Stack */}
-        {notifications.map((notification, index) => (
+        {/* {notifications.map((notification, index) => (
           <ActivityNotification
             key={notification.id}
             name={notification.name}
             prize={notification.prize}
             index={index}
           />
-        ))}
+        ))} */}
       </main>
     );
   }
