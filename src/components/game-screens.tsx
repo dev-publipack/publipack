@@ -7,9 +7,11 @@ import {
   ClaimSuccess,
   FailedAnimation,
   SuccessConfettiAnimation,
+  ActivityNotification,
 } from "../shared";
 import type { Sponsor } from "../shared/types";
 import type { GameScreen } from "../hooks/use-game-state";
+import { useActivityNotifications } from "../hooks/use-activity-notifications";
 
 interface GameScreensProps {
   currentScreen: GameScreen;
@@ -42,6 +44,10 @@ export function GameScreens({
   onPlayAgainFromSuccess,
   showCooldown = false,
 }: GameScreensProps) {
+  // Enable notifications on screens with countdown timer and during spinning
+  const showNotifications = ["youWon", "didntWin", "youLost", "slotMachine"].includes(currentScreen);
+  const { notifications } = useActivityNotifications(showNotifications);
+
   if (currentScreen === "claimSuccess" && claimEmail) {
     return (
       <main className="min-h-screen w-full flex flex-col items-center justify-center overflow-x-hidden">
@@ -106,6 +112,16 @@ export function GameScreens({
             showCooldown={showCooldown}
           />
         </div>
+
+        {/* Activity Notifications Stack */}
+        {notifications.map((notification, index) => (
+          <ActivityNotification
+            key={notification.id}
+            name={notification.name}
+            prize={notification.prize}
+            index={index}
+          />
+        ))}
       </main>
     );
   }
@@ -138,6 +154,16 @@ export function GameScreens({
         <div className="w-full max-w-[1080px] flex flex-col items-center justify-center py-4 sm:py-6 md:py-8">
           <DidntWin onSpinAgain={onSpinAgain} />
         </div>
+
+        {/* Activity Notifications Stack */}
+        {notifications.map((notification, index) => (
+          <ActivityNotification
+            key={notification.id}
+            name={notification.name}
+            prize={notification.prize}
+            index={index}
+          />
+        ))}
       </main>
     );
   }
@@ -154,6 +180,16 @@ export function GameScreens({
         <div className="w-full max-w-[1080px] flex flex-col items-center justify-center py-4 sm:py-6 md:py-8">
           <YouLost onTryAgain={onSpinAgain} />
         </div>
+
+        {/* Activity Notifications Stack */}
+        {notifications.map((notification, index) => (
+          <ActivityNotification
+            key={notification.id}
+            name={notification.name}
+            prize={notification.prize}
+            index={index}
+          />
+        ))}
       </main>
     );
   }
@@ -170,6 +206,16 @@ export function GameScreens({
         <div className="w-full max-w-[1080px] flex flex-col items-center justify-center py-4 sm:py-6 md:py-8">
           <SlotMachine sponsors={sponsors} onComplete={onSlotComplete} />
         </div>
+
+        {/* Activity Notifications Stack */}
+        {notifications.map((notification, index) => (
+          <ActivityNotification
+            key={notification.id}
+            name={notification.name}
+            prize={notification.prize}
+            index={index}
+          />
+        ))}
       </main>
     );
   }

@@ -1,5 +1,6 @@
-import { Button, RewardCard, CountdownTimer } from "../shared";
+import { Button, RewardCard, CountdownTimer, ActivityNotification } from "../shared";
 import type { Sponsor } from "../shared/types";
+import { useActivityNotifications } from "../hooks/use-activity-notifications";
 
 interface MainScreenProps {
   sponsors: Sponsor[];
@@ -9,6 +10,8 @@ interface MainScreenProps {
 }
 
 export function MainScreen({ sponsors, countdownSeconds, onSpin, showCooldown = false }: MainScreenProps) {
+  const { notifications } = useActivityNotifications(true);
+
   return (
     <main
       className="min-h-screen w-full justify-center flex flex-col items-center overflow-x-hidden"
@@ -71,6 +74,16 @@ export function MainScreen({ sponsors, countdownSeconds, onSpin, showCooldown = 
           </p>
         </div>
       </div>
+
+      {/* Activity Notifications Stack */}
+      {notifications.map((notification, index) => (
+        <ActivityNotification
+          key={notification.id}
+          name={notification.name}
+          prize={notification.prize}
+          index={index}
+        />
+      ))}
     </main>
   );
 }
