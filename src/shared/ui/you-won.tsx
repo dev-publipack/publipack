@@ -94,8 +94,10 @@ const YouWon = React.forwardRef<HTMLDivElement, YouWonProps>(
                     className={cn(
                       "relative",
                       winner.name === "Disney"
-                        ? "w-[117px] h-[35px] sm:w-[147px] sm:h-[44px] md:w-[176px] md:h-[51px] lg:w-[206px] lg:h-[59px] xl:w-[234px] xl:h-[66px]"
-                        : "w-[156px] h-[47px] sm:w-[195px] sm:h-[59px] md:w-[234px] md:h-[69px] lg:w-[273px] lg:h-[78px] xl:w-[312px] xl:h-[89px]"
+                        ? "w-[137px] h-[42px] sm:w-[156px] sm:h-[47px] md:w-[176px] md:h-[52px] lg:w-[195px] lg:h-[59px] xl:w-[215px] xl:h-[65px]"
+                        : winner.name === "Nike"
+                        ? "w-[120px] h-[35px] sm:w-[140px] sm:h-[40px] md:w-[160px] md:h-[45px] lg:w-[180px] lg:h-[50px] xl:w-[200px] xl:h-[55px]"
+                        : "w-[182px] h-[55px] sm:w-[208px] sm:h-[62px] md:w-[234px] md:h-[70px] lg:w-[260px] lg:h-[78px] xl:w-[286px] xl:h-[86px]"
                     )}
                   >
                     <img
