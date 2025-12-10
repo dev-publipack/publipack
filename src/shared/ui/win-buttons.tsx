@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cn } from "../lib/utils";
+import { useLanguage } from "../../providers/language-provider";
 
 export interface WinButtonsProps {
   onClaim?: () => void;
@@ -10,6 +11,8 @@ export interface WinButtonsProps {
 
 export const WinButtons = React.forwardRef<HTMLDivElement, WinButtonsProps>(
   ({ onClaim, onSpinAgain, showCooldown = false, className, ...props }, ref) => {
+    const { t } = useLanguage();
+    
     return (
       <div
         ref={ref}
@@ -29,7 +32,7 @@ export const WinButtons = React.forwardRef<HTMLDivElement, WinButtonsProps>(
                 "linear-gradient(134deg, rgba(9, 148, 227, 1) 0%, rgba(54, 204, 252, 1) 100%)",
             }}
           >
-            CLAIM MY PRIZE
+            {t('winButtons.claimMyPrize')}
           </button>
         )}
 
@@ -42,7 +45,7 @@ export const WinButtons = React.forwardRef<HTMLDivElement, WinButtonsProps>(
               border: "4px solid #FF9442",
             }}
           >
-            {showCooldown ? "Play Again 24h" : "SPIN AGAIN"}
+            {showCooldown ? t('winButtons.playAgain24h') : t('winButtons.spinAgain')}
           </button>
         )}
       </div>

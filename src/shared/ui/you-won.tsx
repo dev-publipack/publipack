@@ -3,6 +3,7 @@ import { cn } from "../lib/utils";
 import { BrandLinkAnimation } from "./brand-link-animation";
 import { SponsorDetail } from "./sponsor-detail";
 import type { Sponsor } from "../types";
+import { useLanguage } from "../../providers/language-provider";
 
 export interface YouWonProps {
   winner: Sponsor;
@@ -16,6 +17,7 @@ export interface YouWonProps {
 const YouWon = React.forwardRef<HTMLDivElement, YouWonProps>(
   ({ winner, onClaim, onSpinAgain, brandLink, showCooldown = false, className, ...props }, ref) => {
     const [showSponsorDetail, setShowSponsorDetail] = React.useState(false);
+    const { t } = useLanguage();
 
     // Auto-transition to SponsorDetail after 3 seconds
     React.useEffect(() => {
@@ -64,7 +66,7 @@ const YouWon = React.forwardRef<HTMLDivElement, YouWonProps>(
 
         {/* YOU WON! Title */}
         <h1 className="mb-6 sm:mb-8 md:mb-10 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading text-[#163446] leading-[1.14] text-center">
-          YOU WON!
+          {t('youWon.title')}
         </h1>
 
         {/* Main Container */}
@@ -93,9 +95,9 @@ const YouWon = React.forwardRef<HTMLDivElement, YouWonProps>(
                   <div
                     className={cn(
                       "relative",
-                      winner.name === "Disney"
+                      winner.name === "Lego"
                         ? "w-[137px] h-[42px] sm:w-[156px] sm:h-[47px] md:w-[176px] md:h-[52px] lg:w-[195px] lg:h-[59px] xl:w-[215px] xl:h-[65px]"
-                        : winner.name === "Nike"
+                        : winner.name === "The North Face"
                         ? "w-[120px] h-[35px] sm:w-[140px] sm:h-[40px] md:w-[160px] md:h-[45px] lg:w-[180px] lg:h-[50px] xl:w-[200px] xl:h-[55px]"
                         : "w-[182px] h-[55px] sm:w-[208px] sm:h-[62px] md:w-[234px] md:h-[70px] lg:w-[260px] lg:h-[78px] xl:w-[286px] xl:h-[86px]"
                     )}
@@ -114,9 +116,9 @@ const YouWon = React.forwardRef<HTMLDivElement, YouWonProps>(
 
         {/* Congratulations Text - below container */}
         <p className="text-base sm:text-lg md:text-xl lg:text-2xl max-w-[85%] font-body-semibold text-black text-center leading-[1.362] px-4 sm:px-6 mt-6 sm:mt-8 md:mt-10">
-          Congratulations - You&apos;ve{" "}
+          {t('youWon.congratulations')}{" "}
           <span className="text-black font-bold">
-            won {winner.name} {winner.reward}
+            {t('youWon.congratulationsBold', { name: winner.name, reward: winner.reward })}
           </span>
         </p>
       </div>

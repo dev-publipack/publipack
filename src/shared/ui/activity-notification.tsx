@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { cn } from "../lib/utils";
+import { useLanguage } from "../../providers/language-provider";
 
 interface ActivityNotificationProps {
     name: string;
@@ -16,6 +17,7 @@ export function ActivityNotification({
 }: ActivityNotificationProps) {
     const [emoji] = useState(() => EMOJIS[Math.floor(Math.random() * EMOJIS.length)]);
     const [isVisible, setIsVisible] = useState(false);
+    const { t } = useLanguage();
 
     useEffect(() => {
         // Trigger animation after mount
@@ -53,7 +55,7 @@ export function ActivityNotification({
                 }}
             >
                 <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-black text-center wrap-break-word">
-                    {emoji} <span className="font-bold">{name}</span> just WON! {prize}
+                    {emoji} {t('activityNotification.justWon', { name, prize })}
                 </p>
             </div>
         </div>

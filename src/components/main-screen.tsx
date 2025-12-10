@@ -1,6 +1,7 @@
 import { Button, RewardCard, CountdownTimer, ActivityNotification } from "../shared";
 import type { Sponsor } from "../shared/types";
 import { useActivityNotifications } from "../hooks/use-activity-notifications";
+import { useLanguage } from "../providers/language-provider";
 
 interface MainScreenProps {
   sponsors: Sponsor[];
@@ -11,6 +12,7 @@ interface MainScreenProps {
 
 export function MainScreen({ sponsors, countdownSeconds, onSpin, showCooldown = false }: MainScreenProps) {
   const { notifications } = useActivityNotifications(true);
+  const { t } = useLanguage();
 
   return (
     <main
@@ -23,13 +25,14 @@ export function MainScreen({ sponsors, countdownSeconds, onSpin, showCooldown = 
       <div className="w-full max-w-[1080px] flex flex-col items-center justify-center px-4 sm:px-6 md:px-8 py-6 sm:py-8 md:py-10">
         {/* Title */}
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading text-[#163446] leading-[1.4] text-center mb-3 sm:mb-4">
-          READY TO <span className="text-[#44D2FD]">WIN?</span>
+          {t('mainScreen.title').split('?')[0]} <span className="text-[#44D2FD]">{t('mainScreen.title').split(' ').slice(-1)[0]}</span>
         </h1>
 
         {/* Subtitle */}
         <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-body-semibold max-w-[600px] text-[#163446] text-center leading-[1.362] mb-6 sm:mb-8 md:mb-10 mx-auto">
-          Spin the wheel and <span className="text-black font-bold">win rewards</span> from our
-          sponsors
+          {t('mainScreen.subtitle').split(t('mainScreen.subtitleBold'))[0]}
+          <span className="text-black font-bold">{t('mainScreen.subtitleBold')}</span>
+          {t('mainScreen.subtitle').split(t('mainScreen.subtitleBold'))[1]}
         </p>
 
         {/* Sponsor Cards Container */}
@@ -63,14 +66,14 @@ export function MainScreen({ sponsors, countdownSeconds, onSpin, showCooldown = 
           }}
           size="lg"
         >
-          SPIN NOW
+          {t('mainScreen.spinNowButton')}
         </Button>
 
         {/* Countdown Section */}
         <div className="flex flex-col items-center justify-center gap-3 sm:gap-4 w-full">
           <CountdownTimer seconds={countdownSeconds} showCooldown={showCooldown} />
           <p className="text-sm sm:text-base md:text-lg lg:text-xl font-body-semibold text-black text-center leading-[1.362]">
-            {showCooldown ? "Come back tomorrow for another spin" : "Or wait for the countdown"}
+            {showCooldown ? t('mainScreen.cooldownMessage') : t('mainScreen.countdownMessage')}
           </p>
         </div>
       </div>

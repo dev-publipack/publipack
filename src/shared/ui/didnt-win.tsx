@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cn } from "../lib/utils";
+import { useLanguage } from "../../providers/language-provider";
 
 export interface DidntWinProps {
   onSpinAgain?: () => void;
@@ -8,6 +9,8 @@ export interface DidntWinProps {
 
 export const DidntWin = React.forwardRef<HTMLDivElement, DidntWinProps>(
   ({ onSpinAgain, className, ...props }, ref) => {
+    const { t } = useLanguage();
+    
     return (
       <div
         ref={ref}
@@ -26,10 +29,10 @@ export const DidntWin = React.forwardRef<HTMLDivElement, DidntWinProps>(
           }}
         >
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading text-white leading-[1.14] text-center mb-4 sm:mb-6">
-            Didn&apos;t Win
+            {t('didntWin.title')}
           </h1>
           <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-body-semibold text-white text-center leading-[1.362]">
-            Try again for another chance to win!
+            {t('didntWin.message')}
           </p>
         </div>
 
@@ -38,7 +41,7 @@ export const DidntWin = React.forwardRef<HTMLDivElement, DidntWinProps>(
           className="relative z-10 w-full max-w-[700px] h-14 sm:h-16 md:h-20 lg:h-24 rounded-full text-white text-lg sm:text-xl md:text-3xl lg:text-4xl font-heading leading-[1.4] hover:opacity-90 transition-opacity px-6"
           style={{ background: "#FF9442" }}
         >
-          SPIN AGAIN
+          {t('didntWin.spinAgainButton')}
         </button>
       </div>
     );

@@ -4,6 +4,7 @@ import { cn } from "../lib/utils";
 import type { Sponsor } from "../types";
 import { pipedreamClient } from "../api/pipedream-client";
 import { brevoClient } from "../api/brevo-client";
+import { useLanguage } from "../../providers/language-provider";
 
 export interface ClaimRewardProps {
   winner: Sponsor;
@@ -38,6 +39,7 @@ type ClaimRewardFormData = z.infer<typeof ClaimRewardSchema>;
 
 const ClaimReward = React.forwardRef<HTMLDivElement, ClaimRewardProps>(
   ({ winner, onSubmit, className, ...props }, ref) => {
+    const { t } = useLanguage();
     const [fullName, setFullName] = React.useState("");
     const [phone, setPhone] = React.useState("");
     const [email, setEmail] = React.useState("");
@@ -230,12 +232,12 @@ Terms & Conditions | Privacy Policy | Data Protection Policy`,
       >
         {/* Title */}
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading text-[#163446] leading-[1.16] text-center mb-3 sm:mb-4 px-4">
-          Claim your <span className="text-[#44D2FD]">Reward</span>
+          {t('claimReward.title').split(t('claimReward.titleBold'))[0]}<span className="text-[#44D2FD]">{t('claimReward.titleBold')}</span>
         </h1>
 
         {/* Subtitle */}
         <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-body-semibold text-black text-center leading-[1.362] mb-6 sm:mb-8 px-4">
-          Fill in your details to receive your voucher
+          {t('claimReward.subtitle')}
         </p>
 
         {/* Reward Info Card */}
@@ -284,7 +286,7 @@ Terms & Conditions | Privacy Policy | Data Protection Policy`,
                 onChange={(e) => handleFieldChange("fullName", e.target.value, setFullName)}
                 onFocus={() => setFocusedField("fullName")}
                 onBlur={() => handleFieldBlur("fullName", fullName)}
-                placeholder="Full name"
+                placeholder={t('claimReward.fullNamePlaceholder')}
                 className="w-full bg-transparent border-none outline-none text-center text-base sm:text-lg md:text-xl lg:text-2xl font-body-semibold text-[#154F6A] placeholder:text-[#154F6A] placeholder:opacity-70"
                 required
               />
@@ -312,7 +314,7 @@ Terms & Conditions | Privacy Policy | Data Protection Policy`,
                 onChange={(e) => handleFieldChange("phone", e.target.value, setPhone)}
                 onFocus={() => setFocusedField("phone")}
                 onBlur={() => handleFieldBlur("phone", phone)}
-                placeholder="Phone Number"
+                placeholder={t('claimReward.phonePlaceholder')}
                 className="w-full bg-transparent border-none outline-none text-center text-base sm:text-lg md:text-xl lg:text-2xl font-body-semibold text-[#154F6A] placeholder:text-[#154F6A] placeholder:opacity-70"
                 required
               />
@@ -340,7 +342,7 @@ Terms & Conditions | Privacy Policy | Data Protection Policy`,
                 onChange={(e) => handleFieldChange("email", e.target.value, setEmail)}
                 onFocus={() => setFocusedField("email")}
                 onBlur={() => handleFieldBlur("email", email)}
-                placeholder="Email Address"
+                placeholder={t('claimReward.emailPlaceholder')}
                 className="w-full bg-transparent border-none outline-none text-center text-base sm:text-lg md:text-xl lg:text-2xl font-body-semibold text-[#154F6A] placeholder:text-[#154F6A] placeholder:opacity-70"
                 required
               />
@@ -364,7 +366,7 @@ Terms & Conditions | Privacy Policy | Data Protection Policy`,
               background: "#FF9442",
             }}
           >
-            {isSubmitting ? "Submitting..." : "Get My Voucher"}
+            {isSubmitting ? t('claimReward.submittingButton') : t('claimReward.getVoucherButton')}
           </button>
         </form>
       </div>

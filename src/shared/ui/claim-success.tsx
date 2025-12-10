@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cn } from "../lib/utils";
+import { useLanguage } from "@/providers/language-provider";
 
 export interface ClaimSuccessProps {
     email: string;
@@ -11,14 +12,7 @@ export interface ClaimSuccessProps {
 
 const ClaimSuccess = React.forwardRef<HTMLDivElement, ClaimSuccessProps>(
     ({ email, onOpenEmail, onDownloadReward, onPlayAgain, className, ...props }, ref) => {
-        const handleOpenEmail = () => {
-            if (onOpenEmail) {
-                onOpenEmail();
-            } else {
-                // Default: try to open email client
-                window.location.href = `mailto:${email}`;
-            }
-        };
+        const { t } = useLanguage();
 
         return (
             <div
@@ -59,12 +53,12 @@ const ClaimSuccess = React.forwardRef<HTMLDivElement, ClaimSuccessProps>(
 
                 {/* Congratulations Title */}
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading text-[#163446] leading-[1.16] text-center mb-3 sm:mb-4 px-4">
-                    Congratulations!
+                    {t('claimSuccess.title')}
                 </h1>
 
                 {/* Email Message */}
                 <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-body-semibold text-black text-center leading-[1.362] mb-6 sm:mb-8 px-4 max-w-2xl">
-                    Your prize has been sent to <span className="text-[#163446] font-heading">{email}</span>
+                    {t('claimSuccess.emailMessage', { email })}
                 </p>
 
                 {/* Check Items */}
@@ -91,7 +85,7 @@ const ClaimSuccess = React.forwardRef<HTMLDivElement, ClaimSuccessProps>(
                             </svg>
                         </div>
                         <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-body-semibold text-black leading-[1.362]">
-                            Check your inbox
+                            {t('claimSuccess.checkInbox')}
                         </p>
                     </div>
 
@@ -117,7 +111,7 @@ const ClaimSuccess = React.forwardRef<HTMLDivElement, ClaimSuccessProps>(
                             </svg>
                         </div>
                         <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-body-semibold text-black leading-[1.362]">
-                            Your reward is also saved in My Rewards
+                            {t('claimSuccess.rewardSaved')}
                         </p>
                     </div>
                 </div>
@@ -132,7 +126,7 @@ const ClaimSuccess = React.forwardRef<HTMLDivElement, ClaimSuccessProps>(
                             background: "linear-gradient(134deg, rgba(9, 148, 227, 1) 0%, rgba(54, 204, 252, 1) 100%)",
                         }}
                     >
-                        Download Reward
+                        {t('claimSuccess.downloadRewardButton')}
                     </button>
 
                     {/* Play Again Button */}
@@ -143,7 +137,7 @@ const ClaimSuccess = React.forwardRef<HTMLDivElement, ClaimSuccessProps>(
                             background: "#FF9442",
                         }}
                     >
-                        Play Again
+                        {t('claimSuccess.playAgainButton')}
                     </button>
                 </div>
             </div>
