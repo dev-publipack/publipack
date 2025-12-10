@@ -95,7 +95,7 @@ export const SponsorDetail = React.forwardRef<
           <div
             className={cn(
               "relative",
-              sponsor.name === "Disney"
+              sponsor.name === "Lego"
                 ? "w-[249px] h-[83px] sm:w-[187px] sm:h-[125px] md:w-[218px] md:h-[146px] lg:w-[249px] lg:h-[166px]"
                 : "w-[374px] h-[125px] sm:w-[249px] sm:h-[166px] md:w-[291px] md:h-[208px] lg:w-[333px] lg:h-[249px]"
             )}

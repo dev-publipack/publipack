@@ -9,22 +9,22 @@ interface Notification {
 
 // Mock data for winners - using real brands from sponsors with nicknames
 const MOCK_WINNERS = [
-  { name: "@emily_rose", prize: "Preply 50% discount" },
-  { name: "@mike_smith", prize: "Lego Free LEGO Games!" },
-  { name: "@sarah_j", prize: "Adidas Up to -60%" },
-  { name: "@james_bond", prize: "The North Face Up to -50%" },
-  { name: "@jess_87", prize: "FlyLevel 161€ To New York!" },
-  { name: "@david_k", prize: "Workaway Free sailing in the Caribbean!" },
-  { name: "@sophie_m", prize: "El Corte Inglés Travel discounts! -40%" },
-  { name: "@thomas_01", prize: "The Farm Free bottle of Cava" },
-  { name: "@olivia_tx", prize: "Preply 50% discount" },
-  { name: "@daniel_99", prize: "Lego Free LEGO Games!" },
-  { name: "@emma_lee", prize: "Adidas Up to -60%" },
-  { name: "@alex_cruz", prize: "FlyLevel 161€ To New York!" },
-  { name: "@mia_flores", prize: "The Farm Free bottle of Cava" },
-  { name: "@john_doe", prize: "El Corte Inglés Travel discounts! -40%" },
-  { name: "@lisa_ann", prize: "The North Face Up to -50%" },
-  { name: "@chris_wong", prize: "Workaway Free sailing in the Caribbean!" },
+  { name: "@emily_rose", prize: "Preply 50% de descuento" },
+  { name: "@mike_smith", prize: "Lego Juegos Gratis" },
+  { name: "@sarah_j", prize: "Adidas hasta -60%" },
+  { name: "@james_bond", prize: "The North Face hasta -50%" },
+  { name: "@jess_87", prize: "FlyLevel 161€ a Nueva York" },
+  { name: "@david_k", prize: "Workaway navegar gratis en el Caribe" },
+  { name: "@sophie_m", prize: "El Corte Inglés viajes -40%" },
+  { name: "@thomas_01", prize: "The Farm botella de cava gratis" },
+  { name: "@olivia_tx", prize: "Preply 50% de descuento" },
+  { name: "@daniel_99", prize: "Lego Juegos Gratis" },
+  { name: "@emma_lee", prize: "Adidas hasta -60%" },
+  { name: "@alex_cruz", prize: "FlyLevel 161€ a Nueva York" },
+  { name: "@mia_flores", prize: "The Farm botella de cava gratis" },
+  { name: "@john_doe", prize: "El Corte Inglés viajes -40%" },
+  { name: "@lisa_ann", prize: "The North Face hasta -50%" },
+  { name: "@chris_wong", prize: "Workaway navegar gratis en el Caribe" },
 ];
 
 const MAX_NOTIFICATIONS = 2; // Maximum notifications on screen at once (for animation overlap)

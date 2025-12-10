@@ -45,7 +45,7 @@ export const SPONSORS: Sponsor[] = [
     },
     {
       name: "The Farm",
-      reward: "Free bottle of Cava",
+      reward: "Botella de cava gratis",
       logo: "/images/the-farm-logo.svg",
       url: "https://thefarm-marbella.com/",
     },

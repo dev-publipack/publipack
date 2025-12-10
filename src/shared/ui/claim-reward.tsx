@@ -248,7 +248,7 @@ Terms & Conditions | Privacy Policy | Data Protection Policy`,
             <span
               style={{ background: "#C3ECFF" }}
               className="text-[#124258] border rounded-md p-2 sm:p-3 text-base sm:text-lg md:text-xl lg:text-2xl font-heading whitespace-nowrap">
-              Your Reward
+              {t("claimReward.rewardLabel")}
             </span>
             <div className="flex items-center gap-2 sm:gap-3">
               {/* Calendar icon */}

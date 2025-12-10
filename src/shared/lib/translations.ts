@@ -61,6 +61,7 @@ export const translations = {
     title: { en: "Claim your Reward", es: "Reclama tu Recompensa" },
     titleBold: { en: "Reward", es: "Recompensa" },
     subtitle: { en: "Fill in your details to receive your voucher", es: "Completa tus datos para recibir tu cupón" },
+    rewardLabel: { en: "Your Reward", es: "Tu premio" },
     
     // Form fields
     fullNamePlaceholder: { en: "Full name", es: "Nombre completo" },
@@ -155,7 +156,7 @@ export const translations = {
     flylevel161ToNY: { en: "FlyLevel 161€ To New York!", es: "FlyLevel 161€ To New York!" },
     workawayFreeSailing: { en: "Workaway Free sailing in the Caribbean!", es: "Workaway Navegar gratis en el Caribe!" },
     elcorteinglesTravel40: { en: "El Corte Inglés Travel discounts! -40%", es: "El Corte Inglés Descuentos en viajes! -40%" },
-    thefarmFreeCava: { en: "The Farm Free bottle of Cava", es: "The Farm Free bottle of Cava" },
+    thefarmFreeCava: { en: "The Farm Free bottle of Cava", es: "The Farm Botella de cava gratis" },
   },
 } as const;
 
