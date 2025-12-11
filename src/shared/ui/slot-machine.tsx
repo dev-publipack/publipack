@@ -1,11 +1,14 @@
 import * as React from "react";
 import { cn } from "../lib/utils";
 import type { Sponsor } from "../types";
+import { CountdownTimer } from "./countdown-timer";
+import { useLanguage } from "../../providers/language-provider";
+import { useSpinCountdown } from "../../hooks/use-spin-countdown";
+import { useSlotMachine } from "../../hooks/use-slot-machine";
 
 export interface SlotMachineProps {
   sponsors: Sponsor[];
   onComplete?: (result: { winner: Sponsor | null; isWin: boolean }) => void;
-  onReset?: () => void;
   className?: string;
 }
 
@@ -13,199 +16,32 @@ export interface SlotMachineRef {
   startSpin: () => void;
 }
 
+const SPIN_DURATION = 7000;
+
 const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
   ({ sponsors, onComplete, className, ...props }, ref) => {
-    const [isSpinning, setIsSpinning] = React.useState(false);
-    const [progress, setProgress] = React.useState(0);
-    const [isComplete, setIsComplete] = React.useState(false);
-    const [isWin, setIsWin] = React.useState(false);
-    const [completedSlots, setCompletedSlots] = React.useState<Set<number>>(new Set());
-    
-    const spinResultRef = React.useRef<{ winner: Sponsor | null; isWin: boolean } | null>(null);
+    const { t } = useLanguage();
 
-    const spinRefs = [
-      React.useRef<HTMLDivElement>(null),
-      React.useRef<HTMLDivElement>(null),
-      React.useRef<HTMLDivElement>(null),
-    ];
+    const {
+      isSpinning,
+      isComplete,
+      isWin,
+      spinRefs,
+      extendedSponsors,
+      startSpin,
+    } = useSlotMachine({ sponsors, onComplete });
 
-    const startSpin = React.useCallback(() => {
-      if (isSpinning || sponsors.length === 0) return;
-
-      setIsSpinning(true);
-      setIsComplete(false);
-      setIsWin(false);
-      setProgress(0);
-      setCompletedSlots(new Set());
-      spinResultRef.current = null;
-
-      // Reset all slots to initial position
-      spinRefs.forEach((slotRef) => {
-        if (slotRef.current) {
-          slotRef.current.style.transition = "none";
-          slotRef.current.style.transform = "translateY(0)";
-        }
-      });
-
-      void document.body.offsetHeight;
-
-      // 50/50 chance to win or lose
-      const winResult = Math.random() < 0.5;
-      setIsWin(winResult);
-
-      // Select winners based on result
-      let winners: [number, number, number];
-      let winningSponsorIndex: number;
-
-      if (winResult) {
-        // Win: all 3 slots show the same sponsor (3 in a row)
-        winningSponsorIndex = Math.floor(Math.random() * sponsors.length);
-        winners = [winningSponsorIndex, winningSponsorIndex, winningSponsorIndex];
-      } else {
-        // Lose: all 3 slots show different sponsors
-        const availableIndices = Array.from({ length: sponsors.length }, (_, i) => i);
-        const selected: number[] = [];
-        
-        // Select 3 different random indices
-        while (selected.length < 3) {
-          const randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
-          if (!selected.includes(randomIndex)) {
-            selected.push(randomIndex);
-          }
-        }
-        
-        winners = [selected[0], selected[1], selected[2]] as [number, number, number];
-        winningSponsorIndex = -1; // Not used for lose case
-      }
-
-      const SPIN_DURATION = 7000;
-      const RESULT_DISPLAY_DURATION = 1500;
-      
-      // Store result for later use when animation completes
-      spinResultRef.current = {
-        winner: winResult ? sponsors[winningSponsorIndex] : null,
-        isWin: winResult,
-      };
-
-      // Get card height based on viewport - matches the responsive heights in the render
-      const getCardHeight = () => {
-        if (typeof window === "undefined") return 248;
-        const width = window.innerWidth;
-        if (width >= 1280) return 248;
-        if (width >= 1024) return 220;
-        if (width >= 768) return 198;
-        if (width >= 640) return 176;
-        return 154;
-      };
-      const CARD_HEIGHT = getCardHeight();
-      const startTime = Date.now();
-
-      const animate = () => {
-        const elapsed = Date.now() - startTime;
-        const progressPercent = Math.min((elapsed / SPIN_DURATION) * 100, 100);
-        setProgress(progressPercent);
-
-        if (elapsed < SPIN_DURATION) {
-          requestAnimationFrame(animate);
-        } else {
-          // Spin complete, show result
-          setIsSpinning(false);
-          setProgress(100);
-        }
-      };
-
-      // Handle slot animation completion
-      const handleSlotComplete = (slotIndex: number) => {
-        setCompletedSlots((prev) => {
-          const newSet = new Set(prev);
-          newSet.add(slotIndex);
-          
-          // When all 3 slots are complete, show result and trigger onComplete
-          if (newSet.size === 3) {
-            setIsComplete(true);
-            
-            // Wait for visual result display, then call onComplete
-            setTimeout(() => {
-              if (onComplete && spinResultRef.current) {
-                onComplete(spinResultRef.current);
-              }
-            }, RESULT_DISPLAY_DURATION);
-          }
-          
-          return newSet;
-        });
-      };
-
-      // Animate each slot
-      spinRefs.forEach((slotRef, index) => {
-        if (slotRef.current) {
-          const targetIndex = winners[index];
-          const minFullRotations = 7;
-          const totalSpins = minFullRotations * sponsors.length + targetIndex;
-          const targetPosition = -(totalSpins * CARD_HEIGHT);
-
-          // Remove previous event listeners
-          const currentSlot = slotRef.current;
-          const handleTransitionEnd = (e: TransitionEvent) => {
-            // Only handle transform transitions
-            if (e.propertyName === "transform") {
-              handleSlotComplete(index);
-              currentSlot.removeEventListener("transitionend", handleTransitionEnd);
-            }
-          };
-
-          setTimeout(() => {
-            if (slotRef.current) {
-              slotRef.current.style.transition = `transform ${SPIN_DURATION}ms cubic-bezier(0.15, 0.35, 0.25, 0.85)`;
-              slotRef.current.style.transform = `translateY(${targetPosition}px)`;
-              
-              // Listen for transition end
-              slotRef.current.addEventListener("transitionend", handleTransitionEnd);
-            }
-          }, 10);
-        }
-      });
-
-      requestAnimationFrame(animate);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isSpinning, sponsors, onComplete]);
+    const spinCountdown = useSpinCountdown({
+      isSpinning,
+      spinDuration: SPIN_DURATION,
+    });
 
     React.useImperativeHandle(ref, () => ({
       startSpin,
     }));
 
-    // Cleanup event listeners on unmount
-    React.useEffect(() => {
-      return () => {
-        spinRefs.forEach((slotRef) => {
-          if (slotRef.current) {
-            // Remove any remaining event listeners
-            const clone = slotRef.current.cloneNode(true);
-            if (slotRef.current.parentNode) {
-              slotRef.current.parentNode.replaceChild(clone, slotRef.current);
-            }
-          }
-        });
-      };
-    }, []);
-
-    // Auto-start spin on mount
-    React.useEffect(() => {
-      const timer = setTimeout(startSpin, 500);
-      return () => clearTimeout(timer);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    // Create extended sponsor list for seamless scrolling
-    const MIN_COPIES = 15;
-    const extendedSponsors = Array(MIN_COPIES).fill(sponsors).flat();
-
-    const containerRef = React.useRef<HTMLDivElement>(null);
-
-
     return (
       <div
-        ref={containerRef}
         className={cn("relative w-full mx-auto justify-center items-center flex flex-col", className)}
         {...props}
       >
@@ -223,7 +59,7 @@ const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
             boxShadow: "0px 4.24px 35.10px 0px rgba(0, 0, 0, 0.25)",
           }}
         >
-          {/* Three Slot Columns - always 3 in a row */}
+          {/* Three Slot Columns */}
           <div className="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4 justify-items-center items-start mb-4 sm:mb-6 md:mb-8 w-full">
             {[0, 1, 2].map((slotIndex) => (
               <div
@@ -256,8 +92,8 @@ const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
                           sponsor.name === "Lego"
                             ? "w-[137px] h-[42px] sm:w-[156px] sm:h-[47px] md:w-[176px] md:h-[52px] lg:w-[195px] lg:h-[59px] xl:w-[215px] xl:h-[65px]"
                             : sponsor.name === "The North Face"
-                            ? "w-[120px] h-[35px] sm:w-[140px] sm:h-[40px] md:w-[160px] md:h-[45px] lg:w-[180px] lg:h-[50px] xl:w-[200px] xl:h-[55px]"
-                            : "w-[182px] h-[55px] sm:w-[208px] sm:h-[62px] md:w-[234px] md:h-[70px] lg:w-[260px] lg:h-[78px] xl:w-[286px] xl:h-[86px]"
+                              ? "w-[120px] h-[35px] sm:w-[140px] sm:h-[40px] md:w-[160px] md:h-[45px] lg:w-[180px] lg:h-[50px] xl:w-[200px] xl:h-[55px]"
+                              : "w-[182px] h-[55px] sm:w-[208px] sm:h-[62px] md:w-[234px] md:h-[70px] lg:w-[260px] lg:h-[78px] xl:w-[286px] xl:h-[86px]"
                         )}
                       >
                         <img
@@ -272,30 +108,24 @@ const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
               </div>
             ))}
           </div>
-
-          {/* Progress Indicator - Below slots */}
         </div>
-        
-        <div className="pt-6 sm:pt-8 md:pt-10 flex justify-center items-center w-full">
-          <div className="relative w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 lg:w-40 lg:h-40">
-            <div
-              className="absolute inset-0 rounded-full"
-              style={{
-                background: "#FFFFFF",
-                border: "4px solid #0C97E4",
-              }}
-            />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-heading text-black">
-                {Math.round(progress)}%
-              </span>
+
+        {/* Countdown Timer */}
+        <div className="pt-6 sm:pt-8 md:pt-10 flex justify-center items-center w-full max-w-[600px] mx-auto px-4">
+          {isSpinning && (
+            <div className="flex flex-col items-center justify-center gap-3 sm:gap-4 w-full">
+              <CountdownTimer seconds={spinCountdown} showCooldown={false} initialSeconds={7} />
+              <p className="text-sm sm:text-base md:text-lg lg:text-xl font-body-semibold text-black text-center leading-[1.362]">
+                {t('mainScreen.countdownMessage')}
+              </p>
             </div>
-          </div>
+          )}
         </div>
       </div>
     );
   }
 );
+
 SlotMachine.displayName = "SlotMachine";
 
 export { SlotMachine };

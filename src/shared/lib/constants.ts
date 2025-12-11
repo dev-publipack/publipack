@@ -49,5 +49,11 @@ export const SPONSORS: Sponsor[] = [
       logo: "/images/the-farm-logo.svg",
       url: "https://thefarm-marbella.com/",
     },
+    {
+      name: "Disney",
+      reward: "Descuentos especiales",
+      logo: "/images/disney-land.svg",
+      url: "https://www.disneylandparis.com/",
+    },
   ];
   

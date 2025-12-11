@@ -40,8 +40,8 @@ export function MainScreen({ sponsors, countdownSeconds, onSpin, showCooldown = 
           className="relative w-full max-w-[900px] mx-auto bg-white rounded-2xl sm:rounded-3xl md:rounded-[32px] p-4 sm:p-5 md:p-6 lg:p-8 mb-6 sm:mb-8 md:mb-10"
           style={{ boxShadow: "0px 4px 33.10px 0px rgba(0, 0, 0, 0.25)" }}
         >
-          {/* Sponsor Cards Grid - 4 columns in a row */}
-          <div className="grid grid-cols-4 gap-1.5 sm:gap-2 md:gap-2.5 lg:gap-3 xl:gap-4 w-full justify-items-center">
+          {/* Sponsor Cards Grid - 3 columns in a row */}
+          <div className="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4 lg:gap-5 xl:gap-6 w-full justify-items-center">
             {sponsors.map((sponsor, index) => (
               <RewardCard
                 key={index}
@@ -71,7 +71,7 @@ export function MainScreen({ sponsors, countdownSeconds, onSpin, showCooldown = 
 
         {/* Countdown Section */}
         <div className="flex flex-col items-center justify-center gap-3 sm:gap-4 w-full">
-          <CountdownTimer seconds={countdownSeconds} showCooldown={showCooldown} />
+          <CountdownTimer seconds={countdownSeconds} showCooldown={showCooldown} initialSeconds={5} />
           <p className="text-sm sm:text-base md:text-lg lg:text-xl font-body-semibold text-black text-center leading-[1.362]">
             {showCooldown ? t('mainScreen.cooldownMessage') : t('mainScreen.countdownMessage')}
           </p>

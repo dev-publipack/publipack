@@ -94,9 +94,9 @@ const ClaimReward = React.forwardRef<HTMLDivElement, ClaimRewardProps>(
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
       e.stopPropagation();
-      
+
       console.log("🚀 Form submit triggered", { fullName, phone, email });
-      
+
       // Validate with Zod
       const result = ClaimRewardSchema.safeParse({
         fullName,
@@ -276,8 +276,8 @@ Terms & Conditions | Privacy Policy | Data Protection Policy`,
                 focusedField === "fullName"
                   ? "border-4 border-[#16DC58] bg-[#E7FFEF]"
                   : errors.fullName
-                  ? "border-4 border-red-500 bg-[#FFE7E7]"
-                  : "border-4 border-[#38BEF4] bg-[#E9F9FF]"
+                    ? "border-4 border-red-500 bg-[#FFE7E7]"
+                    : "border-4 border-[#38BEF4] bg-[#E9F9FF]"
               )}
             >
               <input
@@ -304,8 +304,8 @@ Terms & Conditions | Privacy Policy | Data Protection Policy`,
                 focusedField === "phone"
                   ? "border-4 border-[#16DC58] bg-[#E7FFEF]"
                   : errors.phone
-                  ? "border-4 border-red-500 bg-[#FFE7E7]"
-                  : "border-4 border-[#38BEF4] bg-[#E9F9FF]"
+                    ? "border-4 border-red-500 bg-[#FFE7E7]"
+                    : "border-4 border-[#38BEF4] bg-[#E9F9FF]"
               )}
             >
               <input
@@ -332,8 +332,8 @@ Terms & Conditions | Privacy Policy | Data Protection Policy`,
                 focusedField === "email"
                   ? "border-4 border-[#16DC58] bg-[#E7FFEF]"
                   : errors.email
-                  ? "border-4 border-red-500 bg-[#FFE7E7]"
-                  : "border-4 border-[#38BEF4] bg-[#E9F9FF]"
+                    ? "border-4 border-red-500 bg-[#FFE7E7]"
+                    : "border-4 border-[#38BEF4] bg-[#E9F9FF]"
               )}
             >
               <input
@@ -361,13 +361,29 @@ Terms & Conditions | Privacy Policy | Data Protection Policy`,
               console.log("🔘 Button clicked", { isSubmitting, fullName, phone, email });
               // Let form handle submit naturally
             }}
-            className="mt-8 w-full h-14 sm:h-16 md:h-20 lg:h-24 rounded-full text-white text-lg sm:text-xl md:text-3xl lg:text-4xl font-heading leading-[1.4] hover:opacity-90 transition-opacity px-6 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="mt-8 w-full h-14 sm:h-16 md:h-20 lg:h-24 rounded-full text-white text-lg sm:text-xl md:text-3xl lg:text-4xl font-heading leading-[1.4] hover:opacity-90 transition-opacity px-6 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden"
             style={{
               background: "#FF9442",
             }}
           >
-            {isSubmitting ? t('claimReward.submittingButton') : t('claimReward.getVoucherButton')}
+            {isSubmitting ? (
+              <>
+                <span className="relative z-10">{t('claimReward.submittingButton')}</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-orange-500 animate-pulse" />
+              </>
+            ) : (
+              t('claimReward.getVoucherButton')
+            )}
           </button>
+
+          {/* Loading progress bar below button */}
+          {isSubmitting && (
+            <div className="mt-4 w-full max-w-[600px] mx-auto">
+              <div className="w-full h-3 sm:h-4 md:h-5 lg:h-6 bg-gray-200 rounded-full overflow-hidden">
+                <div className="h-full bg-gradient-to-r from-orange-400 to-orange-500 rounded-full animate-pulse w-full" />
+              </div>
+            </div>
+          )}
         </form>
       </div>
     );
