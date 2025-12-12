@@ -1,243 +1,105 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useCallback } from "react";
 import type { Sponsor } from "../shared/types";
-import type { GameScreen } from "./use-game-state";
+import { TIMING, GAME_RULES } from "@/shared/lib/game-config";
+import { useGameAttempts } from "./use-game-attempts";
+import { useGameCountdown } from "./use-game-countdown";
+import { useGameNavigation } from "./use-game-navigation";
 
-const MAX_ATTEMPTS = 3;
-const COUNTDOWN_INITIAL = 5;
-
-interface GameState {
-  currentScreen: GameScreen;
-  winner: Sponsor | null;
-  attempts: number;
-  countdownSeconds: number;
-  isCountdownActive: boolean;
-  claimEmail: string | null;
-}
-
+/**
+ * Main game hook - orchestrates game flow using composition of smaller hooks
+ * Much simpler and easier to understand than the original monolithic version
+ */
 export function useGame() {
-  const [state, setState] = useState<GameState>({
-    currentScreen: "main",
-    winner: null,
-    attempts: 0,
-    countdownSeconds: COUNTDOWN_INITIAL,
-    isCountdownActive: true,
-    claimEmail: null,
+  const navigation = useGameNavigation();
+  const attempts = useGameAttempts();
+  
+  const countdown = useGameCountdown({
+    isMainScreen: navigation.isMainScreen,
+    isCooldown: attempts.isCooldown,
+    onCountdownEnd: () => navigation.goToScreen("slotMachine"),
   });
 
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const wasOnOtherScreenRef = useRef(false);
-  const attemptsRef = useRef(0);
-
-  // Sync ref with state
-  useEffect(() => {
-    attemptsRef.current = state.attempts;
-  }, [state.attempts]);
-
-  const isCooldown = state.attempts >= MAX_ATTEMPTS;
-  const isMainScreen = state.currentScreen === "main";
-
-  const goToScreen = useCallback((screen: GameScreen, winner?: Sponsor | null) => {
-    setState((prev) => ({
-      ...prev,
-      currentScreen: screen,
-      winner: winner !== undefined ? winner : prev.winner,
-    }));
-  }, []);
-
-  // Countdown logic
-  useEffect(() => {
-    // Stop countdown if in cooldown or not on main screen
-    if (isCooldown || !isMainScreen || !state.isCountdownActive) {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-      return;
-    }
-
-    // Start countdown
-    if (state.countdownSeconds > 0) {
-      intervalRef.current = setInterval(() => {
-        setState((prev) => {
-          if (prev.countdownSeconds <= 1) {
-            return { ...prev, countdownSeconds: 0 };
-          }
-          return { ...prev, countdownSeconds: prev.countdownSeconds - 1 };
-        });
-      }, 1000);
-    }
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-    };
-  }, [state.countdownSeconds, state.isCountdownActive, isCooldown, isMainScreen]);
-
-  // Auto-spin when countdown reaches 0
-  useEffect(() => {
-    if (
-      state.countdownSeconds === 0 &&
-      isMainScreen &&
-      !isCooldown &&
-      state.currentScreen === "main"
-    ) {
-      goToScreen("slotMachine");
-    }
-  }, [state.countdownSeconds, isMainScreen, isCooldown, state.currentScreen, goToScreen]);
-
-  // Reset countdown when returning to main screen (only if not in cooldown)
-  useEffect(() => {
-    if (isMainScreen && wasOnOtherScreenRef.current) {
-      if (!isCooldown) {
-        setState((prev) => ({
-          ...prev,
-          countdownSeconds: COUNTDOWN_INITIAL,
-          isCountdownActive: true,
-        }));
-      } else {
-        // In cooldown - ensure countdown is stopped and set to 0
-        setState((prev) => ({
-          ...prev,
-          countdownSeconds: 0,
-          isCountdownActive: false,
-        }));
-      }
-      wasOnOtherScreenRef.current = false;
-    } else if (!isMainScreen) {
-      wasOnOtherScreenRef.current = true;
-    }
-  }, [isMainScreen, isCooldown]);
-
-  // Ensure countdown is stopped in cooldown
-  useEffect(() => {
-    if (isCooldown) {
-      setState((prev) => ({
-        ...prev,
-        isCountdownActive: false,
-        countdownSeconds: 0,
-      }));
-      // Clear interval immediately
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-    }
-  }, [isCooldown]);
-
   const reset = useCallback(() => {
-    attemptsRef.current = 0; // Update ref immediately
-    setState({
-      currentScreen: "main",
-      winner: null,
-      attempts: 0,
-      countdownSeconds: COUNTDOWN_INITIAL,
-      isCountdownActive: true,
-      claimEmail: null,
-    });
-    wasOnOtherScreenRef.current = false;
-  }, []);
-
-  const setWinner = useCallback((winner: Sponsor | null) => {
-    setState((prev) => ({ ...prev, winner }));
-  }, []);
-
-  const incrementAttempt = useCallback(() => {
-    setState((prev) => {
-      const newAttempts = prev.attempts + 1;
-      attemptsRef.current = newAttempts; // Update ref immediately
-      return {
-        ...prev,
-        attempts: newAttempts,
-      };
-    });
-  }, []);
-
-  const resetAttempts = useCallback(() => {
-    attemptsRef.current = 0; // Update ref immediately
-    setState((prev) => ({ ...prev, attempts: 0 }));
-  }, []);
+    attempts.resetAttempts();
+    countdown.resetCountdown();
+    navigation.reset();
+  }, [attempts, countdown, navigation]);
 
   const handleSpin = useCallback(() => {
-    if (isCooldown) return;
-    goToScreen("slotMachine");
-  }, [isCooldown, goToScreen]);
+    if (attempts.isCooldown) return;
+    navigation.goToScreen("slotMachine");
+  }, [attempts.isCooldown, navigation]);
 
   const handleSlotComplete = useCallback(
     (result: { winner: Sponsor | null; isWin: boolean }) => {
       if (result.isWin && result.winner) {
-        setWinner(result.winner);
-        resetAttempts();
-        setTimeout(() => goToScreen("successConfetti"), 200);
+        navigation.setWinner(result.winner);
+        attempts.resetAttempts();
+        setTimeout(() => navigation.goToScreen("successConfetti"), TIMING.TRANSITION_DELAY);
       } else {
-        incrementAttempt();
-        setTimeout(() => goToScreen("failedAnimation"), 200);
+        attempts.incrementAttempt();
+        setTimeout(() => navigation.goToScreen("failedAnimation"), TIMING.TRANSITION_DELAY);
       }
     },
-    [setWinner, resetAttempts, incrementAttempt, goToScreen]
+    [navigation, attempts]
   );
 
   const handleFailedAnimationComplete = useCallback(() => {
-    // Use ref to get latest attempts value
-    const currentAttempts = attemptsRef.current;
-    goToScreen(currentAttempts >= MAX_ATTEMPTS ? "youLost" : "didntWin");
-  }, [goToScreen]);
+    const currentAttempts = attempts.getCurrentAttempts();
+    navigation.goToScreen(
+      currentAttempts >= GAME_RULES.MAX_ATTEMPTS ? "youLost" : "didntWin"
+    );
+  }, [navigation, attempts]);
 
   const handleSpinAgain = useCallback(() => {
-    // If on youLost screen with cooldown, just go back to main without resetting attempts
-    if (state.currentScreen === "youLost" && isCooldown) {
-      goToScreen("main");
+    // If on youLost screen with cooldown, just go back to main
+    if (navigation.currentScreen === "youLost" && attempts.isCooldown) {
+      navigation.goToScreen("main");
       return;
     }
     
     // If on didntWin screen and not in cooldown, spin again
-    if (state.currentScreen === "didntWin" && !isCooldown) {
-      goToScreen("slotMachine");
+    if (navigation.currentScreen === "didntWin" && !attempts.isCooldown) {
+      navigation.goToScreen("slotMachine");
       return;
     }
     
-    // Default: reset (for other cases)
+    // Default: reset
     reset();
-  }, [isCooldown, state.currentScreen, reset, goToScreen]);
+  }, [attempts.isCooldown, navigation, reset]);
 
   return {
     // State
-    currentScreen: state.currentScreen,
-    winner: state.winner,
-    attempts: state.attempts,
-    countdownSeconds: state.countdownSeconds,
-    isCooldown,
-    isMainScreen,
-    maxAttempts: MAX_ATTEMPTS,
-    remainingAttempts: MAX_ATTEMPTS - state.attempts,
-    claimEmail: state.claimEmail,
+    currentScreen: navigation.currentScreen,
+    winner: navigation.winner,
+    attempts: attempts.attempts,
+    countdownSeconds: countdown.countdownSeconds,
+    isCooldown: attempts.isCooldown,
+    isMainScreen: navigation.isMainScreen,
+    maxAttempts: attempts.maxAttempts,
+    remainingAttempts: attempts.remainingAttempts,
+    claimEmail: navigation.claimEmail,
 
     // Actions
     handleSpin,
     handleSlotComplete,
     handleFailedAnimationComplete,
     handleSpinAgain,
-    handleSuccessConfettiComplete: () => goToScreen("youWon"),
-    handleClaim: () => goToScreen("claimReward"),
+    handleSuccessConfettiComplete: () => navigation.goToScreen("youWon"),
+    handleClaim: () => navigation.goToScreen("claimReward"),
     handleClaimSubmit: (data: { fullName: string; phone: string; email: string }) => {
       console.log("Claim data:", data);
-      setState((prev) => ({
-        ...prev,
-        claimEmail: data.email,
-        currentScreen: "claimSuccess",
-      }));
+      navigation.setClaimEmail(data.email);
+      navigation.goToScreen("claimSuccess");
     },
     handleBackFromClaim: () => {
-      if (state.winner) {
-        goToScreen("youWon");
+      if (navigation.winner) {
+        navigation.goToScreen("youWon");
       } else {
         reset();
       }
     },
-    handlePlayAgainFromSuccess: () => {
-      reset();
-    },
+    handlePlayAgainFromSuccess: reset,
   };
 }
 

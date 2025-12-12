@@ -52,6 +52,21 @@ export { SponsorsCarousel } from './ui/sponsors-carousel';
 
 // Utilities
 export { cn } from './lib/utils';
+export { 
+  TIMING, 
+  GAME_RULES, 
+  CARD_HEIGHTS, 
+  BREAKPOINTS, 
+  EASING 
+} from './lib/game-config';
+export { 
+  SPONSOR_SCALE_CLASSES, 
+  getSponsorScaleClass 
+} from './lib/sponsor-scale-config';
+
+// Hooks
+export { useResponsiveCardHeight } from './hooks/use-responsive-card-height';
+export { useSlotAnimation } from './hooks/use-slot-animation';
 
 // API
 export { apiClient, ApiClient } from './api/api-client';
