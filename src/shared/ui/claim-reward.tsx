@@ -13,40 +13,46 @@ export interface ClaimRewardProps {
   className?: string;
 }
 
-// Validation schema
-const ClaimRewardSchema = z.object({
+// Create validation schema with translations
+const createClaimRewardSchema = (t: (key: string) => string) => z.object({
   fullName: z
     .string()
-    .min(1, "Full name is required")
-    .min(2, "Full name must be at least 2 characters")
-    .max(80, "Full name must be less than 80 characters")
-    .regex(/^[a-zA-Z\s'-]+$/, "Full name can only contain letters, spaces, hyphens, and apostrophes"),
+    .min(1, t("validation.fullNameRequired"))
+    .min(2, t("validation.fullNameMinLength"))
+    .max(80, t("validation.fullNameMaxLength")),
   phone: z
     .string()
-    .min(1, "Phone number is required")
-    .regex(/^[\d\s+\-()]+$/, "Phone number contains invalid characters")
+    .min(1, t("validation.phoneRequired"))
+    .regex(/^[\d\s+\-()]+$/, t("validation.phoneInvalidChars"))
     .refine(
       (val) => val.replace(/\D/g, "").length >= 10,
-      "Phone number must contain at least 10 digits"
+      t("validation.phoneMinDigits")
     ),
   email: z
     .string()
-    .min(1, "Email is required")
-    .email("Please enter a valid email address"),
+    .min(1, t("validation.emailRequired"))
+    .email(t("validation.emailInvalid")),
 });
 
-type ClaimRewardFormData = z.infer<typeof ClaimRewardSchema>;
+type ClaimRewardFormData = {
+  fullName: string;
+  phone: string;
+  email: string;
+};
 
 const ClaimReward = React.forwardRef<HTMLDivElement, ClaimRewardProps>(
   ({ winner, onSubmit, className, ...props }, ref) => {
     const { t } = useLanguage();
     const [fullName, setFullName] = React.useState("");
-    const [phone, setPhone] = React.useState("");
+    const [phone, setPhone] = React.useState("+34");
     const [email, setEmail] = React.useState("");
     const [focusedField, setFocusedField] = React.useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = React.useState(false);
     const [errors, setErrors] = React.useState<Partial<Record<keyof ClaimRewardFormData, string>>>({});
     const [touched, setTouched] = React.useState<Partial<Record<keyof ClaimRewardFormData, boolean>>>({});
+
+    // Create schema with current language translations
+    const ClaimRewardSchema = React.useMemo(() => createClaimRewardSchema(t), [t]);
 
     // Validate single field
     const validateField = React.useCallback((fieldName: keyof ClaimRewardFormData, value: string) => {
@@ -57,7 +63,7 @@ const ClaimReward = React.forwardRef<HTMLDivElement, ClaimRewardProps>(
       // Validate the field value directly
       const result = fieldSchema.safeParse(value);
       if (!result.success) {
-        const errorMessage = result.error.issues[0]?.message || "Invalid value";
+        const errorMessage = result.error.issues[0]?.message || t("validation.fullNameRequired");
         setErrors((prev) => ({ ...prev, [fieldName]: errorMessage }));
       } else {
         // Clear error for this field if validation passes
@@ -67,7 +73,7 @@ const ClaimReward = React.forwardRef<HTMLDivElement, ClaimRewardProps>(
           return newErrors;
         });
       }
-    }, []);
+    }, [ClaimRewardSchema, t]);
 
     // Handle field change with runtime validation
     const handleFieldChange = React.useCallback(
