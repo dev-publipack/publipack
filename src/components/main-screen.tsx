@@ -16,12 +16,15 @@ export function MainScreen({ sponsors, onScrollComplete }: MainScreenProps) {
   const { t } = useLanguage();
   const [isScrolling, setIsScrolling] = React.useState(false);
   
-  const scrollCountdown = useSpinCountdown({
+  const { remainingSeconds: scrollCountdown, startTime } = useSpinCountdown({
     isSpinning: isScrolling,
     spinDuration: SCROLL_DURATION,
   });
   
   const initialSeconds = Math.ceil(SCROLL_DURATION / 1000);
+  
+  // Show countdown if scrolling or if countdown is active (to avoid flickering)
+  const showCountdown = isScrolling || scrollCountdown > 0;
 
   return (
     <main
@@ -63,9 +66,9 @@ export function MainScreen({ sponsors, onScrollComplete }: MainScreenProps) {
 
         {/* Countdown Timer */}
         <div className="pt-6 sm:pt-8 md:pt-10 flex justify-center items-center w-full max-w-[600px] mx-auto px-4">
-          {isScrolling && (
+          {showCountdown && (
             <div className="flex flex-col items-center justify-center gap-3 sm:gap-4 w-full">
-              <CountdownTimer seconds={scrollCountdown} showCooldown={false} initialSeconds={initialSeconds} />
+              <CountdownTimer seconds={scrollCountdown} showCooldown={false} initialSeconds={initialSeconds} startTime={startTime} />
               <p className="text-sm sm:text-base md:text-lg lg:text-xl font-body-semibold text-black text-center leading-[1.362]">
                 {t('mainScreen.countdownMessage')}
               </p>

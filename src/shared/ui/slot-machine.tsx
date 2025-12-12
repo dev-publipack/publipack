@@ -32,7 +32,7 @@ const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
       startSpin,
     } = useSlotMachine({ sponsors, onComplete });
 
-    const spinCountdown = useSpinCountdown({
+    const { remainingSeconds: spinCountdown } = useSpinCountdown({
       isSpinning,
       spinDuration: SPIN_DURATION,
     });

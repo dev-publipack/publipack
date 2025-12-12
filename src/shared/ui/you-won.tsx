@@ -4,6 +4,7 @@ import { BrandLinkAnimation } from "./brand-link-animation";
 import { SponsorDetail } from "./sponsor-detail";
 import type { Sponsor } from "../types";
 import { useLanguage } from "../../providers/language-provider";
+import { getSponsorScaleClass } from "../lib/sponsor-scale-config";
 
 export interface YouWonProps {
   winner: Sponsor;
@@ -91,17 +92,8 @@ const YouWon = React.forwardRef<HTMLDivElement, YouWonProps>(
                 }}
               >
                 {/* Winner Sponsor Logo */}
-                <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center p-2 sm:p-3">
-                  <div
-                    className={cn(
-                      "relative",
-                      winner.name === "Lego"
-                        ? "w-[137px] h-[42px] sm:w-[156px] sm:h-[47px] md:w-[176px] md:h-[52px] lg:w-[195px] lg:h-[59px] xl:w-[215px] xl:h-[65px]"
-                        : winner.name === "The North Face"
-                        ? "w-[120px] h-[35px] sm:w-[140px] sm:h-[40px] md:w-[160px] md:h-[45px] lg:w-[180px] lg:h-[50px] xl:w-[200px] xl:h-[55px]"
-                        : "w-[182px] h-[55px] sm:w-[208px] sm:h-[62px] md:w-[234px] md:h-[70px] lg:w-[260px] lg:h-[78px] xl:w-[286px] xl:h-[86px]"
-                    )}
-                  >
+                <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center p-3 sm:p-4">
+                  <div className={cn("relative w-full h-full flex items-center justify-center", getSponsorScaleClass(winner))}>
                     <img
                       src={winner.logo}
                       alt={winner.name}

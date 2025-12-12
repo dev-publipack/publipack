@@ -8,9 +8,10 @@ export const SCROLL_DURATION = TIMING.SCROLL_DURATION;
 interface UseSponsorsScrollProps {
   sponsors: Sponsor[];
   onComplete?: () => void;
+  onLoadingChange?: (isLoading: boolean) => void;
 }
 
-export function useSponsorsScroll({ sponsors, onComplete }: UseSponsorsScrollProps) {
+export function useSponsorsScroll({ sponsors, onComplete, onLoadingChange }: UseSponsorsScrollProps) {
   const hasStartedRef = useRef(false);
   
   // Calculate column offsets to show different brands in each column
@@ -30,6 +31,11 @@ export function useSponsorsScroll({ sponsors, onComplete }: UseSponsorsScrollPro
       columnOffsets,
     },
   });
+
+  // Sync loading state immediately when animation state changes
+  useEffect(() => {
+    onLoadingChange?.(animation.isAnimating);
+  }, [animation.isAnimating, onLoadingChange]);
 
   // Reset on mount
   useEffect(() => {
