@@ -19,6 +19,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-microsoft-clarity": "^2.0.0",
+    "react-router-dom": "^7.10.1",
     "tailwind-merge": "^2.5.4",
     "zod": "4.0.5",
     "zustand": "5.0.6"

@@ -7,6 +7,7 @@ interface UseSpinCountdownOptions {
 
 export function useSpinCountdown({ isSpinning, spinDuration }: UseSpinCountdownOptions) {
   const [remainingSeconds, setRemainingSeconds] = React.useState(0);
+  const [startTime, setStartTime] = React.useState<number | null>(null);
   const startTimeRef = React.useRef<number | null>(null);
   const animationFrameRef = React.useRef<number | null>(null);
 
@@ -14,6 +15,7 @@ export function useSpinCountdown({ isSpinning, spinDuration }: UseSpinCountdownO
     if (!isSpinning) {
       // Reset when not spinning
       setRemainingSeconds(0);
+      setStartTime(null);
       startTimeRef.current = null;
 
       if (animationFrameRef.current !== null) {
@@ -24,7 +26,9 @@ export function useSpinCountdown({ isSpinning, spinDuration }: UseSpinCountdownO
     }
 
     // Start countdown when spinning begins
-    startTimeRef.current = Date.now();
+    const now = performance.now();
+    startTimeRef.current = now;
+    setStartTime(now);
     const initialSeconds = Math.ceil(spinDuration / 1000);
     setRemainingSeconds(initialSeconds);
 
@@ -33,7 +37,7 @@ export function useSpinCountdown({ isSpinning, spinDuration }: UseSpinCountdownO
         return;
       }
 
-      const elapsed = Date.now() - startTimeRef.current;
+      const elapsed = performance.now() - startTimeRef.current;
       const remaining = Math.max(0, spinDuration - elapsed);
       const seconds = Math.ceil(remaining / 1000);
 
@@ -58,7 +62,10 @@ export function useSpinCountdown({ isSpinning, spinDuration }: UseSpinCountdownO
     };
   }, [isSpinning, spinDuration]);
 
-  return remainingSeconds;
+  return { remainingSeconds, startTime };
 }
+
+
+
 
 

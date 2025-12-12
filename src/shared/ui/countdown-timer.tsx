@@ -1,5 +1,5 @@
-import { useRef } from "react";
-import *as React from "react";
+import { useState, useEffect, useRef } from "react";
+import * as React from "react";
 import { cn } from "../lib/utils";
 
 export interface CountdownTimerProps {
@@ -7,28 +7,31 @@ export interface CountdownTimerProps {
   showCooldown?: boolean;
   className?: string;
   initialSeconds?: number;
+  startTime?: number | null;
 }
 
 const CountdownTimer = React.forwardRef<HTMLDivElement, CountdownTimerProps>(
-  ({ seconds, showCooldown = false, className, initialSeconds = 5, ...props }, ref) => {
-    const [animatedProgress, setAnimatedProgress] = React.useState(0);
-    const animationFrameRef = useRef<number>(undefined);
-    const startTimeRef = useRef<number>(undefined);
-    const isInitializedRef = useRef(false);
+  ({ seconds, showCooldown = false, className, initialSeconds = 5, startTime: externalStartTime, ...props }, ref) => {
+    const [animatedProgress, setAnimatedProgress] = useState(0);
+    const animationFrameRef = useRef<number | undefined>(undefined);
+    const startTimeRef = useRef<number | undefined>(undefined);
 
-    React.useEffect(() => {
+    useEffect(() => {
       if (showCooldown) {
         setAnimatedProgress(0);
-        isInitializedRef.current = false;
         startTimeRef.current = undefined;
+        if (animationFrameRef.current) {
+          cancelAnimationFrame(animationFrameRef.current);
+        }
         return;
       }
 
-      // Initialize on first render or when timer resets
-      if (!isInitializedRef.current || seconds === initialSeconds) {
-        isInitializedRef.current = true;
+      // Use external startTime if provided (for synchronization with scroll), otherwise use local
+      if (externalStartTime !== null && externalStartTime !== undefined) {
+        startTimeRef.current = externalStartTime;
+      } else if (startTimeRef.current === undefined || seconds === initialSeconds) {
+        // Initialize on first render or when timer resets
         startTimeRef.current = performance.now();
-        setAnimatedProgress(0);
       }
 
       if (seconds <= 0) {
@@ -39,25 +42,28 @@ const CountdownTimer = React.forwardRef<HTMLDivElement, CountdownTimerProps>(
         return;
       }
 
-      // Continuous smooth animation
+      // Continuous smooth animation synchronized with actual scroll time
       const animate = (currentTime: number) => {
         if (startTimeRef.current === undefined) {
-          startTimeRef.current = currentTime;
+          return;
         }
 
         const totalElapsed = currentTime - startTimeRef.current;
         const totalDuration = initialSeconds * 1000; // Total time in ms
 
-        // Calculate continuous progress from 0 to 100
+        // Calculate continuous progress from 0 to 100 based on elapsed time
         const currentProgress = Math.min((totalElapsed / totalDuration) * 100, 100);
 
         setAnimatedProgress(currentProgress);
 
-        // Continue animating if time remaining
+        // Continue animating if time remaining and seconds > 0
         if (currentProgress < 100 && seconds > 0) {
           animationFrameRef.current = requestAnimationFrame(animate);
-        } else if (currentProgress >= 100) {
+        } else if (currentProgress >= 100 || seconds <= 0) {
           setAnimatedProgress(100);
+          if (animationFrameRef.current) {
+            cancelAnimationFrame(animationFrameRef.current);
+          }
         }
       };
 
@@ -72,7 +78,7 @@ const CountdownTimer = React.forwardRef<HTMLDivElement, CountdownTimerProps>(
           cancelAnimationFrame(animationFrameRef.current);
         }
       };
-    }, [seconds, showCooldown, initialSeconds]);
+    }, [seconds, showCooldown, initialSeconds, externalStartTime]);
 
     return (
       <div

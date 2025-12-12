@@ -5,6 +5,7 @@ import { CountdownTimer } from "./countdown-timer";
 import { useLanguage } from "../../providers/language-provider";
 import { useSpinCountdown } from "../../hooks/use-spin-countdown";
 import { useSlotMachine } from "../../hooks/use-slot-machine";
+import { getSponsorScaleClass } from "../lib/sponsor-scale-config";
 
 export interface SlotMachineProps {
   sponsors: Sponsor[];
@@ -31,7 +32,7 @@ const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
       startSpin,
     } = useSlotMachine({ sponsors, onComplete });
 
-    const spinCountdown = useSpinCountdown({
+    const { remainingSeconds: spinCountdown } = useSpinCountdown({
       isSpinning,
       spinDuration: SPIN_DURATION,
     });
@@ -81,46 +82,20 @@ const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
                     transform: "translateY(0)",
                   }}
                 >
-                  {extendedSponsors.map((sponsor, index) => {
-                    // Check if logo needs significant reduction on mobile
-                    const needsLargeReduction = 
-                      sponsor.logo === "/images/el-corte-logo.svg" ||
-                      sponsor.logo === "/images/level-logo.svg" ||
-                      sponsor.logo === "/images/disney-land.svg" ||
-                      sponsor.logo === "/images/preply-logo.svg";
-                    
-                    // Workaway needs even more reduction
-                    const needsExtraReduction = 
-                      sponsor.logo === "/images/workaway-info.svg";
-                    
-                    return (
-                      <div
-                        key={index}
-                        className="w-full h-[154px] sm:h-[176px] md:h-[198px] lg:h-[220px] xl:h-[248px] flex flex-col items-center justify-center p-2 sm:p-3"
-                      >
-                        <div
-                          className={cn(
-                            "relative",
-                            sponsor.name === "Lego"
-                              ? "w-[137px] h-[42px] sm:w-[156px] sm:h-[47px] md:w-[176px] md:h-[52px] lg:w-[195px] lg:h-[59px] xl:w-[215px] xl:h-[65px]"
-                              : sponsor.name === "The North Face"
-                                ? "w-[120px] h-[35px] sm:w-[140px] sm:h-[40px] md:w-[160px] md:h-[45px] lg:w-[180px] lg:h-[50px] xl:w-[200px] xl:h-[55px]"
-                                : needsExtraReduction
-                                  ? "w-[99px] h-[55px] sm:w-[130px] sm:h-[62px] md:w-[153px] md:h-[70px] lg:w-[175px] lg:h-[78px] xl:w-[198px] xl:h-[86px]"
-                                  : needsLargeReduction
-                                    ? "w-[108px] h-[55px] sm:w-[139px] sm:h-[62px] md:w-[162px] md:h-[70px] lg:w-[184px] lg:h-[78px] xl:w-[207px] xl:h-[86px]"
-                                    : "w-[182px] h-[55px] sm:w-[208px] sm:h-[62px] md:w-[234px] md:h-[70px] lg:w-[260px] lg:h-[78px] xl:w-[286px] xl:h-[86px]"
-                          )}
-                        >
-                          <img
-                            src={sponsor.logo}
-                            alt={sponsor.name}
-                            className="w-full h-full object-contain"
-                          />
-                        </div>
+                  {extendedSponsors.map((sponsor, index) => (
+                    <div
+                      key={index}
+                      className="w-full h-[154px] sm:h-[176px] md:h-[198px] lg:h-[220px] xl:h-[248px] flex flex-col items-center justify-center p-3 sm:p-4"
+                    >
+                      <div className={cn("relative w-full h-full flex items-center justify-center", getSponsorScaleClass(sponsor))}>
+                        <img
+                          src={sponsor.logo}
+                          alt={sponsor.name}
+                          className="w-full h-full object-contain"
+                        />
                       </div>
-                    );
-                  })}
+                    </div>
+                  ))}
                 </div>
               </div>
             ))}
