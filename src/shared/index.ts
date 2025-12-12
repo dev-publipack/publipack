@@ -48,6 +48,7 @@ export type { SuccessConfettiAnimationProps } from './ui/success-confetti-animat
 export { SponsorDetail } from './ui/sponsor-detail';
 export type { SponsorDetailProps } from './ui/sponsor-detail';
 export { ActivityNotification } from './ui/activity-notification';
+export { SponsorsCarousel } from './ui/sponsors-carousel';
 
 // Utilities
 export { cn } from './lib/utils';

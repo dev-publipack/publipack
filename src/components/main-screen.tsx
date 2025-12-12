@@ -1,25 +1,34 @@
-import { Button, RewardCard, CountdownTimer, ActivityNotification } from "../shared";
+import * as React from "react";
+import { ActivityNotification, SponsorsCarousel, CountdownTimer } from "../shared";
 import type { Sponsor } from "../shared/types";
 import { useActivityNotifications } from "../hooks/use-activity-notifications";
 import { useLanguage } from "../providers/language-provider";
+import { useSpinCountdown } from "../hooks/use-spin-countdown";
+import { SCROLL_DURATION } from "../hooks/use-sponsors-scroll";
 
 interface MainScreenProps {
   sponsors: Sponsor[];
-  countdownSeconds: number;
-  onSpin: () => void;
-  showCooldown?: boolean;
+  onScrollComplete: () => void;
 }
 
-export function MainScreen({ sponsors, countdownSeconds, onSpin, showCooldown = false }: MainScreenProps) {
+export function MainScreen({ sponsors, onScrollComplete }: MainScreenProps) {
   const { notifications } = useActivityNotifications(true);
   const { t } = useLanguage();
+  const [isScrolling, setIsScrolling] = React.useState(false);
+  
+  const scrollCountdown = useSpinCountdown({
+    isSpinning: isScrolling,
+    spinDuration: SCROLL_DURATION,
+  });
+  
+  const initialSeconds = Math.ceil(SCROLL_DURATION / 1000);
 
   return (
     <main
       className="min-h-screen w-full justify-center flex flex-col items-center overflow-x-hidden"
       style={{
         background:
-          "linear-gradient(133deg, rgba(246, 248, 251, 1) 0%, rgba(255, 207, 178, 1) 100%)",
+          "linear-gradient(137deg, rgba(246, 248, 251, 1) 7%, rgba(255, 207, 178, 1) 100%)",
       }}
     >
       <div className="w-full max-w-[1080px] flex flex-col items-center justify-center px-4 sm:px-6 md:px-8 py-6 sm:py-8 md:py-10">
@@ -37,44 +46,31 @@ export function MainScreen({ sponsors, countdownSeconds, onSpin, showCooldown = 
 
         {/* Sponsor Cards Container */}
         <div
-          className="relative w-full max-w-[900px] mx-auto bg-white rounded-2xl sm:rounded-3xl md:rounded-[32px] p-4 sm:p-5 md:p-6 lg:p-8 mb-6 sm:mb-8 md:mb-10"
-          style={{ boxShadow: "0px 4px 33.10px 0px rgba(0, 0, 0, 0.25)" }}
-        >
-          {/* Sponsor Cards Grid - 3 columns in a row */}
-          <div className="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4 lg:gap-5 xl:gap-6 w-full justify-items-center">
-            {sponsors.map((sponsor, index) => (
-              <RewardCard
-                key={index}
-                sponsorName={sponsor.name}
-                reward={sponsor.reward}
-                logoUrl={sponsor.logo}
-                logoAlt={`${sponsor.name} logo`}
-                className="w-full max-w-full"
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Spin Now Button */}
-        <Button
-          onClick={onSpin}
-          disabled={showCooldown}
-          className="w-full max-w-[600px] mx-auto h-14 sm:h-16 md:h-20 lg:h-24 rounded-full text-white text-lg sm:text-xl md:text-3xl lg:text-4xl font-heading leading-[1.4] hover:opacity-90 px-6 mb-4 sm:mb-5 md:mb-6"
+          className="relative w-full max-w-[900px] mx-auto rounded-2xl sm:rounded-3xl md:rounded-[29px] p-4 sm:p-5 md:p-6 lg:p-8"
           style={{
             background:
-              "linear-gradient(90deg, rgba(6, 144, 225, 1) 0%, rgba(56, 207, 253, 1) 100%)",
+              "linear-gradient(137deg, rgba(11, 141, 217, 1) 4%, rgba(45, 195, 248, 1) 100%)",
+            boxShadow: "0px 4.24px 35.10px 0px rgba(0, 0, 0, 0.25)",
           }}
-          size="lg"
         >
-          {t('mainScreen.spinNowButton')}
-        </Button>
+          {/* Sponsors Carousel - vertical scroll like slot machine */}
+          <SponsorsCarousel 
+            sponsors={sponsors} 
+            onComplete={onScrollComplete}
+            onLoadingChange={setIsScrolling}
+          />
+        </div>
 
-        {/* Countdown Section */}
-        <div className="flex flex-col items-center justify-center gap-3 sm:gap-4 w-full">
-          <CountdownTimer seconds={countdownSeconds} showCooldown={showCooldown} initialSeconds={5} />
-          <p className="text-sm sm:text-base md:text-lg lg:text-xl font-body-semibold text-black text-center leading-[1.362]">
-            {showCooldown ? t('mainScreen.cooldownMessage') : t('mainScreen.countdownMessage')}
-          </p>
+        {/* Countdown Timer */}
+        <div className="pt-6 sm:pt-8 md:pt-10 flex justify-center items-center w-full max-w-[600px] mx-auto px-4">
+          {isScrolling && (
+            <div className="flex flex-col items-center justify-center gap-3 sm:gap-4 w-full">
+              <CountdownTimer seconds={scrollCountdown} showCooldown={false} initialSeconds={initialSeconds} />
+              <p className="text-sm sm:text-base md:text-lg lg:text-xl font-body-semibold text-black text-center leading-[1.362]">
+                {t('mainScreen.countdownMessage')}
+              </p>
+            </div>
+          )}
         </div>
       </div>
 

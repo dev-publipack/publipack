@@ -20,10 +20,9 @@ export function Version1Page() {
       <LanguageProvider>
         {game.isMainScreen ? (
           <MainScreen
+            key="main-screen"
             sponsors={SPONSORS}
-            countdownSeconds={game.countdownSeconds}
-            onSpin={game.handleSpin}
-            showCooldown={game.isCooldown}
+            onScrollComplete={game.handleSpin}
           />
         ) : (
           <GameScreens
