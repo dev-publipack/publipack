@@ -7,6 +7,7 @@ export const SPONSORS: Sponsor[] = [
     logo: "/images/preply-logo.svg",
     url: "https://preply.com/es/?irclickid=3wcXd-VyXxycT8uSdBVaZQHVUkpTrkSdMxcN0k0&utm_medium=cpa&irgwc=1&afsrc=1&adgroupid=229375&utm_content=&sharedid=&campaignid=24422&utm_source=affiliate&pref=NzE5ODk0",
     scale: "xlarge",
+    text: "Un 50% de descuento",
   },
   {
     name: "Lego",
@@ -14,6 +15,7 @@ export const SPONSORS: Sponsor[] = [
     logo: "/images/lego-logo.svg",
     url: "https://kids.lego.com/es-es",
     scale: "xlarge",
+    text: "Juegos Gratis de LEGO!",
   },
   {
     name: "Adidas",
@@ -21,6 +23,7 @@ export const SPONSORS: Sponsor[] = [
     logo: "/images/adidas-logo.svg",
     url: "https://www.adidas.es/ultimas_tallas-outlet",
     scale: "xlarge",
+    text: "Hasta -60%",
   },
   {
     name: "The North Face",
@@ -28,6 +31,7 @@ export const SPONSORS: Sponsor[] = [
     logo: "/images/tnf-logo.svg",
     url: "https://www.thenorthface.com/es-es/outlet",
     scale: "xlarge",
+    text: "Hasta -50%",
   },
   {
     name: "FlyLevel",
@@ -35,6 +39,7 @@ export const SPONSORS: Sponsor[] = [
     logo: "/images/level-logo.svg",
     url: "https://www.flylevel.com/es",
     scale: "xlarge",
+    text: "161€ To New York!",
   },
   {
     name: "Workaway",
@@ -42,6 +47,7 @@ export const SPONSORS: Sponsor[] = [
     logo: "/images/workaway-info.svg",
     url: "https://www.workaway.info/en/host/737765657341",
     scale: "xlarge",
+    text: "Navegar gratis en el Caribe!",
   },
   {
     name: "El Corte Inglés",
@@ -49,6 +55,7 @@ export const SPONSORS: Sponsor[] = [
     logo: "/images/el-corte-logo.svg",
     url: "https://www.viajeselcorteingles.es/especiales/ofertas-ultimo-minuto",
     scale: "xlarge",
+    text: "Descuentos en viajes! -40%",
   },
   {
     name: "The Farm",
@@ -56,6 +63,7 @@ export const SPONSORS: Sponsor[] = [
     logo: "/images/the-farm-logo.svg",
     url: "https://thefarm-marbella.com/",
     scale: "xlarge",
+    text: "Botella de cava gratis",
   },
   {
     name: "Disney",
@@ -63,5 +71,6 @@ export const SPONSORS: Sponsor[] = [
     logo: "/images/disney-land.svg",
     url: "https://www.disneylandparis.com/",
     scale: "xlarge",
+    text: "Descuentos especiales",
   },
 ];

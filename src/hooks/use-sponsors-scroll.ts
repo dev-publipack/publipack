@@ -9,9 +9,10 @@ interface UseSponsorsScrollProps {
   sponsors: Sponsor[];
   onComplete?: () => void;
   onLoadingChange?: (isLoading: boolean) => void;
+  duration?: number; // Optional custom duration for slow scrolling
 }
 
-export function useSponsorsScroll({ sponsors, onComplete, onLoadingChange }: UseSponsorsScrollProps) {
+export function useSponsorsScroll({ sponsors, onComplete, onLoadingChange, duration }: UseSponsorsScrollProps) {
   const hasStartedRef = useRef(false);
   
   // Calculate column offsets to show different brands in each column
@@ -25,7 +26,7 @@ export function useSponsorsScroll({ sponsors, onComplete, onLoadingChange }: Use
     itemsCount: sponsors.length,
     onComplete,
     config: {
-      duration: TIMING.SCROLL_DURATION,
+      duration: duration ?? TIMING.SCROLL_DURATION,
       easing: EASING.SCROLL,
       minRotations: GAME_RULES.SCROLL_MIN_ROTATIONS,
       columnOffsets,

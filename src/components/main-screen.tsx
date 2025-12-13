@@ -16,12 +16,14 @@ export function MainScreen({ sponsors, onScrollComplete }: MainScreenProps) {
   const { t } = useLanguage();
   const [isScrolling, setIsScrolling] = React.useState(false);
   
+  const SLOW_SCROLL_DURATION = 5500; // 20 seconds for slow scrolling on main screen
+  
   const { remainingSeconds: scrollCountdown, startTime } = useSpinCountdown({
     isSpinning: isScrolling,
-    spinDuration: SCROLL_DURATION,
+    spinDuration: SLOW_SCROLL_DURATION,
   });
   
-  const initialSeconds = Math.ceil(SCROLL_DURATION / 1000);
+  const initialSeconds = Math.ceil(SLOW_SCROLL_DURATION / 1000);
   
   // Show countdown if scrolling or if countdown is active (to avoid flickering)
   const showCountdown = isScrolling || scrollCountdown > 0;
@@ -61,6 +63,7 @@ export function MainScreen({ sponsors, onScrollComplete }: MainScreenProps) {
             sponsors={sponsors} 
             onComplete={onScrollComplete}
             onLoadingChange={setIsScrolling}
+            scrollDuration={20000}
           />
         </div>
 
