@@ -93,12 +93,23 @@ export const SponsorDetail = React.forwardRef<
         }}
       >
         {/* YOU WON! Title */}
-        <h2 className="text-xl sm:text-2xl md:text-3xl text-[#0A5980] lg:text-4xl font-heading font-bold text-center mb-2">
+        <h2 className="text-xl pt-4 sm:text-2xl md:text-3xl text-[#0A5980] lg:text-4xl font-heading font-bold text-center mb-2">
           {t('youWon.title')}
         </h2>
-
+        {sponsor.reward && (
+            <p 
+              className="mt-1 sm:mt-2 font-body text-[#111D21] text-center text-sm sm:text-base md:text-lg lg:text-xl"
+              style={{
+                fontFamily: 'var(--font-open-sans)',
+                fontWeight: 400,
+                lineHeight: '120%',
+              }}
+            >
+              {sponsor.reward}
+            </p>
+          )}
         {/* Sponsor Logo */}
-        <div className="flex flex-col items-center justify-center mb-2 w-full">
+        <div className="flex pt-4 flex-col items-center justify-center mb-2 w-full">
           <div
             className={cn(
               "relative",
@@ -114,18 +125,7 @@ export const SponsorDetail = React.forwardRef<
             />
           </div>
           {/* Reward Text */}
-          {sponsor.reward && (
-            <p 
-              className="mt-1 sm:mt-2 font-body text-[#111D21] text-center text-sm sm:text-base md:text-lg lg:text-xl"
-              style={{
-                fontFamily: 'var(--font-open-sans)',
-                fontWeight: 400,
-                lineHeight: '120%',
-              }}
-            >
-              {sponsor.reward}
-            </p>
-          )}
+      
         </div>
 
         {/* Gift Animation - Lottie */}
