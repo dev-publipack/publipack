@@ -48,7 +48,7 @@ const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
       >
         {/* Spinning Status */}
         <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading text-[#163446] text-center mb-6 sm:mb-8 leading-[1.14]">
-          Spinning
+          {t('slotMachine.title')}
         </h2>
 
         {/* Slot Machine Container */}
