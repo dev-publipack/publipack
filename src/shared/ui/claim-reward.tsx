@@ -147,6 +147,7 @@ const ClaimReward = React.forwardRef<HTMLDivElement, ClaimRewardProps>(
         const emailSuccess = await brevoClient.sendEmail({
           to: email,
           subject: "🎉 Thanks for playing with app.publipacks.com",
+          brandUrl: winner.url,
           fullName: fullName,
           htmlContent: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
@@ -165,7 +166,7 @@ const ClaimReward = React.forwardRef<HTMLDivElement, ClaimRewardProps>(
               
               <p>
                 Sign up to receive free offers directly to your email, — 
-                <a href="https://app.publipacks.com" style="color: #44D2FD; text-decoration: none;"> click here to join</a>.
+                <a href="${winner.url}" style="color: #44D2FD; text-decoration: none;"> click here to join</a>.
               </p>
               
               <p>Keep playing, keep winning, and keep discovering amazing rewards!</p>
@@ -197,15 +198,14 @@ ${winner.name}: ${winner.reward}
 
 Enjoy free prizes and exclusive discounts all around the world.
 
-Sign up to receive free offers directly to your email, — click here to join: https://app.publipacks.com
+Sign up to receive free offers directly to your email, — click here to join: ${winner.url} 
 
 Keep playing, keep winning, and keep discovering amazing rewards!
 
 Cheers,
 The app.publipacks.com Team
-app.publipacks.com
 
-©️ 2025 Publicpacks.com. All rights reserved.
+©️ 2025 app.publipacks.com. All rights reserved.
 Terms & Conditions | Privacy Policy | Data Protection Policy`,
         });
 
