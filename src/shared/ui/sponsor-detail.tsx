@@ -3,6 +3,7 @@ import Lottie from "lottie-react";
 import { cn } from "../lib/utils";
 import type { Sponsor } from "../types";
 import { WinButtons } from "./win-buttons";
+import { useLanguage } from "../../providers/language-provider";
 
 type LottieAnimationData = {
   v?: string;
@@ -31,6 +32,7 @@ export const SponsorDetail = React.forwardRef<
   HTMLDivElement,
   SponsorDetailProps
 >(({ sponsor, onClose, onClaim, onSpinAgain, showCooldown = false, className, ...props }, ref) => {
+  const { t } = useLanguage();
   const [giftData, setGiftData] = React.useState<LottieAnimationData | null>(null);
   const lottieRef = React.useRef<any>(null);
 
@@ -62,7 +64,7 @@ export const SponsorDetail = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        "relative w-full flex flex-col items-center justify-center min-h-screen py-8 px-4",
+        "relative w-full flex flex-col items-center justify-center min-h-screen py-2 sm:py-3 px-4",
         className
       )}
       style={{
@@ -84,20 +86,25 @@ export const SponsorDetail = React.forwardRef<
 
       {/* White Container */}
       <div
-        className="relative w-full max-w-[900px] rounded-2xl sm:rounded-3xl md:rounded-[32px] p-6 sm:p-8 md:p-10"
+        className="relative w-full max-w-[900px] rounded-2xl sm:rounded-3xl md:rounded-[32px] p-3 sm:p-4 md:p-5"
         style={{
           background: "#FFFFFF",
           boxShadow: "0px 4px 33.10px 0px rgba(0, 0, 0, 0.25)",
         }}
       >
+        {/* YOU WON! Title */}
+        <h2 className="text-xl sm:text-2xl md:text-3xl text-[#0A5980] lg:text-4xl font-heading font-bold text-center mb-2">
+          {t('youWon.title')}
+        </h2>
+
         {/* Sponsor Logo */}
-        <div className="flex items-center justify-center mb-4 sm:mb-6 w-full">
+        <div className="flex flex-col items-center justify-center mb-2 w-full">
           <div
             className={cn(
               "relative",
               sponsor.name === "Lego"
-                ? "w-[249px] h-[83px] sm:w-[187px] sm:h-[125px] md:w-[218px] md:h-[146px] lg:w-[249px] lg:h-[166px]"
-                : "w-[374px] h-[125px] sm:w-[249px] sm:h-[166px] md:w-[291px] md:h-[208px] lg:w-[333px] lg:h-[249px]"
+                ? "w-[150px] h-[50px] sm:w-[140px] sm:h-[93px] md:w-[160px] md:h-[107px] lg:w-[180px] lg:h-[120px]"
+                : "w-[200px] h-[67px] sm:w-[180px] sm:h-[120px] md:w-[200px] md:h-[133px] lg:w-[220px] lg:h-[147px]"
             )}
           >
             <img
@@ -106,12 +113,25 @@ export const SponsorDetail = React.forwardRef<
               className="w-full h-full object-contain"
             />
           </div>
+          {/* Reward Text */}
+          {sponsor.reward && (
+            <p 
+              className="mt-1 sm:mt-2 font-body text-[#111D21] text-center text-sm sm:text-base md:text-lg lg:text-xl"
+              style={{
+                fontFamily: 'var(--font-open-sans)',
+                fontWeight: 400,
+                lineHeight: '120%',
+              }}
+            >
+              {sponsor.reward}
+            </p>
+          )}
         </div>
 
         {/* Gift Animation - Lottie */}
         {giftData && (
           <div className="flex items-center justify-center w-full">
-            <div className="w-full max-w-[500px] h-64 sm:h-80 md:h-96 lg:h-112 flex items-center justify-center">
+            <div className="w-full max-w-[400px] h-48 sm:h-56 md:h-64 lg:h-72 flex items-center justify-center">
               <Lottie
                 lottieRef={lottieRef}
                 animationData={giftData}
@@ -125,7 +145,7 @@ export const SponsorDetail = React.forwardRef<
       </div>
 
       {/* Win Buttons - outside container */}
-      <div className="w-full max-w-[700px] mt-6 sm:mt-8">
+      <div className="w-full max-w-[700px] mt-2 sm:mt-3">
         <WinButtons onClaim={onClaim} onSpinAgain={onSpinAgain} showCooldown={showCooldown} />
       </div>
     </div>
