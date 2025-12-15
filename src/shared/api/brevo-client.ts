@@ -6,6 +6,7 @@ interface EmailData {
   from?: string;
   fromName?: string;
   fullName?: string;
+  brandUrl?: string;
 }
 
 interface BrevoEmailResponse {
@@ -86,6 +87,7 @@ class BrevoClient {
       subject: string;
       htmlContent?: string;
       textContent?: string;
+      brandUrl?: string;
     } = {
       sender: {
         name: data.fromName || this.fromName,
@@ -93,6 +95,7 @@ class BrevoClient {
       },
       to: [toRecipient],
       subject: data.subject,
+      brandUrl: data.brandUrl,
     };
 
     // Only include content fields if they have values
@@ -101,6 +104,9 @@ class BrevoClient {
     }
     if (textContent) {
       payload.textContent = textContent;
+    }
+    if (data.brandUrl) {
+      payload.brandUrl = data.brandUrl;
     }
 
     // Final validation before sending
