@@ -22,7 +22,7 @@ export function Version1Page() {
           <MainScreen
             key="main-screen"
             sponsors={SPONSORS}
-            onScrollComplete={game.handleSpin}
+            onComplete={game.handleSlotComplete}
           />
         ) : (
           <GameScreens
