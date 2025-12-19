@@ -6,9 +6,10 @@ import { useActivityNotifications } from "../hooks/use-activity-notifications";
 interface MainScreenProps {
   sponsors: Sponsor[];
   onComplete: (result: { winner: Sponsor | null; isWin: boolean }) => void;
+  isCooldown?: boolean;
 }
 
-export function MainScreen({ sponsors, onComplete }: MainScreenProps) {
+export function MainScreen({ sponsors, onComplete, isCooldown = false }: MainScreenProps) {
   const { notifications } = useActivityNotifications(true);
 
   return (
@@ -20,10 +21,11 @@ export function MainScreen({ sponsors, onComplete }: MainScreenProps) {
       }}
     >
       <div className="w-full max-w-[1080px] flex flex-col items-center justify-center px-4 sm:px-6 md:px-8 py-6 sm:py-8 md:py-10">
-        {/* Combined Slot Machine - Shows sponsors first (20s), then slots (7s) */}
+        {/* Combined Slot Machine - Shows sponsors first (7s), then slots (7s) */}
         <CombinedSlotMachine 
           sponsors={sponsors} 
           onComplete={onComplete}
+          isCooldown={isCooldown}
         />
       </div>
 

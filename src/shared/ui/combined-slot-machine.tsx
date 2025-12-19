@@ -10,9 +10,10 @@ export interface CombinedSlotMachineProps {
   sponsors: Sponsor[];
   onComplete?: (result: { winner: Sponsor | null; isWin: boolean }) => void;
   className?: string;
+  isCooldown?: boolean;
 }
 
-export function CombinedSlotMachine({ sponsors, onComplete, className }: CombinedSlotMachineProps) {
+export function CombinedSlotMachine({ sponsors, onComplete, className, isCooldown = false }: CombinedSlotMachineProps) {
   const { t } = useLanguage();
   
   const {
@@ -24,7 +25,7 @@ export function CombinedSlotMachine({ sponsors, onComplete, className }: Combine
     scrollRefs,
     extendedSponsors,
     totalDuration,
-  } = useCombinedSlotMachine({ sponsors, onComplete });
+  } = useCombinedSlotMachine({ sponsors, onComplete, isCooldown });
 
   // Track countdown from start of animation - один непрерывный таймер
   const [remainingSeconds, setRemainingSeconds] = React.useState(0);

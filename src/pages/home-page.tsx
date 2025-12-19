@@ -22,6 +22,7 @@ export function HomePage() {
           <MainScreen
             sponsors={SPONSORS}
             onComplete={game.handleSlotComplete}
+            isCooldown={game.isCooldown}
           />
         ) : (
           <GameScreens

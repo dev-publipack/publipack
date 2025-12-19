@@ -6,11 +6,12 @@ import { TIMING, GAME_RULES, EASING } from "@/shared/lib/game-config";
 interface UseCombinedSlotMachineProps {
   sponsors: Sponsor[];
   onComplete?: (result: { winner: Sponsor | null; isWin: boolean }) => void;
+  isCooldown?: boolean;
 }
 
 type AnimationPhase = 'sponsors' | 'slots' | 'complete';
 
-export function useCombinedSlotMachine({ sponsors, onComplete }: UseCombinedSlotMachineProps) {
+export function useCombinedSlotMachine({ sponsors, onComplete, isCooldown = false }: UseCombinedSlotMachineProps) {
   const [phase, setPhase] = useState<AnimationPhase>('sponsors');
   const [isComplete, setIsComplete] = useState(false);
   const [isWin, setIsWin] = useState(false);
@@ -82,8 +83,25 @@ export function useCombinedSlotMachine({ sponsors, onComplete }: UseCombinedSlot
     return selected;
   }, [sponsors.length]);
 
-  // Start sponsors animation on mount
+  // Reset state when cooldown changes
   useEffect(() => {
+    if (isCooldown) {
+      // Reset state when entering cooldown
+      setHasStarted(false);
+      setPhase('sponsors');
+      setIsComplete(false);
+      sponsorsAnimation.resetSlots();
+      slotsAnimation.resetSlots();
+    }
+  }, [isCooldown, sponsorsAnimation, slotsAnimation]);
+
+  // Start sponsors animation on mount (only if not in cooldown)
+  useEffect(() => {
+    if (isCooldown || hasStarted) {
+      // Don't start animation if in cooldown or already started
+      return;
+    }
+
     const timer = setTimeout(() => {
       if (sponsors.length > 0) {
         setHasStarted(true);
@@ -92,7 +110,7 @@ export function useCombinedSlotMachine({ sponsors, onComplete }: UseCombinedSlot
     }, TIMING.AUTO_SPIN_DELAY);
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isCooldown, hasStarted]);
 
   // Start slots animation when phase changes to 'slots'
   useEffect(() => {
