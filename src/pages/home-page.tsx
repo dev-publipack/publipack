@@ -21,7 +21,7 @@ export function HomePage() {
         {game.isMainScreen ? (
           <MainScreen
             sponsors={SPONSORS}
-            onScrollComplete={game.handleSpin}
+            onComplete={game.handleSlotComplete}
           />
         ) : (
           <GameScreens

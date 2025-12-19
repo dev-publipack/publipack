@@ -1,32 +1,15 @@
 import * as React from "react";
-import { ActivityNotification, SponsorsCarousel, CountdownTimer } from "../shared";
+import { ActivityNotification, CombinedSlotMachine } from "../shared";
 import type { Sponsor } from "../shared/types";
 import { useActivityNotifications } from "../hooks/use-activity-notifications";
-import { useLanguage } from "../providers/language-provider";
-import { useSpinCountdown } from "../hooks/use-spin-countdown";
-import { SCROLL_DURATION } from "../hooks/use-sponsors-scroll";
 
 interface MainScreenProps {
   sponsors: Sponsor[];
-  onScrollComplete: () => void;
+  onComplete: (result: { winner: Sponsor | null; isWin: boolean }) => void;
 }
 
-export function MainScreen({ sponsors, onScrollComplete }: MainScreenProps) {
+export function MainScreen({ sponsors, onComplete }: MainScreenProps) {
   const { notifications } = useActivityNotifications(true);
-  const { t } = useLanguage();
-  const [isScrolling, setIsScrolling] = React.useState(false);
-  
-  const SLOW_SCROLL_DURATION = 5500; // 20 seconds for slow scrolling on main screen
-  
-  const { remainingSeconds: scrollCountdown, startTime } = useSpinCountdown({
-    isSpinning: isScrolling,
-    spinDuration: SLOW_SCROLL_DURATION,
-  });
-  
-  const initialSeconds = Math.ceil(SLOW_SCROLL_DURATION / 1000);
-  
-  // Show countdown if scrolling or if countdown is active (to avoid flickering)
-  const showCountdown = isScrolling || scrollCountdown > 0;
 
   return (
     <main
@@ -37,47 +20,11 @@ export function MainScreen({ sponsors, onScrollComplete }: MainScreenProps) {
       }}
     >
       <div className="w-full max-w-[1080px] flex flex-col items-center justify-center px-4 sm:px-6 md:px-8 py-6 sm:py-8 md:py-10">
-        {/* Title */}
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading text-[#163446] leading-[1.4] text-center mb-3 sm:mb-4">
-          {t('mainScreen.title').split('?')[0]} <span className="text-[#44D2FD]">{t('mainScreen.title').split(' ').slice(-1)[0]}</span>
-        </h1>
-
-        {/* Subtitle */}
-        <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-body-semibold max-w-[600px] text-[#163446] text-center leading-[1.362] mb-6 sm:mb-8 md:mb-10 mx-auto">
-          {t('mainScreen.subtitle').split(t('mainScreen.subtitleBold'))[0]}
-          <span className="text-black font-bold">{t('mainScreen.subtitleBold')}</span>
-          {t('mainScreen.subtitle').split(t('mainScreen.subtitleBold'))[1]}
-        </p>
-
-        {/* Sponsor Cards Container */}
-        <div
-          className="relative w-full max-w-[900px] mx-auto rounded-2xl sm:rounded-3xl md:rounded-[29px] p-4 sm:p-5 md:p-6 lg:p-8"
-          style={{
-            background:
-              "linear-gradient(137deg, rgba(11, 141, 217, 1) 4%, rgba(45, 195, 248, 1) 100%)",
-            boxShadow: "0px 4.24px 35.10px 0px rgba(0, 0, 0, 0.25)",
-          }}
-        >
-          {/* Sponsors Carousel - vertical scroll like slot machine */}
-          <SponsorsCarousel 
-            sponsors={sponsors} 
-            onComplete={onScrollComplete}
-            onLoadingChange={setIsScrolling}
-            scrollDuration={20000}
-          />
-        </div>
-
-        {/* Countdown Timer */}
-        <div className="pt-6 sm:pt-8 md:pt-10 flex justify-center items-center w-full max-w-[600px] mx-auto px-4">
-          {showCountdown && (
-            <div className="flex flex-col items-center justify-center gap-3 sm:gap-4 w-full">
-              <CountdownTimer seconds={scrollCountdown} showCooldown={false} initialSeconds={initialSeconds} startTime={startTime} />
-              <p className="text-sm sm:text-base md:text-lg lg:text-xl font-body-semibold text-black text-center leading-[1.362]">
-                {t('mainScreen.countdownMessage')}
-              </p>
-            </div>
-          )}
-        </div>
+        {/* Combined Slot Machine - Shows sponsors first (20s), then slots (7s) */}
+        <CombinedSlotMachine 
+          sponsors={sponsors} 
+          onComplete={onComplete}
+        />
       </div>
 
       {/* Activity Notifications Stack */}

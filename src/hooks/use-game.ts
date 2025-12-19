@@ -16,7 +16,8 @@ export function useGame() {
   const countdown = useGameCountdown({
     isMainScreen: navigation.isMainScreen,
     isCooldown: attempts.isCooldown,
-    onCountdownEnd: () => navigation.goToScreen("slotMachine"),
+    // No need for onCountdownEnd - CombinedSlotMachine handles animation automatically
+    onCountdownEnd: undefined,
   });
 
   const reset = useCallback(() => {
@@ -26,9 +27,10 @@ export function useGame() {
   }, [attempts, countdown, navigation]);
 
   const handleSpin = useCallback(() => {
+    // This is now handled directly by CombinedSlotMachine
+    // No need to transition screens - everything happens on main screen
     if (attempts.isCooldown) return;
-    navigation.goToScreen("slotMachine");
-  }, [attempts.isCooldown, navigation]);
+  }, [attempts.isCooldown]);
 
   const handleSlotComplete = useCallback(
     (result: { winner: Sponsor | null; isWin: boolean }) => {

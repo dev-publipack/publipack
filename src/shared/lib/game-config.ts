@@ -1,7 +1,8 @@
 // Game timing configuration
 export const TIMING = {
-  SPIN_DURATION: 7000,
-  SCROLL_DURATION: 5000,
+  SPIN_DURATION: 7000, // Fast slot spin duration
+  SCROLL_DURATION: 7000, // Sponsors scroll duration
+  COMBINED_DURATION: 14000, // Total duration (7s sponsors + 7s slots)
   RESULT_DISPLAY_DELAY: 1500,
   COUNTDOWN_INITIAL: 5,
   AUTO_SPIN_DELAY: 600,

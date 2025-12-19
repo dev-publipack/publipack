@@ -19,6 +19,8 @@ export { WheelOfFortune } from './ui/wheel-of-fortune';
 export type { WheelOfFortuneProps } from './ui/wheel-of-fortune';
 export { SlotMachine } from './ui/slot-machine';
 export type { SlotMachineProps, SlotMachineRef } from './ui/slot-machine';
+export { CombinedSlotMachine } from './ui/combined-slot-machine';
+export type { CombinedSlotMachineProps } from './ui/combined-slot-machine';
 export { ClaimReward } from './ui/claim-reward';
 export type { ClaimRewardProps } from './ui/claim-reward';
 export { ClaimSuccess } from './ui/claim-success';
