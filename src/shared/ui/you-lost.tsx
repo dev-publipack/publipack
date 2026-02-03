@@ -2,6 +2,7 @@ import * as React from "react";
 import { cn } from "../lib/utils";
 import Lottie from "lottie-react";
 import { useLanguage } from "../../providers/language-provider";
+import { trackButtonClick } from "../lib/analytics";
 
 type LottieAnimationData = {
   v?: string;
@@ -80,7 +81,10 @@ const YouLost = React.forwardRef<HTMLDivElement, YouLostProps>(
         </div>
 
         <button
-          onClick={onTryAgain}
+          onClick={() => {
+            trackButtonClick('Play Again (You Lost)');
+            onTryAgain?.();
+          }}
           className="relative z-10 w-full max-w-[700px] h-14 sm:h-16 md:h-20 lg:h-24 rounded-full text-white text-lg sm:text-xl md:text-3xl lg:text-4xl font-heading leading-[1.4] hover:opacity-90 transition-opacity px-6"
           style={{ background: "#FF9442" }}
         >

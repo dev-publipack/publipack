@@ -1,6 +1,7 @@
 import * as React from "react";
 import { cn } from "../lib/utils";
 import { useLanguage } from "@/providers/language-provider";
+import { trackButtonClick } from "../lib/analytics";
 
 export interface ClaimSuccessProps {
     email: string;
@@ -120,7 +121,10 @@ const ClaimSuccess = React.forwardRef<HTMLDivElement, ClaimSuccessProps>(
                 <div className="flex mt-6 flex-col gap-3 sm:gap-4 w-full max-w-[600px] md:max-w-[700px] px-4 sm:px-0 mb-6 sm:mb-8">
                     {/* Download Reward Button */}
                     <button
-                        onClick={onDownloadReward}
+                        onClick={() => {
+                            trackButtonClick('Download Reward');
+                            onDownloadReward?.();
+                        }}
                         className="w-full h-14 sm:h-16 md:h-20 lg:h-24 rounded-full text-white text-lg sm:text-xl md:text-3xl lg:text-4xl font-heading leading-[1.4] hover:opacity-90 transition-opacity px-6"
                         style={{
                             background: "linear-gradient(134deg, rgba(9, 148, 227, 1) 0%, rgba(54, 204, 252, 1) 100%)",
@@ -131,7 +135,10 @@ const ClaimSuccess = React.forwardRef<HTMLDivElement, ClaimSuccessProps>(
 
                     {/* Play Again Button */}
                     <button
-                        onClick={onPlayAgain}
+                        onClick={() => {
+                            trackButtonClick('Play Again (Claim Success)');
+                            onPlayAgain?.();
+                        }}
                         className="w-full h-14 sm:h-16 md:h-20 lg:h-24 rounded-full text-white text-lg sm:text-xl md:text-3xl lg:text-4xl font-heading leading-[1.4] hover:opacity-90 transition-opacity px-6"
                         style={{
                             background: "#FF9442",

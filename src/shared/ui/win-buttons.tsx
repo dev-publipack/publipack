@@ -1,6 +1,7 @@
 import * as React from "react";
 import { cn } from "../lib/utils";
 import { useLanguage } from "../../providers/language-provider";
+import { trackButtonClick } from "../lib/analytics";
 
 export interface WinButtonsProps {
   onClaim?: () => void;
@@ -25,7 +26,10 @@ export const WinButtons = React.forwardRef<HTMLDivElement, WinButtonsProps>(
         {/* CLAIM MY PRIZE Button */}
         {onClaim && (
           <button
-            onClick={onClaim}
+            onClick={() => {
+              trackButtonClick('Claim My Prize');
+              onClaim();
+            }}
             className="w-full h-14 sm:h-16 md:h-20 lg:h-24 rounded-full text-white text-lg sm:text-xl md:text-3xl lg:text-4xl font-heading leading-[1.4] hover:opacity-90 px-6"
             style={{
               background:
@@ -39,7 +43,10 @@ export const WinButtons = React.forwardRef<HTMLDivElement, WinButtonsProps>(
         {/* SPIN AGAIN / Play Again 24h Button */}
         {onSpinAgain && (
           <button
-            onClick={onSpinAgain}
+            onClick={() => {
+              trackButtonClick(showCooldown ? 'Play Again 24h' : 'Spin Again');
+              onSpinAgain();
+            }}
             className="w-full h-14 sm:h-16 md:h-20 lg:h-24 rounded-full text-[#FF9442] text-lg sm:text-xl md:text-3xl lg:text-4xl font-heading leading-[1.4] hover:opacity-90 bg-white px-6"
             style={{
               border: "4px solid #FF9442",

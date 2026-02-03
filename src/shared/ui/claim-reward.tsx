@@ -5,6 +5,7 @@ import type { Sponsor } from "../types";
 import { pipedreamClient } from "../api/pipedream-client";
 import { brevoClient } from "../api/brevo-client";
 import { useLanguage } from "../../providers/language-provider";
+import { trackButtonClick, trackFormFieldInteraction, trackFormSubmit } from "../lib/analytics";
 
 export interface ClaimRewardProps {
   winner: Sponsor;
@@ -79,6 +80,8 @@ const ClaimReward = React.forwardRef<HTMLDivElement, ClaimRewardProps>(
     const handleFieldChange = React.useCallback(
       (fieldName: keyof ClaimRewardFormData, value: string, setter: (value: string) => void) => {
         setter(value);
+        // Track field change
+        trackFormFieldInteraction(fieldName, 'change');
         // Validate in real-time if field was touched
         if (touched[fieldName]) {
           validateField(fieldName, value);
@@ -92,6 +95,8 @@ const ClaimReward = React.forwardRef<HTMLDivElement, ClaimRewardProps>(
       (fieldName: keyof ClaimRewardFormData, value: string) => {
         setFocusedField(null);
         setTouched((prev) => ({ ...prev, [fieldName]: true }));
+        // Track field blur
+        trackFormFieldInteraction(fieldName, 'blur', { hasValue: value.length > 0 ? 1 : 0 });
         validateField(fieldName, value);
       },
       [validateField]
@@ -102,6 +107,9 @@ const ClaimReward = React.forwardRef<HTMLDivElement, ClaimRewardProps>(
       e.stopPropagation();
 
       console.log("🚀 Form submit triggered", { fullName, phone, email });
+
+      // Track form submit attempt
+      trackFormSubmit("Claim Reward Form");
 
       // Validate with Zod
       const result = ClaimRewardSchema.safeParse({
@@ -290,7 +298,10 @@ Terms & Conditions | Privacy Policy | Data Protection Policy`,
                 type="text"
                 value={fullName}
                 onChange={(e) => handleFieldChange("fullName", e.target.value, setFullName)}
-                onFocus={() => setFocusedField("fullName")}
+                onFocus={() => {
+                  setFocusedField("fullName");
+                  trackFormFieldInteraction("fullName", "focus");
+                }}
                 onBlur={() => handleFieldBlur("fullName", fullName)}
                 placeholder={t('claimReward.fullNamePlaceholder')}
                 className="w-full bg-transparent border-none outline-none text-center text-base sm:text-lg md:text-xl lg:text-2xl font-body-semibold text-[#154F6A] placeholder:text-[#154F6A] placeholder:opacity-70"
@@ -318,7 +329,10 @@ Terms & Conditions | Privacy Policy | Data Protection Policy`,
                 type="tel"
                 value={phone}
                 onChange={(e) => handleFieldChange("phone", e.target.value, setPhone)}
-                onFocus={() => setFocusedField("phone")}
+                onFocus={() => {
+                  setFocusedField("phone");
+                  trackFormFieldInteraction("phone", "focus");
+                }}
                 onBlur={() => handleFieldBlur("phone", phone)}
                 placeholder={t('claimReward.phonePlaceholder')}
                 className="w-full bg-transparent border-none outline-none text-center text-base sm:text-lg md:text-xl lg:text-2xl font-body-semibold text-[#154F6A] placeholder:text-[#154F6A] placeholder:opacity-70"
@@ -346,7 +360,10 @@ Terms & Conditions | Privacy Policy | Data Protection Policy`,
                 type="email"
                 value={email}
                 onChange={(e) => handleFieldChange("email", e.target.value, setEmail)}
-                onFocus={() => setFocusedField("email")}
+                onFocus={() => {
+                  setFocusedField("email");
+                  trackFormFieldInteraction("email", "focus");
+                }}
                 onBlur={() => handleFieldBlur("email", email)}
                 placeholder={t('claimReward.emailPlaceholder')}
                 className="w-full bg-transparent border-none outline-none text-center text-base sm:text-lg md:text-xl lg:text-2xl font-body-semibold text-[#154F6A] placeholder:text-[#154F6A] placeholder:opacity-70"
@@ -365,6 +382,7 @@ Terms & Conditions | Privacy Policy | Data Protection Policy`,
             onClick={(e) => {
               // Debug: ensure button click is registered
               console.log("🔘 Button clicked", { isSubmitting, fullName, phone, email });
+              trackButtonClick("Get My Voucher");
               // Let form handle submit naturally
             }}
             className="mt-8 w-full h-14 sm:h-16 md:h-20 lg:h-24 rounded-full text-white text-lg sm:text-xl md:text-3xl lg:text-4xl font-heading leading-[1.4] hover:opacity-90 transition-opacity px-6 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden"

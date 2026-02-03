@@ -10,11 +10,6 @@ import { useEffect } from 'react';
 export function HomePage() {
   const game = useGame();
 
-  useEffect(() => {
-    const clarityId = import.meta.env.VITE_CLARITY_ID || 'uiyrsokzzw';
-    clarity.init(clarityId);
-  }, []);
-
   return (
     <QueryProvider>
       <LanguageProvider>

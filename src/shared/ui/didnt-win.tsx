@@ -1,6 +1,7 @@
 import * as React from "react";
 import { cn } from "../lib/utils";
 import { useLanguage } from "../../providers/language-provider";
+import { trackButtonClick } from "../lib/analytics";
 
 export interface DidntWinProps {
   onSpinAgain?: () => void;
@@ -37,7 +38,10 @@ export const DidntWin = React.forwardRef<HTMLDivElement, DidntWinProps>(
         </div>
 
         <button
-          onClick={onSpinAgain}
+          onClick={() => {
+            trackButtonClick('Spin Again (Didn\'t Win)');
+            onSpinAgain?.();
+          }}
           className="relative z-10 w-full max-w-[700px] h-14 sm:h-16 md:h-20 lg:h-24 rounded-full text-white text-lg sm:text-xl md:text-3xl lg:text-4xl font-heading leading-[1.4] hover:opacity-90 transition-opacity px-6"
           style={{ background: "#FF9442" }}
         >

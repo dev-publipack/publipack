@@ -65,6 +65,11 @@ export {
   SPONSOR_SCALE_CLASSES, 
   getSponsorScaleClass 
 } from './lib/sponsor-scale-config';
+export {
+  trackButtonClick,
+  trackFormFieldInteraction,
+  trackFormSubmit,
+} from './lib/analytics';
 
 // Hooks
 export { useResponsiveCardHeight } from './hooks/use-responsive-card-height';
