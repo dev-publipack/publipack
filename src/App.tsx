@@ -9,17 +9,14 @@ function App() {
   useEffect(() => {
     // Initialize Google Analytics
     ReactGA.initialize(import.meta.env.VITE_TRACKING_ID || 'G-HN81Z9WNL3');
+
+    // Set campaign from UTM before first pageview so GA4 attributes the session
+    initializeUtmTracking();
     ReactGA.send({ hitType: "pageview", page: window.location.pathname });
-    
-    // Initialize Microsoft Clarity
+
+    // Initialize Microsoft Clarity (UTM already set in initializeUtmTracking)
     const clarityId = import.meta.env.VITE_CLARITY_ID || 'uiyrsokzzw';
     clarity.init(clarityId);
-    
-    // Initialize UTM tracking for both GA4 and Clarity
-    // Delay to ensure Clarity is fully initialized
-    setTimeout(() => {
-      initializeUtmTracking();
-    }, 300);
   }, []);
 
   return (
