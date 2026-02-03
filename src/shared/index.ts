@@ -69,6 +69,8 @@ export {
   trackButtonClick,
   trackFormFieldInteraction,
   trackFormSubmit,
+  getUtmParams,
+  initializeUtmTracking,
 } from './lib/analytics';
 
 // Hooks
