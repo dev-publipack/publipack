@@ -1,0 +1,40 @@
+import { QueryProvider } from "../../providers/query-provider";
+import { LanguageProvider } from "../../providers/language-provider";
+import { useGame } from "../../hooks/use-game";
+import { MainScreen } from "../../components/legacy/main-screen";
+import { GameScreens } from "../../components/legacy/game-screens";
+import { SPONSORS } from "../../shared/lib/constants";
+
+export default function LegacyHomePage() {
+  const game = useGame();
+
+  return (
+    <QueryProvider>
+      <LanguageProvider>
+        {game.isMainScreen ? (
+          <MainScreen
+            sponsors={SPONSORS}
+            onComplete={game.handleSlotComplete}
+            isCooldown={game.isCooldown}
+          />
+        ) : (
+          <GameScreens
+            currentScreen={game.currentScreen}
+            sponsors={SPONSORS}
+            winner={game.winner}
+            claimEmail={game.claimEmail}
+            onSlotComplete={game.handleSlotComplete}
+            onFailedAnimationComplete={game.handleFailedAnimationComplete}
+            onSuccessConfettiComplete={game.handleSuccessConfettiComplete}
+            onClaim={game.handleClaim}
+            onClaimSubmit={game.handleClaimSubmit}
+            onBackFromClaim={game.handleBackFromClaim}
+            onSpinAgain={game.handleSpinAgain}
+            onPlayAgainFromSuccess={game.handlePlayAgainFromSuccess}
+            showCooldown={game.isCooldown}
+          />
+        )}
+      </LanguageProvider>
+    </QueryProvider>
+  );
+}
