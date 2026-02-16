@@ -40,19 +40,19 @@ export function ChainBlockTop({ text, className = '' }: ChainBlockTopProps) {
         </div>
       </div>
 
-      {/* Block below chains */}
+      {/* Block below chains - Figma Popup Container */}
       <div
         className={cn(
-          'w-[71%] aspect-282/58 rounded-[20px] border-4',
-          'bg-[#AEFB8B] border-[#DCF7CD]',
-          'shadow-[0_0_5px_1px_rgba(0,0,0,0.25)]',
+          'box-border w-[295px] h-[52px] rounded-[15px] border-[3px] border-[#FFD7EB]',
           'flex items-center justify-center -mt-2 relative z-10'
         )}
+        style={{
+          background: 'radial-gradient(69.32% 50% at 50% 50%, #FFF7FB 0%, #FFA2DC 100%)',
+        }}
       >
         <span
-          className="text-[24px] leading-none text-[#F2EBEE] whitespace-nowrap px-1"
+          className="text-[24px] leading-none text-[#2066BB] whitespace-nowrap px-1"
           style={{
-            WebkitTextStroke: '2px #FF8B00',
             textShadow: '0px 0px 5px rgba(0, 0, 0, 0.25)',
             fontFamily: 'Bungee, sans-serif',
           }}
