@@ -49,7 +49,7 @@ export function PrizePopup({
         ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}
       `}
     >
-      <div className="w-[295px] min-h-[52px] bg-popup-gradient rounded-[15px] border-[3px] border-pink-light shadow-lg px-4 py-3 flex flex-col gap-1">
+      <div className="w-[74%] max-w-[295px] min-h-[52px] bg-popup-gradient rounded-[15px] border-[3px] border-pink-light shadow-lg px-4 py-3 flex flex-col gap-1">
         {/* Username */}
         <p className="font-bungee text-[24px] text-blue-dark leading-tight">
           {username} just won

@@ -28,7 +28,7 @@ export function Spinner({
   rotation = 0,
 }: SpinnerProps) {
   return (
-    <div className="relative w-[336px] h-[219px]">
+    <div className="relative w-full h-full">
       {/* Inner container */}
       <MainContentContainerWrapper>
         {/* 3×3 grid for offers */}

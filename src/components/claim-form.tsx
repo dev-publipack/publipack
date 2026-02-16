@@ -32,7 +32,7 @@ export function ClaimForm({ onSubmit, isLoading = false }: ClaimFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-[214px]">
+    <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-[61%]">
       {/* Title */}
       <h3 className="font-roboto font-black text-xs text-blue-dark uppercase text-center mb-4">
         Enter Your details to claim your prize

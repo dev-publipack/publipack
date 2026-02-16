@@ -5,9 +5,9 @@ interface Spin2WinHeaderProps {
 export function Spin2WinHeader({ text }: Spin2WinHeaderProps) {
     return (
         <div
-            className="z-12 m-auto relative w-[90%] min-w-[192px] min-h-[65px] flex items-center justify-center border-4 border-pink-light"
+            className="z-12 m-auto relative w-[90%] min-w-[48%] aspect-[192/45.5] flex items-center justify-center border-4 border-pink-light"
             style={{
-                top: '-15%',
+                top: '-10%',
                 backgroundColor: '#FFD7EB',
                 borderRadius: '40px 40px 20px 20px',
                 boxShadow:

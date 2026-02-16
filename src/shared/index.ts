@@ -1,5 +1,6 @@
 // UI Components
 export { ChainBlock } from './ui/chain-block';
+export { ChainBlockTop } from './ui/chain-block-top';
 
 // UI Components (legacy)
 export { Button, buttonVariants } from './ui/legacy/button';
