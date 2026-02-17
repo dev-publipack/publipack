@@ -16,7 +16,7 @@ export function ChainBlockTop({ text, className = '' }: ChainBlockTopProps) {
   return (
     <div
       className={cn(
-        'fixed left-1/2 -translate-x-1/2 top-0 flex flex-col items-center w-full max-w-[398px] z-1 -top-4',
+        'fixed left-1/2 -translate-x-1/2  flex flex-col items-center w-full max-w-[398px] z-1 -top-4',
         className
       )}
     >

@@ -1,6 +1,6 @@
 import { MachineContainer } from '@/components/machine-container';
-import { PrizePopup } from '@/components/prize-popup';
-import { ChainBlock, ChainBlockTop } from '@/shared';
+import { ChainBlockTop } from '@/shared';
+import { SPONSORS } from '@/shared/lib/constants';
 import { MainContentContainerWrapper } from '@/shared/ui/wrappers/main-content-container';
 
 
@@ -10,7 +10,7 @@ export default function HomePage() {
       <ChainBlockTop text="SPIN NOW" />
       <div className="relative w-full max-w-[398px] flex flex-col items-center overflow-visible">
         <MachineContainer>
-          <MainContentContainerWrapper>{null}</MainContentContainerWrapper>
+          <MainContentContainerWrapper sponsors={SPONSORS} onComplete={() => { }} />
         </MachineContainer>
       </div>
     </div>
