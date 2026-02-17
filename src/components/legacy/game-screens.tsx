@@ -10,8 +10,8 @@ import {
   ActivityNotification,
 } from "../../shared";
 import type { Sponsor } from "../../shared/types";
-import type { GameScreen } from "../../hooks/use-game-state";
-import { useActivityNotifications } from "../../hooks/use-activity-notifications";
+import type { GameScreen } from "../../hooks/legacy/use-game-state";
+import { useActivityNotifications } from "../../hooks/legacy/use-activity-notifications";
 
 interface GameScreensProps {
   currentScreen: GameScreen;

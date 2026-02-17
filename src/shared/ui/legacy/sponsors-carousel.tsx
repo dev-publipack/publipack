@@ -1,7 +1,7 @@
 import * as React from "react";
 import type { Sponsor } from '../../types';
 import { cn } from '../../lib/utils';
-import { useSponsorsScroll } from '../../../hooks/use-sponsors-scroll';
+import { useSponsorsScroll } from '../../../hooks/legacy/use-sponsors-scroll';
 import { getSponsorScaleClass } from '../../lib/sponsor-scale-config';
 
 interface SponsorsCarouselProps {

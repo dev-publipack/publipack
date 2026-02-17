@@ -3,8 +3,8 @@ import { cn } from "../../lib/utils";
 import type { Sponsor } from "../../types";
 import { CountdownTimer } from "./countdown-timer";
 import { useLanguage } from "../../../providers/language-provider";
-import { useSpinCountdown } from "../../../hooks/use-spin-countdown";
-import { useSlotMachine } from "../../../hooks/use-slot-machine";
+import { useSpinCountdown } from "../../../hooks/legacy/use-spin-countdown";
+import { useSlotMachine } from "../../../hooks/legacy/use-slot-machine";
 import { getSponsorScaleClass } from "../../lib/sponsor-scale-config";
 
 export interface SlotMachineProps {

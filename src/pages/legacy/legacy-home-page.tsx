@@ -1,6 +1,6 @@
 import { QueryProvider } from "../../providers/query-provider";
 import { LanguageProvider } from "../../providers/language-provider";
-import { useGame } from "../../hooks/use-game";
+import { useGame } from "../../hooks/legacy/use-game";
 import { MainScreen } from "../../components/legacy/main-screen";
 import { GameScreens } from "../../components/legacy/game-screens";
 import { SPONSORS } from "../../shared/lib/constants";

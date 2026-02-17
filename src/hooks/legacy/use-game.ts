@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import type { Sponsor } from "../shared/types";
+import type { Sponsor } from "@/shared/types";
 import { TIMING, GAME_RULES } from "@/shared/lib/game-config";
 import { useGameAttempts } from "./use-game-attempts";
 import { useGameCountdown } from "./use-game-countdown";

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { ActivityNotification, CombinedSlotMachine } from "../../shared";
 import type { Sponsor } from "../../shared/types";
-import { useActivityNotifications } from "../../hooks/use-activity-notifications";
+import { useActivityNotifications } from "../../hooks/legacy/use-activity-notifications";
 
 interface MainScreenProps {
   sponsors: Sponsor[];

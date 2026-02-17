@@ -146,7 +146,7 @@ export const translations = {
   },
 
   // ============================================
-  // ACTIVITY NOTIFICATION PRIZES (src/hooks/use-activity-notifications.ts)
+  // ACTIVITY NOTIFICATION PRIZES (src/hooks/legacy/use-activity-notifications.ts)
   // ============================================
   activityPrizes: {
     preply50Discount: { en: "Preply 50% discount", es: "Preply Un 50% de descuento" },

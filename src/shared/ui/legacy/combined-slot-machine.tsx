@@ -3,7 +3,7 @@ import { cn } from "../../lib/utils";
 import type { Sponsor } from "../../types";
 import { CountdownTimer } from "./countdown-timer";
 import { useLanguage } from "../../../providers/language-provider";
-import { useCombinedSlotMachine } from "../../../hooks/use-combined-slot-machine";
+import { useCombinedSlotMachine } from "../../../hooks/legacy/use-combined-slot-machine";
 import { getSponsorScaleClass } from "../../lib/sponsor-scale-config";
 
 export interface CombinedSlotMachineProps {

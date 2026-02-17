@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from "react";
-import type { Sponsor } from "../shared/types";
+import type { Sponsor } from "@/shared/types";
 
 export type GameScreen =
   | "main"
