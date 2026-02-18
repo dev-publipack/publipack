@@ -3,12 +3,15 @@ import { cn } from '@/shared/lib/utils';
 
 interface ChainBlockProps {
   className?: string;
-  text: string;
+  /** Static text when no custom content */
+  text?: string;
+  /** Custom content (e.g. TimerDisplay) - takes precedence over text */
+  children?: React.ReactNode;
 }
 
 const CHAIN_SRC = '/design/chains/full-chain.svg';
 
-export function ChainBlock({ text, className = '' }: ChainBlockProps) {
+export function ChainBlock({ text = '', children, className = '' }: ChainBlockProps) {
   return (
     <div className={cn('absolute left-1/2 -translate-x-1/2  flex flex-col items-center w-full -z-1', className)}>
       {/* Chains container - positioned to start from bottom of parent */}
@@ -42,16 +45,18 @@ export function ChainBlock({ text, className = '' }: ChainBlockProps) {
           'flex items-center justify-center -mt-5 relative z-10'
         )}
       >
-        <span
-          className="text-[24px] leading-none text-[#F2EBEE] whitespace-nowrap px-1"
-          style={{
-            WebkitTextStroke: '2px #FF8B00',
-            textShadow: '0px 0px 5px rgba(0, 0, 0, 0.25)',
-            fontFamily: 'Bungee, sans-serif',
-          }}
-        >
-          {text}
-        </span>
+        {children ?? (
+          <span
+            className="text-[24px] leading-none text-[#F2EBEE] whitespace-nowrap px-1"
+            style={{
+              WebkitTextStroke: '2px #FF8B00',
+              textShadow: '0px 0px 5px rgba(0, 0, 0, 0.25)',
+              fontFamily: 'Bungee, sans-serif',
+            }}
+          >
+            {text}
+          </span>
+        )}
       </div>
     </div>
   );

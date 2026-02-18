@@ -89,7 +89,7 @@ export function useGame() {
     handleSpinAgain,
     handleSuccessConfettiComplete: () => navigation.goToScreen("youWon"),
     handleClaim: () => navigation.goToScreen("claimReward"),
-    handleClaimSubmit: (data: { fullName: string; phone: string; email: string }) => {
+    handleClaimSubmit: (data: { fullName: string; email: string; phone: string }) => {
       console.log("Claim data:", data);
       navigation.setClaimEmail(data.email);
       navigation.goToScreen("claimSuccess");

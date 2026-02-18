@@ -1,5 +1,5 @@
 import React from 'react';
-import { MainContentContainerWrapper } from '../shared/ui/wrappers/main-content-container';
+import { MainContentContainerWrapper } from '@/components/main-content-container-wrapper';
 
 /**
  * Spinner Component

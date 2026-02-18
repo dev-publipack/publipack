@@ -1,10 +1,5 @@
 import React from 'react';
 
-interface ClaimFormProps {
-  onSubmit: (data: ClaimFormData) => void;
-  isLoading?: boolean;
-}
-
 export interface ClaimFormData {
   firstName: string;
   lastName: string;
@@ -12,13 +7,25 @@ export interface ClaimFormData {
   phone: string;
 }
 
-export function ClaimForm({ onSubmit, isLoading = false }: ClaimFormProps) {
+/** Payload for claim API - fullName is firstName + lastName */
+export interface ClaimSubmitData {
+  fullName: string;
+  email: string;
+  phone: string;
+}
+
+interface ClaimFormProps {
+  onSubmit: (data: ClaimSubmitData) => void;
+}
+
+export function ClaimForm({ onSubmit }: ClaimFormProps) {
   const [formData, setFormData] = React.useState<ClaimFormData>({
     firstName: '',
     lastName: '',
     email: '',
     phone: '',
   });
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const handleChange = (field: keyof ClaimFormData) => (
     e: React.ChangeEvent<HTMLInputElement>
@@ -28,7 +35,13 @@ export function ClaimForm({ onSubmit, isLoading = false }: ClaimFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    setIsSubmitting(true);
+    onSubmit({
+      fullName: `${formData.firstName.trim()} ${formData.lastName.trim()}`.trim(),
+      email: formData.email,
+      phone: formData.phone,
+    });
+    setIsSubmitting(false);
   };
 
   return (
@@ -86,14 +99,6 @@ export function ClaimForm({ onSubmit, isLoading = false }: ClaimFormProps) {
         />
       </div>
 
-      {/* Submit Button */}
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="w-full h-[58px] bg-green-button hover:bg-green-button/90 disabled:bg-gray-400 disabled:cursor-not-allowed text-gray-light font-bungee text-2xl rounded-[20px] border-4 border-green-stroke shadow-[0_0_5px_1px_rgba(0,0,0,0.25)] transition-all hover:scale-105 active:scale-95"
-      >
-        {isLoading ? 'Claiming...' : 'Claim Now'}
-      </button>
     </form>
   );
 }

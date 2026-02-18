@@ -21,8 +21,7 @@ export function MachineContainer({
   const topExtension = Math.round(baseHeight * TOP_EXTENSION_RATIO);
 
   return (
-    <div
-      className="relative w-full max-w-[398px]"
+    <div className="relative w-full max-w-[480px] min-h-[281px]"
       style={{ height: `${baseHeight}px` }}
     >
       {/* Top extension - above layout flow, doesn't affect Y centering */}
