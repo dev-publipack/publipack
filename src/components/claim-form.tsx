@@ -15,7 +15,7 @@ export interface ClaimSubmitData {
 }
 
 interface ClaimFormProps {
-  onSubmit: (data: ClaimSubmitData) => void;
+  onSubmit: (data: ClaimSubmitData) => void | Promise<void>;
   /** Ref to form element for external submit trigger (e.g. chain block click) */
   formRef?: React.RefObject<HTMLFormElement | null>;
   /** Callback when submitting state changes (for disabling chain block) */
@@ -37,17 +37,20 @@ export function ClaimForm({ onSubmit, formRef, onSubmittingChange }: ClaimFormPr
     setFormData((prev) => ({ ...prev, [field]: e.target.value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     onSubmittingChange?.(true);
-    onSubmit({
-      fullName: `${formData.firstName.trim()} ${formData.lastName.trim()}`.trim(),
-      email: formData.email,
-      phone: formData.phone,
-    });
-    setIsSubmitting(false);
-    onSubmittingChange?.(false);
+    try {
+      await onSubmit({
+        fullName: `${formData.firstName.trim()} ${formData.lastName.trim()}`.trim(),
+        email: formData.email,
+        phone: formData.phone,
+      });
+    } finally {
+      setIsSubmitting(false);
+      onSubmittingChange?.(false);
+    }
   };
 
   return (

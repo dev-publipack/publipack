@@ -23,9 +23,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="*" element={<HomePage />} />
         <Route path="/legacy" element={<LegacyHomePage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );

@@ -1,6 +1,8 @@
 import { useCallback } from "react";
 import type { Sponsor } from "@/shared/types";
 import { TIMING, GAME_RULES } from "@/shared/lib/game-config";
+import { pipedreamClient } from "@/shared/api/pipedream-client";
+import { brevoClient } from "@/shared/api/brevo-client";
 import { useGameAttempts } from "./use-game-attempts";
 import { useGameCountdown } from "./use-game-countdown";
 import { useGameNavigation } from "./use-game-navigation";
@@ -89,8 +91,48 @@ export function useGame() {
     handleSpinAgain,
     handleSuccessConfettiComplete: () => navigation.goToScreen("youWon"),
     handleClaim: () => navigation.goToScreen("claimReward"),
-    handleClaimSubmit: (data: { fullName: string; email: string; phone: string }) => {
-      console.log("Claim data:", data);
+    handleClaimSubmit: async (data: { fullName: string; email: string; phone: string }) => {
+      const winner = navigation.winner;
+      if (winner) {
+        try {
+          await pipedreamClient.submitLead({
+            fullName: data.fullName,
+            phone: data.phone,
+            email: data.email,
+            sponsorName: winner.name,
+            sponsorReward: winner.reward,
+          });
+          await brevoClient.sendEmail({
+            to: data.email,
+            subject: "🎉 Thanks for playing with app.publipacks.com",
+            brandUrl: winner.url,
+            fullName: data.fullName,
+            htmlContent: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
+              <h1 style="color: #163446; text-align: center; margin-bottom: 30px;">🎉 Thanks for playing!</h1>
+              <p>Hi ${data.fullName},</p>
+              <p>Thank you for playing with publipacks.com! The safest platform to win amazing awards near you!</p>
+              <div style="background: #E9F9FF; padding: 20px; border-radius: 12px; margin: 20px 0; border-left: 4px solid #44D2FD;">
+                <p style="margin: 0; font-weight: bold; color: #124258;">👉 Congratulations — you've won a prize!</p>
+                <p style="margin: 10px 0 0 0; color: #154F6A;">${winner.name}: ${winner.reward}</p>
+              </div>
+              <p>Enjoy free prizes and exclusive discounts all around the world.</p>
+              <p>Sign up to receive free offers directly to your email, — <a href="${winner.url || ""}" style="color: #44D2FD; text-decoration: none;"> click here to join</a>.</p>
+              <p>Keep playing, keep winning, and keep discovering amazing rewards!</p>
+              <p style="margin-top: 30px;">Cheers,<br><strong>The app.publipacks.com Team</strong><br><a href="https://app.publipacks.com" style="color: #44D2FD; text-decoration: none;">app.publipacks.com</a></p>
+              <hr style="border: none; border-top: 1px solid #ddd; margin: 40px 0 20px 0;">
+              <div style="text-align: center; font-size: 12px; color: #666; margin-top: 20px;">
+                <p style="margin: 5px 0;">©️ 2025 Publicpacks.com. All rights reserved.</p>
+                <p style="margin: 5px 0;"><a href="#" style="color: #666; text-decoration: none; margin: 0 10px;">Terms & Conditions</a> | <a href="#" style="color: #666; text-decoration: none; margin: 0 10px;">Privacy Policy</a> | <a href="#" style="color: #666; text-decoration: none; margin: 0 10px;">Data Protection Policy</a></p>
+              </div>
+            </div>
+          `,
+            textContent: `Hi ${data.fullName},\n\nThank you for playing with publipacks.com! The safest platform to win amazing awards near you!\n\n👉 Congratulations — you've won a prize!\n${winner.name}: ${winner.reward}\n\nEnjoy free prizes and exclusive discounts all around the world.\n\nSign up to receive free offers directly to your email, — click here to join: ${winner.url || ""}\n\nKeep playing, keep winning, and keep discovering amazing rewards!\n\nCheers,\nThe app.publipacks.com Team\n\n©️ 2025 app.publipacks.com. All rights reserved.\nTerms & Conditions | Privacy Policy | Data Protection Policy`,
+          });
+        } catch (err) {
+          console.error("Claim submit error (Pipedream/Brevo):", err);
+        }
+      }
       navigation.setClaimEmail(data.email);
       navigation.goToScreen("claimSuccess");
     },
