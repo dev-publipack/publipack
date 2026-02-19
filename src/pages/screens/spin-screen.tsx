@@ -1,0 +1,33 @@
+import { MachineContainer } from "@/components/machine-container";
+import { MainContentContainerWrapper } from "@/components/main-content-container-wrapper";
+import { ScreenLayout } from "@/shared/ui/wrappers/screen-layout";
+import { SPONSORS } from "@/shared/lib/constants";
+import type { Sponsor } from "@/shared/types";
+
+interface SpinScreenProps {
+  onComplete: (result: { winner: Sponsor | null; isWin: boolean }) => void;
+  /** Auto-start spin on mount (e.g. when coming from WinScreen Spin Again) */
+  autoStart?: boolean;
+  /** Called when auto-start spin has been triggered */
+  onAutoSpinConsumed?: () => void;
+}
+
+export function SpinScreen({ onComplete, autoStart, onAutoSpinConsumed }: SpinScreenProps) {
+  return (
+    <ScreenLayout topChainText="SPIN NOW" showActivityNotifications>
+      <div className="relative w-full max-w-[480px] flex flex-col items-center overflow-visible">
+        <MachineContainer variant="expanded">
+          <MainContentContainerWrapper
+            slotMachine={{
+              sponsors: SPONSORS,
+              onComplete,
+              autoStart,
+              onAutoSpinStarted: onAutoSpinConsumed,
+            }}
+            chainBlockText="SPIN NOW"
+          />
+        </MachineContainer>
+      </div>
+    </ScreenLayout>
+  );
+}

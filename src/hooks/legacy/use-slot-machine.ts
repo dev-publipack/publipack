@@ -1,20 +1,17 @@
 import { Sponsor } from "@/shared";
 import { useState, useRef, useCallback, useEffect, useMemo } from "react";
-import { TIMING, GAME_RULES, SLOT_CARD_HEIGHT, SLOT_VISIBLE_CARDS } from "@/shared/lib/game-config";
+import { TIMING, GAME_RULES } from "@/shared/lib/game-config";
 
 interface UseSlotMachineProps {
   sponsors: Sponsor[];
   onComplete?: (result: { winner: Sponsor | null; isWin: boolean }) => void;
   autoStart?: boolean;
-  /** Called when auto-start spin has been triggered (to reset parent state) */
-  onAutoSpinStarted?: () => void;
 }
 
 export function useSlotMachine({
   sponsors,
   onComplete,
-  autoStart = false,
-  onAutoSpinStarted,
+  autoStart = true
 }: UseSlotMachineProps) {
   const [isComplete, setIsComplete] = useState(false);
   const [isWin, setIsWin] = useState(false);
@@ -34,19 +31,17 @@ export function useSlotMachine({
       return [winningSponsorIndex, winningSponsorIndex, winningSponsorIndex];
     }
 
-    // Гарантируем что все 3 индекса разные
-    const len = sponsors.length;
-    if (len === 1) return [0, 0, 0]; // единственный вариант
+    const selected: number[] = [];
+    const availableIndices = Array.from({ length: sponsors.length }, (_, i) => i);
 
-    if (len === 2) {
-      // Только два варианта — хотя бы два барабана разные
-      return [0, 1, 0];
+    while (selected.length < 3) {
+      const randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+      if (!selected.includes(randomIndex)) {
+        selected.push(randomIndex);
+      }
     }
 
-    // len >= 3: выбираем 3 уникальных индекса без повторений
-    const shuffled = Array.from({ length: len }, (_, i) => i)
-      .sort(() => Math.random() - 0.5);
-    return [shuffled[0], shuffled[1], shuffled[2]];
+    return selected;
   }, [sponsors.length]);
 
   const startSpin = useCallback(() => {
@@ -65,9 +60,10 @@ export function useSlotMachine({
       isWin: winResult,
     };
 
-    const CENTER_OFFSET = Math.floor(SLOT_VISIBLE_CARDS / 2);
+    const CARD_HEIGHT = 200; // Высота одной карточки
     const MIN_SPINS = GAME_RULES.MIN_FULL_ROTATIONS || 3;
 
+    // Разные задержки для каждого слота (чтобы останавливались по очереди)
     const slotDurations = [
       TIMING.SPIN_DURATION || 7000,
       (TIMING.SPIN_DURATION || 7000) + 300,
@@ -76,24 +72,22 @@ export function useSlotMachine({
 
     spinRefs.forEach((scrollRef, index) => {
       if (scrollRef.current) {
+        // Рандомный начальный offset для каждого слота
         const randomStartOffset = Math.floor(Math.random() * sponsors.length);
 
+        // Reset с рандомным offset
         scrollRef.current.style.transition = 'none';
-        scrollRef.current.style.transform = `translateY(-${randomStartOffset * SLOT_CARD_HEIGHT}px)`;
+        scrollRef.current.style.transform = `translateY(-${randomStartOffset * CARD_HEIGHT}px)`;
 
+        // Force reflow
         void scrollRef.current.offsetHeight;
 
         const targetIndex = winners[index];
-        const extraSpins = Math.floor(Math.random() * 3);
+        const extraSpins = Math.floor(Math.random() * 3); // 0-2 дополнительных оборота
+        const totalSpins = (MIN_SPINS + extraSpins) * sponsors.length + randomStartOffset + targetIndex;
+        const targetPosition = -(totalSpins * CARD_HEIGHT);
 
-        // randomStartOffset NOT included — it only affects the visual start,
-        // not where the reel lands. Middle card = totalSpins + 1 = targetIndex (mod len).
-        const totalSpins =
-          (MIN_SPINS + extraSpins) * sponsors.length +
-          targetIndex -
-          CENTER_OFFSET;
-        const targetPosition = -(totalSpins * SLOT_CARD_HEIGHT);
-
+        // Запускаем анимацию с небольшой задержкой
         setTimeout(() => {
           if (scrollRef.current) {
             scrollRef.current.style.transition = `transform ${slotDurations[index]}ms cubic-bezier(0.25, 0.1, 0.25, 1)`;
@@ -103,6 +97,7 @@ export function useSlotMachine({
       }
     });
 
+    // Завершение анимации
     const maxDuration = Math.max(...slotDurations);
     setTimeout(() => {
       setIsSpinning(false);
@@ -117,15 +112,13 @@ export function useSlotMachine({
 
   }, [isSpinning, sponsors, selectWinners, onComplete]);
 
+  // Auto-start on mount if enabled
   useEffect(() => {
     if (!autoStart || hasStarted) return;
 
-    const timer = setTimeout(() => {
-      startSpin();
-      onAutoSpinStarted?.();
-    }, 500);
+    const timer = setTimeout(startSpin, 500);
     return () => clearTimeout(timer);
-  }, [autoStart, hasStarted, startSpin, onAutoSpinStarted]);
+  }, [autoStart, hasStarted, startSpin]);
 
   const extendedSponsors = useMemo(
     () => Array(GAME_RULES.MIN_SLOT_COPIES || 5).fill(sponsors).flat(),

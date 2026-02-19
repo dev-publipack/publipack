@@ -1,8 +1,9 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { HomePage } from './pages/home-page';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import ReactGA from 'react-ga4';
 import { clarity } from 'react-microsoft-clarity';
+import HomePage from './pages/home-page';
+import LegacyHomePage from './pages/legacy/legacy-home-page';
 import { initializeUtmTracking } from './shared/lib/analytics';
 
 function App() {
@@ -22,7 +23,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="*" element={<HomePage />} />
+        <Route path="/legacy" element={<LegacyHomePage />} />
       </Routes>
     </BrowserRouter>
   );
