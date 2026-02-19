@@ -10,7 +10,6 @@ import {
   ClaimScreen,
   ClaimSuccessScreen,
   TryAgainScreen,
-  CooldownScreen,
   SuccessConfettiScreen,
   FailedAnimationScreen,
 } from "./screens";
@@ -26,7 +25,6 @@ const MOCK_SCREENS: { value: GameScreen | ""; label: string }[] = [
   { value: "successConfetti", label: "Success Confetti" },
   { value: "failedAnimation", label: "Failed Animation" },
   { value: "didntWin", label: "Try Again" },
-  { value: "youLost", label: "Cooldown (24h)" },
 ];
 
 const MOCK_WINNER = SPONSORS[0];
@@ -128,7 +126,7 @@ export default function HomePage() {
           <FailedAnimationScreen
             onComplete={game.handleFailedAnimationComplete}
           />
-        ) : activeScreen === "didntWin" ? (
+        ) : (activeScreen === "didntWin" || activeScreen === "youLost") ? (
           <TryAgainScreen
             formattedTime={
               mockScreen ? formatSecondsToHMS(MOCK_TIMER_SECONDS) : cooldown.formattedTime
@@ -136,17 +134,7 @@ export default function HomePage() {
             remainingSeconds={
               mockScreen ? MOCK_TIMER_SECONDS : cooldown.remainingSeconds
             }
-            onSpinAgain={handleSpinAgain}
-          />
-        ) : activeScreen === "youLost" ? (
-          <CooldownScreen
-            formattedTime={
-              mockScreen ? formatSecondsToHMS(MOCK_TIMER_SECONDS) : cooldown.formattedTime
-            }
-            remainingSeconds={
-              mockScreen ? MOCK_TIMER_SECONDS : cooldown.remainingSeconds
-            }
-            onSpinNow={handlePlayAgain}
+            onSpinAgain={activeScreen === "youLost" ? handlePlayAgain : handleSpinAgain}
           />
         ) : null}
       </LanguageProvider>

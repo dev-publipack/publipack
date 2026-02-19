@@ -45,14 +45,6 @@ export function ClaimSuccessScreen({
               <br />
               to your email
             </span>
-            {!canSpinAgain && (
-              <div className="flex flex-col items-center gap-2 mb-4">
-                <span className="block w-full text-[15px] font-roboto font-black leading-none text-center uppercase text-[#000000]">
-                  Next spin in:
-                </span>
-                {/* <TimerDisplay formattedTime={formattedTime} /> */}
-              </div>
-            )}
             {canSpinAgain && (
               <button
                 onClick={onPlayAgain}

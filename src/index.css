@@ -72,6 +72,19 @@
   }
 }
 
+@layer utilities {
+  .bg-page {
+    background-image: url('/design/bg/bg.svg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .bg-machine-gradient {
+    background-image: radial-gradient(circle at 50% 50%, #FFF7FB 50%, #FFA2DC 100%);
+  }
+}
+
 @layer base {
   * {
     border-color: hsl(var(--border));

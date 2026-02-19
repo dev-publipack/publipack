@@ -11,6 +11,10 @@ export const TIMING = {
   SUCCESS_SCREEN_DELAY: 500,
 } as const;
 
+// Slot machine layout: expanded container (318px) minus py-6*2 (48px) = 270px / 3 visible cards
+export const SLOT_CARD_HEIGHT = 90;
+export const SLOT_VISIBLE_CARDS = 3;
+
 // Game rules configuration
 export const GAME_RULES = {
   MAX_ATTEMPTS: 3,

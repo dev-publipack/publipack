@@ -2,26 +2,24 @@
 
 import React from 'react';
 import { Sponsor } from '@/shared/types';
+import { SLOT_CARD_HEIGHT, SLOT_VISIBLE_CARDS } from '@/shared/lib/game-config';
 
 interface SlotMachineContentProps {
   spinRefs: React.RefObject<HTMLDivElement | null>[];
   extendedSponsors: Sponsor[];
 }
 
-/**
- * Presentational slot machine UI: three columns with scrolling sponsors.
- * Receives spinRefs and extendedSponsors from parent (useSlotMachine).
- */
 export function SlotMachineContent({
   spinRefs,
   extendedSponsors,
 }: SlotMachineContentProps) {
   return (
-    <div className="relative grid grid-cols-3 gap-0 w-full h-full">
+    <div className="relative grid grid-cols-3 gap-0 w-full">
       {[0, 1, 2].map((slotIndex) => (
         <div
           key={slotIndex}
-          className="relative w-full h-full flex items-center justify-center overflow-hidden"
+          className="relative w-full overflow-hidden"
+          style={{ height: `${SLOT_CARD_HEIGHT * SLOT_VISIBLE_CARDS}px` }}
         >
           <div
             ref={spinRefs[slotIndex]}
@@ -31,20 +29,21 @@ export function SlotMachineContent({
             {extendedSponsors.map((sponsor, index) => (
               <div
                 key={`${slotIndex}-${index}`}
-                className="w-full h-[200px] flex flex-col items-center justify-center p-4 gap-2"
+                className="w-full flex flex-col items-center justify-center py-1.5"
+                style={{ height: `${SLOT_CARD_HEIGHT}px` }}
               >
-                <div className="relative w-full flex-1 flex items-center justify-center">
-                  <img
-                    src={sponsor.logo}
-                    alt={sponsor.name}
-                    className="w-full h-full object-contain"
-                  />
-                </div>
+                <img
+                  src={sponsor.logo}
+                  alt={sponsor.name}
+                  className="object-contain"
+                  style={{ maxHeight: '32px', maxWidth: '60%' }}
+                />
                 {sponsor.text && (
-                  <p className="font-body text-[#111D21] text-center line-clamp-2 text-lg">
+                  <p className="font-body text-[#111D21] text-center line-clamp-2 text-xs mt-0.5">
                     {sponsor.text}
                   </p>
                 )}
+                <div className="w-10 h-px mt-1" style={{ backgroundColor: '#B5B5B5' }} />
               </div>
             ))}
           </div>
@@ -87,4 +86,3 @@ export function SlotMachineContent({
     </div>
   );
 }
-

@@ -5,7 +5,7 @@ import { ChainBlockTop } from '@/shared/ui/chain-block-top';
 import { cn } from '@/shared/lib/utils';
 
 const PAGE_BG =
-  'min-h-screen bg-[url(\'/design/bg/bg.svg\')] bg-cover bg-center bg-no-repeat flex flex-col items-center justify-center';
+  'min-h-screen bg-page flex flex-col items-center justify-center';
 
 interface ScreenLayoutProps {
   children: React.ReactNode;

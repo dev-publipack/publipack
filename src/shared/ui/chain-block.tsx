@@ -39,7 +39,7 @@ export function ChainBlock({ text = '', children, className = '' }: ChainBlockPr
       {/* Button */}
       <div
         className={cn(
-          'w-[71%] aspect-282/58 rounded-[20px] border-4',
+          ' aspect-282/58 rounded-[20px] border-4',
           'bg-[#AEFB8B] border-[#DCF7CD]',
           'shadow-[0_0_5px_1px_rgba(0,0,0,0.25)]',
           'flex items-center justify-center -mt-5 relative z-10'
@@ -47,7 +47,7 @@ export function ChainBlock({ text = '', children, className = '' }: ChainBlockPr
       >
         {children ?? (
           <span
-            className="text-[24px] leading-none text-[#F2EBEE] whitespace-nowrap px-1"
+            className="text-[40px] leading-none text-[#F2EBEE] whitespace-nowrap px-1"
             style={{
               WebkitTextStroke: '2px #FF8B00',
               textShadow: '0px 0px 5px rgba(0, 0, 0, 0.25)',

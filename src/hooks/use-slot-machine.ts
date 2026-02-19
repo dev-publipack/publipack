@@ -1,6 +1,6 @@
 import { Sponsor } from "@/shared";
 import { useState, useRef, useCallback, useEffect, useMemo } from "react";
-import { TIMING, GAME_RULES } from "@/shared/lib/game-config";
+import { TIMING, GAME_RULES, SLOT_CARD_HEIGHT, SLOT_VISIBLE_CARDS } from "@/shared/lib/game-config";
 
 interface UseSlotMachineProps {
   sponsors: Sponsor[];
@@ -11,7 +11,7 @@ interface UseSlotMachineProps {
 export function useSlotMachine({
   sponsors,
   onComplete,
-  autoStart = true
+  autoStart = false
 }: UseSlotMachineProps) {
   const [isComplete, setIsComplete] = useState(false);
   const [isWin, setIsWin] = useState(false);
@@ -60,10 +60,9 @@ export function useSlotMachine({
       isWin: winResult,
     };
 
-    const CARD_HEIGHT = 200; // Высота одной карточки
+    const CENTER_OFFSET = Math.floor(SLOT_VISIBLE_CARDS / 2); // 1
     const MIN_SPINS = GAME_RULES.MIN_FULL_ROTATIONS || 3;
 
-    // Разные задержки для каждого слота (чтобы останавливались по очереди)
     const slotDurations = [
       TIMING.SPIN_DURATION || 7000,
       (TIMING.SPIN_DURATION || 7000) + 300,
@@ -72,22 +71,23 @@ export function useSlotMachine({
 
     spinRefs.forEach((scrollRef, index) => {
       if (scrollRef.current) {
-        // Рандомный начальный offset для каждого слота
         const randomStartOffset = Math.floor(Math.random() * sponsors.length);
 
-        // Reset с рандомным offset
         scrollRef.current.style.transition = 'none';
-        scrollRef.current.style.transform = `translateY(-${randomStartOffset * CARD_HEIGHT}px)`;
+        scrollRef.current.style.transform = `translateY(-${randomStartOffset * SLOT_CARD_HEIGHT}px)`;
 
-        // Force reflow
         void scrollRef.current.offsetHeight;
 
         const targetIndex = winners[index];
-        const extraSpins = Math.floor(Math.random() * 3); // 0-2 дополнительных оборота
-        const totalSpins = (MIN_SPINS + extraSpins) * sponsors.length + randomStartOffset + targetIndex;
-        const targetPosition = -(totalSpins * CARD_HEIGHT);
+        const extraSpins = Math.floor(Math.random() * 3);
+        // Subtract CENTER_OFFSET so the winner lands in the middle (2nd of 3 visible cards)
+        const totalSpins =
+          (MIN_SPINS + extraSpins) * sponsors.length +
+          randomStartOffset +
+          targetIndex -
+          CENTER_OFFSET;
+        const targetPosition = -(totalSpins * SLOT_CARD_HEIGHT);
 
-        // Запускаем анимацию с небольшой задержкой
         setTimeout(() => {
           if (scrollRef.current) {
             scrollRef.current.style.transition = `transform ${slotDurations[index]}ms cubic-bezier(0.25, 0.1, 0.25, 1)`;

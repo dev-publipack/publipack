@@ -11,7 +11,7 @@ export function LightsRow({
   pattern = [false, false, false, false, false],
 }: LightsRowProps) {
   return (
-    <div className="flex items-center z-2 absolute -top-7 left-0 right-0 justify-center gap-7">
+    <div className="flex  items-center justify-center gap-7">
       {pattern.map((isOn, index) => (
         isOn ? <img src={lightOn} className="w-5 h-5" alt="Light" key={index} /> : <img src={lightOff} className="w-5 h-5" alt="Light" key={index} />
       ))}

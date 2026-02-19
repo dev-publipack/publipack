@@ -59,8 +59,8 @@ export function MainContentContainerWrapper({
       headerText={headerText}
       showChainBlock={showChainBlock ?? false}
       chainBlockText={chainBlockText ?? 'SPIN AGAIN'}
-      chainBlockContent={chainBlockContent}
       centerChildren
+
     >
       {children}
     </MainContentContainer>

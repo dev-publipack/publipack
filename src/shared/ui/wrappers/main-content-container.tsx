@@ -28,9 +28,11 @@ export function MainContentContainer({
     centerChildren = false,
 }: MainContentContainerProps) {
     return (
-        <div className="relative w-full h-full z-10 flex flex-col items-center justify-center">
+        <div className=" w-full h-full z-10">
+
             <Spin2WinHeader text={headerText} />
             <div className="relative w-full h-full">
+
                 <div
                     className="absolute -inset-4 rounded-[80px] z-1 bg-machine-gradient shadow-[0_0_10px_5px_rgba(255,255,255,0.85),inset_0_0_20px_5px_rgba(255,255,255,0.85)]"
                     style={{
@@ -42,15 +44,15 @@ export function MainContentContainer({
                         right: '-4%',
                     }}
                 />
-                <LightsRow pattern={[true, false, true, false, true]} />
 
                 <div
                     className={cn(
-                        'relative z-5 w-full h-full rounded-[60px] border-4 border-[#FF8B00] overflow-hidden transition-all duration-1000',
+                        'relative z-5 w-full h-full rounded-[60px] border-4 border-[#FF8B00] transition-all duration-1000',
                         contentVariant === 'win'
                             ? 'bg-linear-to-b from-[#3FD2A1] to-[#44D1F8]'
                             : 'bg-[#FFEDD9]',
-                        centerChildren && 'flex flex-col items-center justify-center'
+                        centerChildren && 'flex flex-col items-center justify-center overflow-y-auto',
+                        !centerChildren && 'overflow-visible'
                     )}
                 >
                     {children}

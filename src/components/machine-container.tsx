@@ -4,7 +4,7 @@ interface MachineContainerProps {
   children: React.ReactNode;
   /** Optional slot for light bulbs at top of pink container */
   topSlot?: React.ReactNode;
-  variant?: 'default' | 'expanded';
+  variant?: 'default' | 'expanded' | 'form';
 }
 
 // 20% extra height at top only (for light bulbs)
@@ -12,12 +12,14 @@ const TOP_EXTENSION_RATIO = 0.2;
 
 const PADDING = 24; // p-6
 
+const HEIGHTS = { default: 281, expanded: 318, form: 380 } as const;
+
 export function MachineContainer({
   children,
   topSlot,
   variant = 'default',
 }: MachineContainerProps) {
-  const baseHeight = variant === 'expanded' ? 398 : 281;
+  const baseHeight = HEIGHTS[variant];
   const topExtension = Math.round(baseHeight * TOP_EXTENSION_RATIO);
 
   return (
@@ -41,7 +43,7 @@ export function MachineContainer({
       <div
         className="h-full rounded-[70px] flex flex-col items-center px-6 py-6"
       >
-        <div className="flex-1 flex items-end justify-center w-full min-h-0">
+        <div className={`flex-1 flex ${variant === 'form' ? 'items-center' : 'items-end'} justify-center w-full min-h-0`}>
           {children}
         </div>
       </div>

@@ -12,8 +12,9 @@ export function SpinScreen({ onComplete }: SpinScreenProps) {
   return (
     <ScreenLayout topChainText="SPIN NOW">
       <div className="relative w-full max-w-[480px] flex flex-col items-center overflow-visible">
-        <MachineContainer>
+        <MachineContainer variant="expanded">
           <MainContentContainerWrapper
+          
             slotMachine={{ sponsors: SPONSORS, onComplete }}
           />
         </MachineContainer>
