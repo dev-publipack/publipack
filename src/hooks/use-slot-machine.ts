@@ -6,12 +6,15 @@ interface UseSlotMachineProps {
   sponsors: Sponsor[];
   onComplete?: (result: { winner: Sponsor | null; isWin: boolean }) => void;
   autoStart?: boolean;
+  /** Called when auto-start spin has been triggered (to reset parent state) */
+  onAutoSpinStarted?: () => void;
 }
 
 export function useSlotMachine({
   sponsors,
   onComplete,
-  autoStart = false
+  autoStart = false,
+  onAutoSpinStarted,
 }: UseSlotMachineProps) {
   const [isComplete, setIsComplete] = useState(false);
   const [isWin, setIsWin] = useState(false);
@@ -117,9 +120,12 @@ export function useSlotMachine({
   useEffect(() => {
     if (!autoStart || hasStarted) return;
 
-    const timer = setTimeout(startSpin, 500);
+    const timer = setTimeout(() => {
+      startSpin();
+      onAutoSpinStarted?.();
+    }, 500);
     return () => clearTimeout(timer);
-  }, [autoStart, hasStarted, startSpin]);
+  }, [autoStart, hasStarted, startSpin, onAutoSpinStarted]);
 
   const extendedSponsors = useMemo(
     () => Array(GAME_RULES.MIN_SLOT_COPIES || 5).fill(sponsors).flat(),

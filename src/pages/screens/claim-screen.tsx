@@ -1,3 +1,6 @@
+'use client';
+
+import { useRef, useState, useCallback } from "react";
 import { MachineContainer } from "@/components/machine-container";
 import { ClaimForm } from "@/components/claim-form";
 import { MainContentContainerWrapper } from "@/components/main-content-container-wrapper";
@@ -8,22 +11,30 @@ import type { Sponsor } from "@/shared/types";
 interface ClaimScreenProps {
   winner: Sponsor;
   onSubmit: (data: ClaimSubmitData) => void;
-  onBack: () => void;
 }
 
-export function ClaimScreen({ winner, onSubmit, onBack }: ClaimScreenProps) {
+export function ClaimScreen({ winner, onSubmit }: ClaimScreenProps) {
+  const formRef = useRef<HTMLFormElement | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleChainBlockClick = useCallback(() => {
+    formRef.current?.requestSubmit();
+  }, []);
+
   return (
     <ScreenLayout topChainText="! WINNER !">
-      <div className="relative w-full max-w-[480px] flex flex-col items-center pt-1 ">
+      <div className="relative w-full max-w-[480px] flex flex-col items-center pt-1 pb-10 ">
         <MachineContainer variant="form">
           <MainContentContainerWrapper
             showChainBlock
             chainBlockText="Claim Now"
             headerText="! WINNER !"
             lanternState="winner"
+            onChainBlockClick={handleChainBlockClick}
+            chainBlockDisabled={isSubmitting}
           >
-            <div className="flex flex-col items-center w-full min-h-0 px-4  sm:px-6">
-              <div className="flex flex-col items-center w-full max-w-[224px] lg:max-w-[176px] min-w-0 overflow-hidden">
+            <div className="flex flex-col items-center w-full min-h-0 px-4  mb-4 sm:px-6">
+              <div className="flex flex-col items-center w-full max-w-[280px] min-w-0 overflow-hidden">
                 <img
                   src={winner.logo}
                   alt={winner.name}
@@ -34,8 +45,11 @@ export function ClaimScreen({ winner, onSubmit, onBack }: ClaimScreenProps) {
                 </p>
               </div>
 
-
-              <ClaimForm onSubmit={onSubmit} />
+              <ClaimForm
+                onSubmit={onSubmit}
+                formRef={formRef}
+                onSubmittingChange={setIsSubmitting}
+              />
             </div>
           </MainContentContainerWrapper>
         </MachineContainer>

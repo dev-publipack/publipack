@@ -10,6 +10,10 @@ import type { LanternState } from '@/shared/ui/lanterns';
 interface SlotMachineProps {
   sponsors: Sponsor[];
   onComplete?: (result: { winner: Sponsor | null; isWin: boolean }) => void;
+  /** Auto-start spin on mount (e.g. when coming from WinScreen Spin Again) */
+  autoStart?: boolean;
+  /** Called when auto-start spin has been triggered */
+  onAutoSpinStarted?: () => void;
 }
 
 interface MainContentContainerWrapperProps {
@@ -19,6 +23,10 @@ interface MainContentContainerWrapperProps {
   showChainBlock?: boolean;
   chainBlockText?: string;
   chainBlockContent?: React.ReactNode;
+  /** Click handler for chain block (e.g. form submit) */
+  onChainBlockClick?: () => void;
+  /** Disable chain block (e.g. while submitting) */
+  chainBlockDisabled?: boolean;
   /** Lantern state for non-slot screens (winner/loser) */
   lanternState?: LanternState;
 }
@@ -37,11 +45,13 @@ function deriveLanternState(
 function SlotMachineMainContent({
   sponsors,
   onComplete,
+  autoStart,
+  onAutoSpinStarted,
   headerText,
   chainBlockText,
 }: SlotMachineProps & { headerText: string; chainBlockText: string }) {
   const { isSpinning, isComplete, isWin, spinRefs, extendedSponsors, startSpin } =
-    useSlotMachine({ sponsors, onComplete });
+    useSlotMachine({ sponsors, onComplete, autoStart, onAutoSpinStarted });
 
   const lanternState = deriveLanternState(isSpinning, isComplete, isWin);
 
@@ -67,6 +77,8 @@ export function MainContentContainerWrapper({
   showChainBlock = false,
   chainBlockText = 'SPIN AGAIN',
   chainBlockContent,
+  onChainBlockClick,
+  chainBlockDisabled = false,
   lanternState = 'idle',
 }: MainContentContainerWrapperProps) {
   if (slotMachine) {
@@ -80,6 +92,8 @@ export function MainContentContainerWrapper({
       chainBlockText={chainBlockText ?? 'SPIN AGAIN'}
       centerChildren
       lanternState={lanternState}
+      onChainBlockClick={onChainBlockClick}
+      chainBlockDisabled={chainBlockDisabled}
     >
       {children}
     </MainContentContainer>

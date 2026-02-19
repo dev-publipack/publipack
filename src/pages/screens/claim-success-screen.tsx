@@ -26,7 +26,7 @@ export function ClaimSuccessScreen({
         <MainContentContainerWrapper
           headerText="Spin'2'win"
           showChainBlock
-          chainBlockText="18:45:54"
+          chainBlockText={formattedTime}
           lanternState="winner"
         >
           <div className="flex flex-1 flex-col items-center justify-center px-6 py-6 w-full min-h-0">

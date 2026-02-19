@@ -29,6 +29,8 @@ export function WinScreen({ winner, onClaim, onSpinAgain }: WinScreenProps) {
           <MainContentContainerWrapper
             headerText="! WINNER !"
             showChainBlock
+            chainBlockText="SPIN AGAIN"
+            onChainBlockClick={onSpinAgain}
             lanternState="winner"
           >
             <div className="flex flex-col items-center justify-center px-6 py-4 sm:px-8 sm:py-6 min-h-0">

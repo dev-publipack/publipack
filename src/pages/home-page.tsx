@@ -34,12 +34,16 @@ export default function HomePage() {
   const game = useGame();
   const cooldownStartedRef = useRef(false);
   const [spinKey, setSpinKey] = useState(0);
+  const [autoSpinNext, setAutoSpinNext] = useState(false);
   const [mockScreen, setMockScreen] = useState<GameScreen | "">("");
 
   const handleSpinAgain = useCallback(() => {
+    if (game.currentScreen === "youWon") {
+      setAutoSpinNext(true);
+    }
     setSpinKey((k) => k + 1);
     game.handleSpinAgain();
-  }, [game.handleSpinAgain]);
+  }, [game.handleSpinAgain, game.currentScreen]);
 
   const handlePlayAgain = useCallback(() => {
     setSpinKey((k) => k + 1);
@@ -94,7 +98,12 @@ export default function HomePage() {
         </div>
 
         {activeScreen === "main" || activeScreen === "slotMachine" ? (
-          <SpinScreen key={spinKey} onComplete={game.handleSlotComplete} />
+          <SpinScreen
+            key={spinKey}
+            onComplete={game.handleSlotComplete}
+            autoStart={autoSpinNext}
+            onAutoSpinConsumed={() => setAutoSpinNext(false)}
+          />
         ) : activeScreen === "youWon" ? (
           <WinScreen
             winner={game.winner || MOCK_WINNER}
