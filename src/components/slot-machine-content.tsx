@@ -3,16 +3,17 @@
 import React from 'react';
 import { Sponsor } from '@/shared/types';
 import { SLOT_CARD_HEIGHT, SLOT_VISIBLE_CARDS } from '@/shared/lib/game-config';
+import { GAME_RULES } from '@/shared/lib/game-config';
 
 interface SlotMachineContentProps {
   spinRefs: React.RefObject<HTMLDivElement | null>[];
-  extendedSponsors: Sponsor[];
+  sponsors: Sponsor[];
 }
 
-export function SlotMachineContent({
-  spinRefs,
-  extendedSponsors,
-}: SlotMachineContentProps) {
+export function SlotMachineContent({ spinRefs, sponsors }: SlotMachineContentProps) {
+  const minCards =
+    (GAME_RULES.MIN_FULL_ROTATIONS + 3) * sponsors.length;
+
   return (
     <div className="relative grid grid-cols-3 gap-0 w-full">
       {[0, 1, 2].map((slotIndex) => (
@@ -26,26 +27,32 @@ export function SlotMachineContent({
             className="absolute top-0 left-0 w-full"
             style={{ transform: 'translateY(0)' }}
           >
-            {extendedSponsors.map((sponsor, index) => (
-              <div
-                key={`${slotIndex}-${index}`}
-                className="w-full flex flex-col items-center justify-center py-1.5"
-                style={{ height: `${SLOT_CARD_HEIGHT}px` }}
-              >
-                <img
-                  src={sponsor.logo}
-                  alt={sponsor.name}
-                  className="object-contain"
-                  style={{ maxHeight: '32px', maxWidth: '60%' }}
-                />
-                {sponsor.text && (
-                  <p className="font-body text-[#111D21] text-center line-clamp-2 text-xs mt-0.5">
-                    {sponsor.text}
-                  </p>
-                )}
-                <div className="w-10 h-px mt-1" style={{ backgroundColor: '#B5B5B5' }} />
-              </div>
-            ))}
+            {Array.from({ length: minCards }, (_, index) => {
+              const sponsor = sponsors[index % sponsors.length];
+              return (
+                <div
+                  key={`${slotIndex}-${index}`}
+                  className="w-full flex flex-col items-center justify-center py-1.5"
+                  style={{ height: `${SLOT_CARD_HEIGHT}px` }}
+                >
+                  <img
+                    src={sponsor.logo}
+                    alt={sponsor.name}
+                    className="object-contain"
+                    style={{ maxHeight: '32px', maxWidth: '60%' }}
+                  />
+                  {sponsor.text && (
+                    <p className="font-body text-[#111D21] text-center line-clamp-2 text-xs mt-0.5">
+                      {sponsor.text}
+                    </p>
+                  )}
+                  <div
+                    className="w-10 h-px mt-1"
+                    style={{ backgroundColor: '#B5B5B5' }}
+                  />
+                </div>
+              );
+            })}
           </div>
         </div>
       ))}

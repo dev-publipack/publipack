@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { memo } from 'react';
 import { MainContentContainer } from '@/shared/ui/wrappers/main-content-container';
 import { SlotMachineContent } from './slot-machine-content';
 import { useSlotMachine } from '@/hooks/use-slot-machine';
@@ -42,7 +42,7 @@ function deriveLanternState(
   return 'idle';
 }
 
-function SlotMachineMainContent({
+const SlotMachineMainContent = memo(function SlotMachineMainContent({
   sponsors,
   onComplete,
   autoStart,
@@ -50,7 +50,7 @@ function SlotMachineMainContent({
   headerText,
   chainBlockText,
 }: SlotMachineProps & { headerText: string; chainBlockText: string }) {
-  const { isSpinning, isComplete, isWin, spinRefs, extendedSponsors, startSpin } =
+  const { isSpinning, isComplete, isWin, spinRefs, startSpin } =
     useSlotMachine({ sponsors, onComplete, autoStart, onAutoSpinStarted });
 
   const lanternState = deriveLanternState(isSpinning, isComplete, isWin);
@@ -65,10 +65,10 @@ function SlotMachineMainContent({
       onChainBlockClick={startSpin}
       chainBlockDisabled={isSpinning}
     >
-      <SlotMachineContent spinRefs={spinRefs} extendedSponsors={extendedSponsors} />
+      <SlotMachineContent spinRefs={spinRefs} sponsors={sponsors} />
     </MainContentContainer>
   );
-}
+});
 
 export function MainContentContainerWrapper({
   children,

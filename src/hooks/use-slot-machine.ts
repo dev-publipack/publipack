@@ -22,11 +22,10 @@ export function useSlotMachine({
   const [isSpinning, setIsSpinning] = useState(false);
   const spinResultRef = useRef<{ winner: Sponsor | null; isWin: boolean } | null>(null);
 
-  const spinRefs = [
-    useRef<HTMLDivElement>(null),
-    useRef<HTMLDivElement>(null),
-    useRef<HTMLDivElement>(null),
-  ];
+  const ref0 = useRef<HTMLDivElement>(null);
+  const ref1 = useRef<HTMLDivElement>(null);
+  const ref2 = useRef<HTMLDivElement>(null);
+  const spinRefs = useMemo(() => [ref0, ref1, ref2], []);
 
   const selectWinners = useCallback((winResult: boolean): number[] => {
     if (winResult) {
@@ -127,17 +126,11 @@ export function useSlotMachine({
     return () => clearTimeout(timer);
   }, [autoStart, hasStarted, startSpin, onAutoSpinStarted]);
 
-  const extendedSponsors = useMemo(
-    () => Array(GAME_RULES.MIN_SLOT_COPIES || 5).fill(sponsors).flat(),
-    [sponsors]
-  );
-
   return {
     isSpinning,
     isComplete,
     isWin,
     spinRefs,
-    extendedSponsors,
     startSpin,
   };
 }

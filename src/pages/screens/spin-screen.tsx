@@ -1,3 +1,6 @@
+'use client';
+
+import { useMemo } from "react";
 import { MachineContainer } from "@/components/machine-container";
 import { MainContentContainerWrapper } from "@/components/main-content-container-wrapper";
 import { ScreenLayout } from "@/shared/ui/wrappers/screen-layout";
@@ -13,17 +16,22 @@ interface SpinScreenProps {
 }
 
 export function SpinScreen({ onComplete, autoStart, onAutoSpinConsumed }: SpinScreenProps) {
+  const slotMachineProps = useMemo(
+    () => ({
+      sponsors: SPONSORS,
+      onComplete,
+      autoStart,
+      onAutoSpinStarted: onAutoSpinConsumed,
+    }),
+    [onComplete, autoStart, onAutoSpinConsumed]
+  );
+
   return (
     <ScreenLayout topChainText="SPIN NOW" showActivityNotifications>
       <div className="relative w-full max-w-[480px] flex flex-col items-center overflow-visible">
         <MachineContainer variant="expanded">
           <MainContentContainerWrapper
-            slotMachine={{
-              sponsors: SPONSORS,
-              onComplete,
-              autoStart,
-              onAutoSpinStarted: onAutoSpinConsumed,
-            }}
+            slotMachine={slotMachineProps}
             chainBlockText="SPIN NOW"
           />
         </MachineContainer>

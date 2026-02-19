@@ -3,17 +3,21 @@ import { MainContentContainerWrapper } from "@/components/main-content-container
 import { ScreenLayout } from "@/shared/ui/wrappers/screen-layout";
 
 interface TryAgainScreenProps {
+  isCooldown: boolean;
   formattedTime: string;
   remainingSeconds: number;
+  remainingAttempts: number;
   onSpinAgain: () => void;
 }
 
 export function TryAgainScreen({
+  isCooldown,
   formattedTime,
   remainingSeconds,
+  remainingAttempts,
   onSpinAgain,
 }: TryAgainScreenProps) {
-  const canSpinNow = remainingSeconds <= 0;
+  const canSpinNow = !isCooldown || remainingSeconds <= 0;
 
   return (
     <ScreenLayout>
@@ -29,11 +33,17 @@ export function TryAgainScreen({
               <p className="mb-6 font-roboto font-black text-[20px] leading-none text-center uppercase text-[#000000]">
                 Better Luck Next Spin!
               </p>
-              <span className="block w-full whitespace-nowrap text-[15px] font-roboto font-black leading-none text-center uppercase text-[#000000]">
-                Try again tomorrow
-                <br />
-                Next spin unlocks in 24 hours
-              </span>
+              {isCooldown ? (
+                <span className="block w-full whitespace-nowrap text-[15px] font-roboto font-black leading-none text-center uppercase text-[#000000]">
+                  Try again tomorrow
+                  <br />
+                  Next spin unlocks in 24 hours
+                </span>
+              ) : (
+                <span className="block w-full whitespace-nowrap text-[15px] font-roboto font-black leading-none text-center uppercase text-[#000000]">
+                  {remainingAttempts} {remainingAttempts === 1 ? "attempt" : "attempts"} left
+                </span>
+              )}
               {canSpinNow && (
                 <button
                   onClick={onSpinAgain}

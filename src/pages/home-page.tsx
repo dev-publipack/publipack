@@ -49,10 +49,11 @@ export default function HomePage() {
     game.handlePlayAgainFromSuccess();
   }, [game.handlePlayAgainFromSuccess]);
 
+  const handleAutoSpinConsumed = useCallback(() => setAutoSpinNext(false), []);
+
+  // 24h cooldown only after 3 attempts (youLost) or after claim success
   const isCooldownScreen =
-    game.currentScreen === "youLost" ||
-    game.currentScreen === "claimSuccess" ||
-    game.currentScreen === "didntWin";
+    game.currentScreen === "youLost" || game.currentScreen === "claimSuccess";
 
   const cooldown = useCooldownTimer({
     isActive: isCooldownScreen,
@@ -94,7 +95,7 @@ export default function HomePage() {
             key={spinKey}
             onComplete={game.handleSlotComplete}
             autoStart={autoSpinNext}
-            onAutoSpinConsumed={() => setAutoSpinNext(false)}
+            onAutoSpinConsumed={handleAutoSpinConsumed}
           />
         ) : activeScreen === "youWon" ? (
           <WinScreen
@@ -125,8 +126,10 @@ export default function HomePage() {
           />
         ) : (activeScreen === "didntWin" || activeScreen === "youLost") ? (
           <TryAgainScreen
+            isCooldown={activeScreen === "youLost"}
             formattedTime={cooldown.formattedTime}
             remainingSeconds={cooldown.remainingSeconds}
+            remainingAttempts={game.remainingAttempts}
             onSpinAgain={activeScreen === "youLost" ? handlePlayAgain : handleSpinAgain}
           />
         ) : null}
