@@ -11,9 +11,10 @@ import type { Sponsor } from "@/shared/types";
 interface ClaimScreenProps {
   winner: Sponsor;
   onSubmit: (data: ClaimSubmitData) => void;
+  onBack?: () => void;
 }
 
-export function ClaimScreen({ winner, onSubmit }: ClaimScreenProps) {
+export function ClaimScreen({ winner, onSubmit, onBack }: ClaimScreenProps) {
   const formRef = useRef<HTMLFormElement | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
