@@ -4,30 +4,32 @@ interface Notification {
   id: string;
   name: string;
   prize: string;
+  emoji: string;
   timestamp: number;
 }
 
-// Mock data for winners - using real brands from sponsors with nicknames
+// Mock data for winners - consistent "Free Gift from [Sponsor]" format
 const MOCK_WINNERS = [
-  { name: "@emily_rose", prize: "Preply 50% de descuento" },
-  { name: "@mike_smith", prize: "Lego Juegos Gratis" },
-  { name: "@sarah_j", prize: "Adidas hasta -60%" },
-  { name: "@james_bond", prize: "The North Face hasta -50%" },
-  { name: "@jess_87", prize: "FlyLevel 161€ a Nueva York" },
-  { name: "@david_k", prize: "Workaway navegar gratis en el Caribe" },
-  { name: "@sophie_m", prize: "El Corte Inglés viajes -40%" },
-  { name: "@thomas_01", prize: "The Farm botella de cava gratis" },
-  { name: "@olivia_tx", prize: "Preply 50% de descuento" },
-  { name: "@daniel_99", prize: "Lego Juegos Gratis" },
-  { name: "@emma_lee", prize: "Adidas hasta -60%" },
-  { name: "@alex_cruz", prize: "FlyLevel 161€ a Nueva York" },
-  { name: "@mia_flores", prize: "The Farm botella de cava gratis" },
-  { name: "@john_doe", prize: "El Corte Inglés viajes -40%" },
-  { name: "@lisa_ann", prize: "The North Face hasta -50%" },
-  { name: "@chris_wong", prize: "Workaway navegar gratis en el Caribe" },
+  { name: "@emily_rose", prize: "Free Gift from Preply" },
+  { name: "@mike_smith", prize: "Free Gift from Lego" },
+  { name: "@sarah_j", prize: "Free Gift from Adidas" },
+  { name: "@james_bond", prize: "Free Gift from The North Face" },
+  { name: "@jess_87", prize: "Free Gift from FlyLevel" },
+  { name: "@david_k", prize: "Free Gift from Workaway" },
+  { name: "@sophie_m", prize: "Free Gift from El Corte Inglés" },
+  { name: "@thomas_01", prize: "Free Gift from The Farm" },
+  { name: "@olivia_tx", prize: "Free Gift from Disney" },
+  { name: "@daniel_99", prize: "Free Gift from Preply" },
+  { name: "@emma_lee", prize: "Free Gift from Adidas" },
+  { name: "@alex_cruz", prize: "Free Gift from FlyLevel" },
+  { name: "@mia_flores", prize: "Free Gift from The Farm" },
+  { name: "@john_doe", prize: "Free Gift from El Corte Inglés" },
+  { name: "@lisa_ann", prize: "Free Gift from The North Face" },
+  { name: "@chris_wong", prize: "Free Gift from Workaway" },
 ];
 
 const MAX_NOTIFICATIONS = 2; // Maximum notifications on screen at once (for animation overlap)
+const EMOJIS = ['🔥', '😊', '🎉', '⭐', '💫', '✨'];
 
 export function useActivityNotifications(isEnabled: boolean = true) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -35,10 +37,12 @@ export function useActivityNotifications(isEnabled: boolean = true) {
   const getRandomWinner = useCallback(() => {
     const randomIndex = Math.floor(Math.random() * MOCK_WINNERS.length);
     const winner = MOCK_WINNERS[randomIndex];
+    const emoji = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
     return {
       id: `${Date.now()}-${randomIndex}`,
       name: winner.name,
       prize: winner.prize,
+      emoji,
       timestamp: Date.now(),
     };
   }, []);
@@ -64,21 +68,15 @@ export function useActivityNotifications(isEnabled: boolean = true) {
       return;
     }
 
-    // Show first notification after random delay (2-4 seconds)
-    const initialDelay = Math.random() * 2000 + 2000;
-    const initialTimer = setTimeout(() => {
-      addNotification();
-    }, initialDelay);
+    // Show first winner immediately (no delay)
+    addNotification();
 
     // Add new notification every 4 seconds
     const interval = setInterval(() => {
       addNotification();
     }, 4000);
 
-    return () => {
-      clearTimeout(initialTimer);
-      clearInterval(interval);
-    };
+    return () => clearInterval(interval);
   }, [isEnabled, addNotification]);
 
   // Auto-remove notifications - older ones removed faster for smooth transition

@@ -22,7 +22,7 @@ export function ClaimScreen({ winner, onSubmit }: ClaimScreenProps) {
   }, []);
 
   return (
-    <ScreenLayout topChainText="! WINNER !">
+    <ScreenLayout topChainText="! WINNER !" showActivityNotifications>
       <div className="relative w-full max-w-[480px] flex flex-col items-center pt-1 pb-10 ">
         <MachineContainer variant="form">
           <MainContentContainerWrapper

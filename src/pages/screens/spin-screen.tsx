@@ -14,7 +14,7 @@ interface SpinScreenProps {
 
 export function SpinScreen({ onComplete, autoStart, onAutoSpinConsumed }: SpinScreenProps) {
   return (
-    <ScreenLayout topChainText="SPIN NOW">
+    <ScreenLayout topChainText="SPIN NOW" showActivityNotifications>
       <div className="relative w-full max-w-[480px] flex flex-col items-center overflow-visible">
         <MachineContainer variant="expanded">
           <MainContentContainerWrapper

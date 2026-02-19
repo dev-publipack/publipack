@@ -17,7 +17,7 @@ export function TryAgainScreen({
 
   return (
     <ScreenLayout>
-      <div className="relative w-full max-w-[480px] flex flex-col items-center overflow-visible">
+      <div className="relative w-full max-w-[480px] mx-auto flex flex-col items-center overflow-visible">
         <MachineContainer>
           <MainContentContainerWrapper
             showChainBlock

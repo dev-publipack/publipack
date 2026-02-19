@@ -114,6 +114,7 @@ export const translations = {
   // ============================================
   activityNotification: {
     justWon: { en: "{name} just WON! {prize}", es: "{name} ¡acaba de GANAR! {prize}" }, // {name} and {prize} are placeholders
+    justWonTop: { en: "{name} JUST WON", es: "{name} ¡ACABA DE GANAR!" }, // Top line for ChainBlockTop banner
   },
 
   // ============================================
