@@ -23,7 +23,12 @@ export function ClaimSuccessScreen({
   return (
     <ScreenLayout>
       <div className="relative w-full max-w-[480px] flex flex-col items-center overflow-visible">
-        <MainContentContainerWrapper headerText="Spin'2'win" showChainBlock chainBlockText="18:45:54" >
+        <MainContentContainerWrapper
+          headerText="Spin'2'win"
+          showChainBlock
+          chainBlockText="18:45:54"
+          lanternState="winner"
+        >
           <div className="flex flex-1 flex-col items-center justify-center px-6 py-6 w-full min-h-0">
             <p className="mb-6 font-roboto font-black text-[20px] leading-none text-center uppercase text-[#000000]">
               Congratulations!

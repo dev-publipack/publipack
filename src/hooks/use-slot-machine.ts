@@ -31,17 +31,19 @@ export function useSlotMachine({
       return [winningSponsorIndex, winningSponsorIndex, winningSponsorIndex];
     }
 
-    const selected: number[] = [];
-    const availableIndices = Array.from({ length: sponsors.length }, (_, i) => i);
+    // Гарантируем что все 3 индекса разные
+    const len = sponsors.length;
+    if (len === 1) return [0, 0, 0]; // единственный вариант
 
-    while (selected.length < 3) {
-      const randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
-      if (!selected.includes(randomIndex)) {
-        selected.push(randomIndex);
-      }
+    if (len === 2) {
+      // Только два варианта — хотя бы два барабана разные
+      return [0, 1, 0];
     }
 
-    return selected;
+    // len >= 3: выбираем 3 уникальных индекса без повторений
+    const shuffled = Array.from({ length: len }, (_, i) => i)
+      .sort(() => Math.random() - 0.5);
+    return [shuffled[0], shuffled[1], shuffled[2]];
   }, [sponsors.length]);
 
   const startSpin = useCallback(() => {
@@ -60,7 +62,7 @@ export function useSlotMachine({
       isWin: winResult,
     };
 
-    const CENTER_OFFSET = Math.floor(SLOT_VISIBLE_CARDS / 2); // 1
+    const CENTER_OFFSET = Math.floor(SLOT_VISIBLE_CARDS / 2);
     const MIN_SPINS = GAME_RULES.MIN_FULL_ROTATIONS || 3;
 
     const slotDurations = [
@@ -80,10 +82,11 @@ export function useSlotMachine({
 
         const targetIndex = winners[index];
         const extraSpins = Math.floor(Math.random() * 3);
-        // Subtract CENTER_OFFSET so the winner lands in the middle (2nd of 3 visible cards)
+
+        // randomStartOffset NOT included — it only affects the visual start,
+        // not where the reel lands. Middle card = totalSpins + 1 = targetIndex (mod len).
         const totalSpins =
           (MIN_SPINS + extraSpins) * sponsors.length +
-          randomStartOffset +
           targetIndex -
           CENTER_OFFSET;
         const targetPosition = -(totalSpins * SLOT_CARD_HEIGHT);
@@ -97,7 +100,6 @@ export function useSlotMachine({
       }
     });
 
-    // Завершение анимации
     const maxDuration = Math.max(...slotDurations);
     setTimeout(() => {
       setIsSpinning(false);
@@ -112,7 +114,6 @@ export function useSlotMachine({
 
   }, [isSpinning, sponsors, selectWinners, onComplete]);
 
-  // Auto-start on mount if enabled
   useEffect(() => {
     if (!autoStart || hasStarted) return;
 

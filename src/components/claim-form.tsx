@@ -45,7 +45,7 @@ export function ClaimForm({ onSubmit }: ClaimFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-[280px] mx-auto mb-[28px]">
+    <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-[280px] mx-auto ">
       {/* Title - larger gap before first field per Figma */}
       <h3 className="font-roboto font-black text-xs text-blue-dark uppercase text-center mb-6">
         Enter Your details to claim your prize

@@ -1,8 +1,8 @@
 import React from 'react';
-import { LightsRow } from '@/components/lights';
 import { Spin2WinHeader } from './spin-2-win-header';
 import { ChainBlock } from '../chain-block';
 import { cn } from '@/shared/lib/utils';
+import type { LanternState } from '@/shared/ui/lanterns';
 
 export type ContentVariant = 'default' | 'win';
 
@@ -14,8 +14,14 @@ interface MainContentContainerProps {
     chainBlockText?: string;
     /** Custom content for chain block (e.g. TimerDisplay) - overrides chainBlockText */
     chainBlockContent?: React.ReactNode;
+    /** Click handler for chain block button (e.g. start spin) */
+    onChainBlockClick?: () => void;
+    /** Disable chain block button (e.g. while spinning) */
+    chainBlockDisabled?: boolean;
     contentVariant?: ContentVariant;
     centerChildren?: boolean;
+    /** Lantern animation: idle | spinning | winner | loser */
+    lanternState?: LanternState;
 }
 
 export function MainContentContainer({
@@ -25,12 +31,15 @@ export function MainContentContainer({
     contentVariant = 'default',
     chainBlockText = 'SPIN NOW',
     chainBlockContent,
+    onChainBlockClick,
+    chainBlockDisabled = false,
     centerChildren = false,
+    lanternState = 'idle',
 }: MainContentContainerProps) {
     return (
         <div className=" w-full h-full z-10">
 
-            <Spin2WinHeader text={headerText} />
+            <Spin2WinHeader text={headerText} lanternState={lanternState} />
             <div className="relative w-full h-full">
 
                 <div
@@ -59,7 +68,11 @@ export function MainContentContainer({
                 </div>
 
                 {showChainBlock && (
-                    <ChainBlock text={chainBlockText}>
+                    <ChainBlock
+                        text={chainBlockText}
+                        onClick={onChainBlockClick}
+                        disabled={chainBlockDisabled}
+                    >
                         {chainBlockContent}
                     </ChainBlock>
                 )}

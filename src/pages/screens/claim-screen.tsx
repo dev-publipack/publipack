@@ -16,7 +16,12 @@ export function ClaimScreen({ winner, onSubmit, onBack }: ClaimScreenProps) {
     <ScreenLayout topChainText="! WINNER !">
       <div className="relative w-full max-w-[480px] flex flex-col items-center pt-1 ">
         <MachineContainer variant="form">
-          <MainContentContainerWrapper showChainBlock chainBlockText="Claim Now" headerText="! WINNER !">
+          <MainContentContainerWrapper
+            showChainBlock
+            chainBlockText="Claim Now"
+            headerText="! WINNER !"
+            lanternState="winner"
+          >
             <div className="flex flex-col items-center w-full min-h-0 px-4  sm:px-6">
               <div className="flex flex-col items-center w-full max-w-[224px] lg:max-w-[176px] min-w-0 overflow-hidden">
                 <img

@@ -1,10 +1,12 @@
-import { LightsRow } from "@/components/lights";
+import { LanternRow } from '@/shared/ui/lanterns';
+import type { LanternState } from '@/shared/ui/lanterns';
 
 interface Spin2WinHeaderProps {
     text: string;
+    lanternState?: LanternState;
 }
 
-export function Spin2WinHeader({ text }: Spin2WinHeaderProps) {
+export function Spin2WinHeader({ text, lanternState = 'idle' }: Spin2WinHeaderProps) {
     return (
         <>
             <div
@@ -25,7 +27,7 @@ export function Spin2WinHeader({ text }: Spin2WinHeaderProps) {
                 {text}
             </div>
             <div className="z-30 p-2 relative">
-                <LightsRow pattern={[true, false, true, false, true]} />
+                <LanternRow lanternState={lanternState} />
             </div>
 
         </>

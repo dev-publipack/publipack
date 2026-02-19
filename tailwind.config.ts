@@ -84,9 +84,20 @@ const config: Config = {
         'pulse-light': 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'slide-down': 'slideDown 0.3s ease-out',
         'slide-up': 'slideUp 0.3s ease-out',
+        'lantern-pulse': 'lanternPulse 1.5s ease-in-out infinite',
       },
 
       keyframes: {
+        lanternPulse: {
+          '0%, 100%': {
+            boxShadow:
+              '0 0 10px 3px rgba(255,227,194,0.5), 0 0 18px 6px rgba(255,176,81,0.35)',
+          },
+          '50%': {
+            boxShadow:
+              '0 0 16px 6px rgba(255,227,194,0.7), 0 0 28px 10px rgba(255,176,81,0.55)',
+          },
+        },
         slideDown: {
           '0%': { transform: 'translateY(-100%)', opacity: '0' },
           '100%': { transform: 'translateY(0)', opacity: '1' },

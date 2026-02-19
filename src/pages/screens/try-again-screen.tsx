@@ -23,6 +23,7 @@ export function TryAgainScreen({
             showChainBlock
             chainBlockText={canSpinNow ? "SPIN NOW" : formattedTime}
             headerText="Try Again"
+            lanternState="loser"
           >
             <div className="py-14 flex flex-col items-center gap-4">
               <p className="mb-6 font-roboto font-black text-[20px] leading-none text-center uppercase text-[#000000]">
