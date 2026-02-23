@@ -7,7 +7,7 @@ import { useActivityNotifications } from '@/hooks/legacy/use-activity-notificati
 import { useLanguage } from '@/providers/language-provider';
 
 const PAGE_BG =
-  'min-h-screen w-full bg-page flex flex-col items-center justify-center';
+  'min-h-dvh w-full bg-page flex flex-col items-center justify-center';
 
 interface ScreenLayoutProps {
   children: React.ReactNode;
@@ -48,13 +48,15 @@ export function ScreenLayout({
   }, [showActivityNotifications, notifications, topChainText, t]);
 
   return (
-    <div className={cn(PAGE_BG, className)}>
+    <div className={cn(PAGE_BG, 'relative', className)}>
       {chainContent && (
-        <ChainBlockTop
-          text={chainContent.text}
-          lines={chainContent.lines}
-          animate={chainContent.animate}
-        />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 z-10">
+          <ChainBlockTop
+            text={chainContent.text}
+            lines={chainContent.lines}
+            animate={chainContent.animate}
+          />
+        </div>
       )}
       <div
         className={cn(

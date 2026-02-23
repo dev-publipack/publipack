@@ -26,7 +26,7 @@ export function SlotMachineContent({ spinRefs, sponsors }: SlotMachineContentPro
       style={{
         maxWidth: MACHINE_WIDTH,
         boxShadow:
-          '0 4px 20px rgba(0,0,0,0.12), 0 0 10px 5px rgba(255,255,255,0.85)',
+          '0 4px 20px rgba(0,0,0,0.12), 0 0 10px 5px rgba(255,255,255,0.85), inset 0 2px 6px rgba(255,255,255,0.7), inset 0 -1px 3px rgba(0,0,0,0.08), inset 8px 0 16px -8px rgba(255,255,255,0.5), inset -8px 0 16px -8px rgba(255,255,255,0.5)',
       }}
     >
       {[0, 1, 2].map((slotIndex) => (
@@ -36,8 +36,6 @@ export function SlotMachineContent({ spinRefs, sponsors }: SlotMachineContentPro
           style={{
             height: `${slotHeight}px`,
             backgroundColor: '#FFEDD9',
-            boxShadow:
-              'inset 0 6px 16px rgba(0,0,0,0.15), inset 0 0 40px 10px rgba(0,0,0,0.08), inset 0 -2px 4px rgba(255,255,255,0.4)',
           }}
         >
           <div

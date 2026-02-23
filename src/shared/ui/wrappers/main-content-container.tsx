@@ -44,7 +44,6 @@ export function MainContentContainer({
 
             <Spin2WinHeader text={headerText} lanternState={lanternState} />
             <div className="relative w-full h-full">
-
                 <div
                     className="absolute -inset-4 rounded-[80px] z-1 bg-machine-gradient shadow-[0_0_10px_5px_rgba(255,255,255,0.85),inset_0_0_20px_5px_rgba(255,255,255,0.85)]"
                     style={{
@@ -61,9 +60,9 @@ export function MainContentContainer({
                     <div
                         className={cn(
                             'relative z-5 w-full h-full rounded-[60px] transition-all duration-1000',
-                            'flex flex-col items-center justify-end overflow-visible',
+                            'flex flex-col items-center justify-center overflow-visible',
                             contentVariant === 'win' &&
-                                'bg-linear-to-b from-[#3FD2A1] to-[#44D1F8]'
+                            'bg-linear-to-b from-[#3FD2A1] to-[#44D1F8]'
                         )}
                     >
                         {children}
