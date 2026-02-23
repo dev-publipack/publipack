@@ -1,4 +1,5 @@
 import React from 'react';
+import { z } from 'zod';
 
 export interface ClaimFormData {
   firstName: string;
@@ -13,6 +14,15 @@ export interface ClaimSubmitData {
   email: string;
   phone: string;
 }
+
+const ClaimFormSchema = z.object({
+  firstName: z.string().min(1, 'First name is required'),
+  lastName: z.string().min(1, 'Last name is required'),
+  email: z.string().min(1, 'Email is required').email('Invalid email address'),
+  phone: z.string().optional(),
+});
+
+type FormErrors = Partial<Record<keyof ClaimFormData, string>>;
 
 interface ClaimFormProps {
   onSubmit: (data: ClaimSubmitData) => void | Promise<void>;
@@ -29,16 +39,35 @@ export function ClaimForm({ onSubmit, formRef, onSubmittingChange }: ClaimFormPr
     email: '',
     phone: '',
   });
+  const [errors, setErrors] = React.useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const handleChange = (field: keyof ClaimFormData) => (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     setFormData((prev) => ({ ...prev, [field]: e.target.value }));
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const result = ClaimFormSchema.safeParse(formData);
+    if (!result.success) {
+      const fieldErrors: FormErrors = {};
+      for (const issue of result.error.issues) {
+        const field = issue.path[0] as keyof ClaimFormData;
+        if (!fieldErrors[field]) {
+          fieldErrors[field] = issue.message;
+        }
+      }
+      setErrors(fieldErrors);
+      return;
+    }
+
+    setErrors({});
     setIsSubmitting(true);
     onSubmittingChange?.(true);
     try {
@@ -53,8 +82,15 @@ export function ClaimForm({ onSubmit, formRef, onSubmittingChange }: ClaimFormPr
     }
   };
 
+  const inputClass = (field: keyof ClaimFormData) =>
+    `w-full h-[30px] px-3 rounded-[5px] border-2 bg-white font-roboto font-black text-xs text-center placeholder:text-gray-placeholder placeholder:text-center focus:outline-none focus:ring-2 ${
+      errors[field]
+        ? 'border-red-500 focus:ring-red-500'
+        : 'border-blue-dark focus:ring-blue-dark'
+    }`;
+
   return (
-    <form ref={formRef} onSubmit={handleSubmit} className="space-y-4 w-full max-w-[224px] mx-auto ">
+    <form ref={formRef} onSubmit={handleSubmit} noValidate className="space-y-4 w-full max-w-[224px] mx-auto">
       {/* Title - larger gap before first field per Figma */}
       <h3 className="font-roboto font-black text-xs text-blue-dark uppercase text-center mb-6">
         Enter Your details to claim your prize
@@ -67,9 +103,11 @@ export function ClaimForm({ onSubmit, formRef, onSubmittingChange }: ClaimFormPr
           value={formData.firstName}
           onChange={handleChange('firstName')}
           placeholder="FIRST NAME"
-          className="w-full h-[30px] px-3 rounded-[5px] border-2 border-blue-dark bg-white font-roboto font-black text-xs text-center placeholder:text-gray-placeholder placeholder:text-center focus:outline-none focus:ring-2 focus:ring-blue-dark"
-          required
+          className={inputClass('firstName')}
         />
+        {errors.firstName && (
+          <p className="mt-1 text-[10px] text-red-500 text-center">{errors.firstName}</p>
+        )}
       </div>
 
       {/* Last Name */}
@@ -79,9 +117,11 @@ export function ClaimForm({ onSubmit, formRef, onSubmittingChange }: ClaimFormPr
           value={formData.lastName}
           onChange={handleChange('lastName')}
           placeholder="LAST NAME"
-          className="w-full h-[30px] px-3 rounded-[5px] border-2 border-blue-dark bg-white font-roboto font-black text-xs text-center placeholder:text-gray-placeholder placeholder:text-center focus:outline-none focus:ring-2 focus:ring-blue-dark"
-          required
+          className={inputClass('lastName')}
         />
+        {errors.lastName && (
+          <p className="mt-1 text-[10px] text-red-500 text-center">{errors.lastName}</p>
+        )}
       </div>
 
       {/* Email */}
@@ -91,20 +131,21 @@ export function ClaimForm({ onSubmit, formRef, onSubmittingChange }: ClaimFormPr
           value={formData.email}
           onChange={handleChange('email')}
           placeholder="EMAIL"
-          className="w-full h-[30px] px-3 rounded-[5px] border-2 border-blue-dark bg-white font-roboto font-black text-xs text-center placeholder:text-gray-placeholder placeholder:text-center focus:outline-none focus:ring-2 focus:ring-blue-dark"
-          required
+          className={inputClass('email')}
         />
+        {errors.email && (
+          <p className="mt-1 text-[10px] text-red-500 text-center">{errors.email}</p>
+        )}
       </div>
 
-      {/* Phone */}
+      {/* Phone - optional */}
       <div>
         <input
           type="tel"
           value={formData.phone}
           onChange={handleChange('phone')}
-          placeholder="PHONE"
-          className="w-full h-[30px] px-3 rounded-[5px] border-2 border-blue-dark bg-white font-roboto font-black text-xs text-center placeholder:text-gray-placeholder placeholder:text-center focus:outline-none focus:ring-2 focus:ring-blue-dark"
-          required
+          placeholder="PHONE (optional)"
+          className={inputClass('phone')}
         />
       </div>
 
