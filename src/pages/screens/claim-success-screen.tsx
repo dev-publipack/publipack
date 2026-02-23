@@ -22,7 +22,7 @@ export function ClaimSuccessScreen({
 
   return (
     <ScreenLayout>
-      <div className="relative w-full max-w-[480px] flex flex-col items-center overflow-visible">
+      <div className="relative w-full max-w-[360px] flex flex-col items-center overflow-visible">
         <MainContentContainerWrapper
           headerText="Spin'2'win"
           showChainBlock

@@ -1,4 +1,5 @@
 import React from 'react';
+import { MACHINE_WIDTH } from '@/shared/lib/game-config';
 
 interface MachineContainerProps {
   children: React.ReactNode;
@@ -12,7 +13,7 @@ const TOP_EXTENSION_RATIO = 0.2;
 
 const PADDING = 24; // p-6
 
-const HEIGHTS = { default: 281, expanded: 318, form: 380 } as const;
+const HEIGHTS = { default: 260, expanded: 290, form: 360 } as const;
 
 export function MachineContainer({
   children,
@@ -23,8 +24,9 @@ export function MachineContainer({
   const topExtension = Math.round(baseHeight * TOP_EXTENSION_RATIO);
 
   return (
-    <div className="relative w-full max-w-[480px] min-h-[281px]"
-      style={{ height: `${baseHeight}px` }}
+    <div
+      className="relative w-full min-h-[260px]"
+      style={{ height: `${baseHeight}px`, maxWidth: MACHINE_WIDTH }}
     >
       {/* Top extension - above layout flow, doesn't affect Y centering */}
       {topSlot && (
@@ -41,9 +43,9 @@ export function MachineContainer({
       )}
       {/* Main container - symmetric padding, centered correctly */}
       <div
-        className="h-full rounded-[70px] flex flex-col items-center px-6 py-6"
+        className="h-full rounded-[70px] flex flex-col items-center px-0 py-3"
       >
-        <div className={`flex-1 flex ${variant === 'form' ? 'items-center' : 'items-end'} justify-center w-full min-h-0`}>
+        <div className={`flex-1 flex ${variant === 'form' ? 'items-center' : 'items-center'} justify-center w-full min-h-0 ${variant === 'expanded' ? 'pb-4' : ''}`}>
           {children}
         </div>
       </div>

@@ -57,6 +57,7 @@ const SlotMachineMainContent = memo(function SlotMachineMainContent({
 
   return (
     <MainContentContainer
+      noCreamWrapper
       headerText={headerText}
       showChainBlock
       chainBlockText={chainBlockText}

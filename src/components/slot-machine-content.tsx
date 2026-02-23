@@ -2,7 +2,11 @@
 
 import React from 'react';
 import { Sponsor } from '@/shared/types';
-import { SLOT_CARD_HEIGHT, SLOT_VISIBLE_CARDS } from '@/shared/lib/game-config';
+import {
+  SLOT_CARD_HEIGHT,
+  SLOT_VISIBLE_CARDS,
+  MACHINE_WIDTH,
+} from '@/shared/lib/game-config';
 import { GAME_RULES } from '@/shared/lib/game-config';
 
 interface SlotMachineContentProps {
@@ -14,17 +18,31 @@ export function SlotMachineContent({ spinRefs, sponsors }: SlotMachineContentPro
   const minCards =
     (GAME_RULES.MIN_FULL_ROTATIONS + 3) * sponsors.length;
 
+  const slotHeight = SLOT_CARD_HEIGHT * SLOT_VISIBLE_CARDS;
+
   return (
-    <div className="relative grid grid-cols-3 gap-0 w-full">
+    <div
+      className="relative grid grid-cols-3 gap-0 w-full mx-auto rounded-[60px] overflow-hidden border-4 border-[#FF8B00]"
+      style={{
+        maxWidth: MACHINE_WIDTH,
+        boxShadow:
+          '0 4px 20px rgba(0,0,0,0.12), 0 0 10px 5px rgba(255,255,255,0.85)',
+      }}
+    >
       {[0, 1, 2].map((slotIndex) => (
         <div
           key={slotIndex}
-          className="relative w-full overflow-hidden"
-          style={{ height: `${SLOT_CARD_HEIGHT * SLOT_VISIBLE_CARDS}px` }}
+          className="relative w-full overflow-hidden isolate"
+          style={{
+            height: `${slotHeight}px`,
+            backgroundColor: '#FFEDD9',
+            boxShadow:
+              'inset 0 6px 16px rgba(0,0,0,0.15), inset 0 0 40px 10px rgba(0,0,0,0.08), inset 0 -2px 4px rgba(255,255,255,0.4)',
+          }}
         >
           <div
             ref={spinRefs[slotIndex]}
-            className="absolute top-0 left-0 w-full"
+            className="absolute top-0 left-0 w-full overflow-hidden"
             style={{ transform: 'translateY(0)' }}
           >
             {Array.from({ length: minCards }, (_, index) => {
@@ -32,20 +50,20 @@ export function SlotMachineContent({ spinRefs, sponsors }: SlotMachineContentPro
               return (
                 <div
                   key={`${slotIndex}-${index}`}
-                  className="w-full flex flex-col items-center justify-center py-1.5"
+                  className="w-full flex flex-col items-center justify-center py-1"
                   style={{ height: `${SLOT_CARD_HEIGHT}px` }}
                 >
                   <img
                     src={sponsor.logo}
                     alt={sponsor.name}
                     className="object-contain"
-                    style={{ maxHeight: '32px', maxWidth: '60%' }}
+                    style={{ maxHeight: '26px', maxWidth: '60%' }}
                   />
                   {sponsor.text && (
                     <p
-                    className="text-[#111D21] text-center line-clamp-2 text-xs mt-0.5"
-                    style={{ fontFamily: 'Roboto, sans-serif' }}
-                  >
+                      className="text-[#111D21] text-center line-clamp-2 text-xs mt-0.5"
+                      style={{ fontFamily: 'Roboto, sans-serif' }}
+                    >
                       {sponsor.text}
                     </p>
                   )}
@@ -61,10 +79,13 @@ export function SlotMachineContent({ spinRefs, sponsors }: SlotMachineContentPro
       ))}
 
       <svg
-        className="absolute left-[33.33%] top-0 h-full pointer-events-none z-10"
-        style={{ transform: 'translateX(-50%)' }}
-        width="18"
-        height="100%"
+        className="absolute top-0 pointer-events-none z-10"
+        style={{
+          left: 'calc(100% / 3)',
+          transform: 'translateX(-50%)',
+          height: `${slotHeight}px`,
+          width: 18,
+        }}
         viewBox="0 0 18 215"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -78,10 +99,13 @@ export function SlotMachineContent({ spinRefs, sponsors }: SlotMachineContentPro
       </svg>
 
       <svg
-        className="absolute left-[66.66%] top-0 h-full pointer-events-none z-10"
-        style={{ transform: 'translateX(-50%)' }}
-        width="18"
-        height="100%"
+        className="absolute top-0 pointer-events-none z-10"
+        style={{
+          left: 'calc(200% / 3)',
+          transform: 'translateX(-50%)',
+          height: `${slotHeight}px`,
+          width: 18,
+        }}
         viewBox="0 0 18 215"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

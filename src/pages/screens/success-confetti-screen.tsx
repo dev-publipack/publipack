@@ -8,7 +8,7 @@ interface SuccessConfettiScreenProps {
 export function SuccessConfettiScreen({ onComplete }: SuccessConfettiScreenProps) {
   return (
     <ScreenLayout>
-      <div className="w-full max-w-[480px] flex flex-col items-center">
+      <div className="w-full max-w-[360px] flex flex-col items-center">
         <SuccessConfettiAnimation onComplete={onComplete} />
       </div>
     </ScreenLayout>

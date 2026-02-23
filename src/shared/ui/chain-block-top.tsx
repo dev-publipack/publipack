@@ -53,7 +53,7 @@ export function ChainBlockTop({ text, lines, className = '', animate = false }: 
   return (
     <div
       className={cn(
-        'fixed left-1/2 -translate-x-1/2  flex flex-col items-center w-full max-w-[480px] z-1 -top-4',
+        'fixed left-1/2 -translate-x-1/2 flex flex-col items-center w-full max-w-[360px] z-1 -top-4',
         className
       )}
     >

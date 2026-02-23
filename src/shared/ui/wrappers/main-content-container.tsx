@@ -8,6 +8,8 @@ export type ContentVariant = 'default' | 'win';
 
 interface MainContentContainerProps {
     children?: React.ReactNode;
+    /** Skip cream wrapper - render slot machine directly in pink container */
+    noCreamWrapper?: boolean;
     headerText?: string;
     showChainBlock?: boolean;
     /** Static text for chain block (e.g. "SPIN NOW") */
@@ -26,6 +28,7 @@ interface MainContentContainerProps {
 
 export function MainContentContainer({
     children,
+    noCreamWrapper = false,
     headerText = '! WINNER !',
     showChainBlock = false,
     contentVariant = 'default',
@@ -37,7 +40,7 @@ export function MainContentContainer({
     lanternState = 'idle',
 }: MainContentContainerProps) {
     return (
-        <div className=" w-full h-full z-10">
+        <div className="w-full h-full z-10 self-stretch flex flex-col">
 
             <Spin2WinHeader text={headerText} lanternState={lanternState} />
             <div className="relative w-full h-full">
@@ -54,18 +57,31 @@ export function MainContentContainer({
                     }}
                 />
 
-                <div
-                    className={cn(
-                        'relative z-5 w-full h-full rounded-[60px] border-4 border-[#FF8B00] transition-all duration-1000',
-                        contentVariant === 'win'
-                            ? 'bg-linear-to-b from-[#3FD2A1] to-[#44D1F8]'
-                            : 'bg-[#FFEDD9]',
-                        centerChildren && 'flex flex-col items-center justify-center overflow-y-auto',
-                        !centerChildren && 'overflow-visible'
-                    )}
-                >
-                    {children}
-                </div>
+                {noCreamWrapper ? (
+                    <div
+                        className={cn(
+                            'relative z-5 w-full h-full rounded-[60px] transition-all duration-1000',
+                            'flex flex-col items-center justify-end overflow-visible',
+                            contentVariant === 'win' &&
+                                'bg-linear-to-b from-[#3FD2A1] to-[#44D1F8]'
+                        )}
+                    >
+                        {children}
+                    </div>
+                ) : (
+                    <div
+                        className={cn(
+                            'relative z-5 w-full h-full rounded-[60px] border-4 border-[#FF8B00] transition-all duration-1000',
+                            contentVariant === 'win'
+                                ? 'bg-linear-to-b from-[#3FD2A1] to-[#44D1F8]'
+                                : 'bg-[#FFEDD9]',
+                            centerChildren && 'flex flex-col items-center justify-center overflow-y-auto',
+                            !centerChildren && 'overflow-visible'
+                        )}
+                    >
+                        {children}
+                    </div>
+                )}
 
                 {showChainBlock && (
                     <ChainBlock

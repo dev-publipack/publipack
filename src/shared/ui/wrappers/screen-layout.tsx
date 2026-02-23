@@ -27,7 +27,7 @@ export function ScreenLayout({
   maxWidth = 'default',
   className,
 }: ScreenLayoutProps) {
-  const maxWidthClass = maxWidth === 'wide' ? 'max-w-[600px]' : 'max-w-[480px]';
+  const maxWidthClass = maxWidth === 'wide' ? 'max-w-[600px]' : 'max-w-[360px]';
   const { notifications } = useActivityNotifications(showActivityNotifications);
   const { t } = useLanguage();
 

@@ -21,11 +21,13 @@ export function TryAgainScreen({
 
   return (
     <ScreenLayout>
-      <div className="relative w-full max-w-[480px] mx-auto flex flex-col items-center overflow-visible">
+      <div className="relative w-full max-w-[360px] mx-auto flex flex-col items-center overflow-visible">
         <MachineContainer>
           <MainContentContainerWrapper
             showChainBlock
             chainBlockText={canSpinNow ? "SPIN NOW" : formattedTime}
+            onChainBlockClick={canSpinNow ? onSpinAgain : undefined}
+            chainBlockDisabled={!canSpinNow}
             headerText="Try Again"
             lanternState="loser"
           >

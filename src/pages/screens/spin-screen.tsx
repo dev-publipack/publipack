@@ -28,7 +28,7 @@ export function SpinScreen({ onComplete, autoStart, onAutoSpinConsumed }: SpinSc
 
   return (
     <ScreenLayout topChainText="SPIN NOW" showActivityNotifications>
-      <div className="relative w-full max-w-[480px] flex flex-col items-center overflow-visible">
+      <div className="relative w-full max-w-[360px] flex flex-col items-center overflow-visible">
         <MachineContainer variant="expanded">
           <MainContentContainerWrapper
             slotMachine={slotMachineProps}
