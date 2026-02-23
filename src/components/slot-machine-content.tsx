@@ -42,7 +42,10 @@ export function SlotMachineContent({ spinRefs, sponsors }: SlotMachineContentPro
                     style={{ maxHeight: '32px', maxWidth: '60%' }}
                   />
                   {sponsor.text && (
-                    <p className="font-body text-[#111D21] text-center line-clamp-2 text-xs mt-0.5">
+                    <p
+                    className="text-[#111D21] text-center line-clamp-2 text-xs mt-0.5"
+                    style={{ fontFamily: 'Roboto, sans-serif' }}
+                  >
                       {sponsor.text}
                     </p>
                   )}

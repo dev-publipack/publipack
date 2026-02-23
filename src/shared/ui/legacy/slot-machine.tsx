@@ -95,10 +95,10 @@ const SlotMachine = React.forwardRef<SlotMachineRef, SlotMachineProps>(
                         />
                       </div>
                       {sponsor.text && (
-                        <p 
+                        <p
                           className="font-body text-[#111D21] text-center line-clamp-2 text-[14px] sm:text-[18px] md:text-[21px] lg:text-[24px] xl:text-[26px]"
                           style={{
-                            fontFamily: 'var(--font-open-sans)',
+                            fontFamily: 'Roboto, sans-serif',
                             fontWeight: 400,
                             lineHeight: '100%',
                             letterSpacing: '0%',

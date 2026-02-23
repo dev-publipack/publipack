@@ -32,6 +32,7 @@ export function SpinScreen({ onComplete, autoStart, onAutoSpinConsumed }: SpinSc
         <MachineContainer variant="expanded">
           <MainContentContainerWrapper
             slotMachine={slotMachineProps}
+            headerText="SPIN'2'WIN"
             chainBlockText="SPIN NOW"
           />
         </MachineContainer>

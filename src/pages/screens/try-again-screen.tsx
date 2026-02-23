@@ -44,14 +44,6 @@ export function TryAgainScreen({
                   {remainingAttempts} {remainingAttempts === 1 ? "attempt" : "attempts"} left
                 </span>
               )}
-              {canSpinNow && (
-                <button
-                  onClick={onSpinAgain}
-                  className="w-full h-14 rounded-full bg-[#AEFB8B] border-4 border-[#DCF7CD] font-bungee text-xl text-[#111D21] mt-4"
-                >
-                  Spin Now
-                </button>
-              )}
             </div>
           </MainContentContainerWrapper>
         </MachineContainer>
