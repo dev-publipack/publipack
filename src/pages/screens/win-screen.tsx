@@ -24,7 +24,7 @@ const CLAIM_BUTTON_STYLE = {
 export function WinScreen({ winner, onClaim, onSpinAgain }: WinScreenProps) {
   return (
     <ScreenLayout>
-      <div className="relative w-full max-w-[360px] flex flex-col items-center overflow-visible">
+      <div className="relative w-full max-w-[360px] flex flex-col items-center overflow-visible mb-[112px]">
         <MachineContainer variant="expanded">
           <MainContentContainerWrapper
             headerText="! WINNER !"

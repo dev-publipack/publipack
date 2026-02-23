@@ -24,7 +24,7 @@ export function ClaimScreen({ winner, onSubmit, onBack }: ClaimScreenProps) {
 
   return (
     <ScreenLayout topChainText="! WINNER !" showActivityNotifications>
-      <div className="relative w-full max-w-[360px] flex flex-col items-center pt-1 pb-10">
+      <div className="relative w-full max-w-[360px] flex flex-col items-center overflow-visible mb-[112px]">
         <MachineContainer variant="form">
           <MainContentContainerWrapper
             showChainBlock
