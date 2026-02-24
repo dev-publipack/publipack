@@ -53,13 +53,13 @@ export function ChainBlockTop({ text, lines, className = '', animate = false }: 
   return (
     <div
       className={cn(
-        'fixed left-1/2 -translate-x-1/2 flex flex-col items-center w-full max-w-[360px] z-1 -top-4',
+        'fixed left-1/2 -translate-x-1/2 flex flex-col items-center w-[min(100%,360px)] z-10 -top-4',
         className
       )}
     >
-      {/* Chains extend above container - hanging from top */}
-      <div className="relative w-[71%] h-[80px]">
-        <div className="absolute left-[23%] top-0 w-[8%] h-full">
+      {/* Chains - fixed px to avoid % calculation issues in flex/absolute context */}
+      <div className="relative z-20 w-[255px] h-[80px] shrink-0">
+        <div className="absolute left-[58px] top-0 w-[24px] h-full">
           <img
             src={CHAIN_SRC}
             alt=""
@@ -67,7 +67,7 @@ export function ChainBlockTop({ text, lines, className = '', animate = false }: 
             aria-hidden
           />
         </div>
-        <div className="absolute right-[23%] top-0 w-[8%] h-full">
+        <div className="absolute right-[58px] top-0 w-[24px] h-full">
           <img
             src={CHAIN_SRC}
             alt=""
@@ -81,7 +81,7 @@ export function ChainBlockTop({ text, lines, className = '', animate = false }: 
       <div
         className={cn(
           'box-border min-w-[295px] min-h-[52px] rounded-[15px] border-[3px] border-[#FFD7EB]',
-          'flex flex-col items-center justify-center gap-0.5 -mt-2 relative z-10 py-2 px-3',
+          'flex flex-col items-center justify-center gap-0.5 -mt-2 relative z-30 py-2 px-3',
           isTwoLine ? 'w-max max-w-[calc(100vw-2rem)]' : 'w-[295px]'
         )}
         style={{
