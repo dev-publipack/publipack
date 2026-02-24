@@ -23,12 +23,17 @@ export function SlotMachineContent({ spinRefs, sponsors }: SlotMachineContentPro
   return (
     <div
       className="relative grid grid-cols-3 gap-0 w-full mx-auto rounded-[60px] overflow-hidden border-4 border-[#FF8B00] mb-1"
-      style={{
-        maxWidth: MACHINE_WIDTH,
-        boxShadow:
-          '0 4px 20px rgba(0,0,0,0.12), 0 0 10px 5px rgba(255,255,255,0.85), inset 0 2px 6px rgba(255,255,255,0.7), inset 0 -1px 3px rgba(0,0,0,0.08), inset 8px 0 16px -8px rgba(255,255,255,0.5), inset -8px 0 16px -8px rgba(255,255,255,0.5)',
-      }}
+      style={{ maxWidth: MACHINE_WIDTH }}
     >
+      {/* Two-layer overlay: 3D depth + pink glow */}
+      <div
+        className="absolute inset-0 pointer-events-none z-20 rounded-[56px]"
+        style={{
+          boxShadow:
+            'inset 0 6px 16px rgba(0,0,0,0.12), inset 0 -2px 8px rgba(0,0,0,0.04), inset 4px 0 12px rgba(0,0,0,0.06), inset -4px 0 12px rgba(0,0,0,0.06), inset 0 0 20px 8px rgba(255,162,220,0.3)',
+        }}
+        aria-hidden
+      />
       {[0, 1, 2].map((slotIndex) => (
         <div
           key={slotIndex}
@@ -48,7 +53,7 @@ export function SlotMachineContent({ spinRefs, sponsors }: SlotMachineContentPro
               return (
                 <div
                   key={`${slotIndex}-${index}`}
-                  className="w-full flex flex-col items-center justify-center py-1"
+                  className="w-full flex flex-col items-center justify-center  gap-2"
                   style={{ height: `${SLOT_CARD_HEIGHT}px` }}
                 >
                   <img
@@ -67,7 +72,10 @@ export function SlotMachineContent({ spinRefs, sponsors }: SlotMachineContentPro
                   )}
                   <div
                     className="w-10 h-px mt-1"
-                    style={{ backgroundColor: '#B5B5B5' }}
+                    style={{
+                      background:
+                        'linear-gradient(to right, transparent 0%, #B5B5B5 20%, #B5B5B5 80%, transparent 100%)',
+                    }}
                   />
                 </div>
               );

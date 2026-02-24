@@ -79,6 +79,16 @@ export function MainContentContainer({
                         )}
                     >
                         {children}
+                        {contentVariant !== 'win' && (
+                            <div
+                                className="absolute inset-0 pointer-events-none z-20 rounded-[56px]"
+                                style={{
+                                    boxShadow:
+                                        'inset 0 6px 16px rgba(0,0,0,0.12), inset 0 -2px 8px rgba(0,0,0,0.04), inset 4px 0 12px rgba(0,0,0,0.06), inset -4px 0 12px rgba(0,0,0,0.06), inset 0 0 20px 8px rgba(255,162,220,0.3)',
+                                }}
+                                aria-hidden
+                            />
+                        )}
                     </div>
                 )}
 

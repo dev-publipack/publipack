@@ -48,7 +48,7 @@ export function WinScreen({ winner, onClaim, onSpinAgain }: WinScreenProps) {
               <div className="flex flex-col gap-2 mt-4">
                 <button
                   onClick={onClaim}
-                  className="py-1 px-5 rounded-[20px] border-4 bg-[#AEFB8B] border-[#DCF7CD] shadow-[0_0_5px_1px_rgba(0,0,0,0.25)] flex items-center justify-center w-fit"
+                  className="py-1 cursor-pointer px-5 rounded-[20px] border-4 bg-[#AEFB8B] border-[#DCF7CD] shadow-[0_0_5px_1px_rgba(0,0,0,0.25)] flex items-center justify-center w-fit"
                   style={CLAIM_BUTTON_STYLE}
                 >
                   Claim Now

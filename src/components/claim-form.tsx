@@ -144,7 +144,7 @@ export function ClaimForm({ onSubmit, formRef, onSubmittingChange }: ClaimFormPr
           type="tel"
           value={formData.phone}
           onChange={handleChange('phone')}
-          placeholder="PHONE (optional)"
+          placeholder="PHONE"
           className={inputClass('phone')}
         />
       </div>
