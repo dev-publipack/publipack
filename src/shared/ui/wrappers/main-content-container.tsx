@@ -45,7 +45,7 @@ export function MainContentContainer({
             <Spin2WinHeader text={headerText} lanternState={lanternState} />
             <div className="relative w-full h-full">
                 <div
-                    className="absolute -inset-4 rounded-[80px] z-1 bg-machine-gradient shadow-[0_0_10px_5px_rgba(255,255,255,0.85),inset_0_0_20px_5px_rgba(255,255,255,0.85)]"
+                    className="absolute -inset-4 border-2 border-[#FFD7EB] rounded-[80px] z-1 bg-machine-gradient shadow-[0_0_10px_5px_rgba(255,255,255,0.85),inset_0_0_20px_5px_rgba(255,255,255,0.85)]"
                     style={{
                         background:
                             'radial-gradient(50% 50% at 50% 50%, #FFF7FB 50%, #FFA2DC 100%)',

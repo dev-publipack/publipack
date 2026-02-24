@@ -22,7 +22,7 @@ export function SlotMachineContent({ spinRefs, sponsors }: SlotMachineContentPro
 
   return (
     <div
-      className="relative grid grid-cols-3 gap-0 w-full mx-auto rounded-[60px] overflow-hidden border-4 border-[#FF8B00]"
+      className="relative grid grid-cols-3 gap-0 w-full mx-auto rounded-[60px] overflow-hidden border-4 border-[#FF8B00] mb-1"
       style={{
         maxWidth: MACHINE_WIDTH,
         boxShadow:
