@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { memo, useMemo, useEffect } from 'react';
 import { Sponsor } from '@/shared/types';
 import {
   SLOT_CARD_HEIGHT,
@@ -14,9 +14,60 @@ interface SlotMachineContentProps {
   sponsors: Sponsor[];
 }
 
-export function SlotMachineContent({ spinRefs, sponsors }: SlotMachineContentProps) {
-  const minCards =
-    (GAME_RULES.MIN_FULL_ROTATIONS + 3) * sponsors.length;
+const SLOT_INDICES = [0, 1, 2] as const;
+
+function usePreloadImages(sponsors: Sponsor[]) {
+  useEffect(() => {
+    sponsors.forEach((sponsor) => {
+      const img = new Image();
+      img.src = sponsor.logo;
+    });
+  }, [sponsors]);
+}
+
+const SlotCard = memo(function SlotCard({ sponsor }: { sponsor: Sponsor }) {
+  return (
+    <div
+      className="w-full flex flex-col items-center justify-center gap-2"
+      style={{
+        height: `${SLOT_CARD_HEIGHT}px`,
+        contain: 'strict',
+      }}
+    >
+      <img
+        src={sponsor.logo}
+        alt={sponsor.name}
+        loading="eager"
+        decoding="sync"
+        className="object-contain"
+        style={{ maxHeight: '26px', maxWidth: '60%' }}
+      />
+      {sponsor.text && (
+        <p
+          className="text-[#111D21] text-center line-clamp-2 text-xs mt-0.5"
+          style={{ fontFamily: 'Roboto, sans-serif' }}
+        >
+          {sponsor.text}
+        </p>
+      )}
+      <div
+        className="w-10 h-px mt-1"
+        style={{
+          background:
+            'linear-gradient(to right, transparent 0%, #B5B5B5 20%, #B5B5B5 80%, transparent 100%)',
+        }}
+      />
+    </div>
+  );
+});
+
+function SlotMachineContentInner({ spinRefs, sponsors }: SlotMachineContentProps) {
+  usePreloadImages(sponsors);
+
+  const minCards = useMemo(
+    () => (GAME_RULES.MIN_FULL_ROTATIONS + 3) * sponsors.length,
+    [sponsors.length]
+  );
 
   const slotHeight = SLOT_CARD_HEIGHT * SLOT_VISIBLE_CARDS;
 
@@ -34,52 +85,33 @@ export function SlotMachineContent({ spinRefs, sponsors }: SlotMachineContentPro
         }}
         aria-hidden
       />
-      {[0, 1, 2].map((slotIndex) => (
+      {SLOT_INDICES.map((slotIndex) => (
         <div
           key={slotIndex}
-          className="relative w-full overflow-hidden isolate"
+          className="relative w-full overflow-hidden"
           style={{
             height: `${slotHeight}px`,
             backgroundColor: '#FFEDD9',
+            contain: 'layout style paint',
+            isolation: 'isolate',
+            transform: 'translateZ(0)',
           }}
         >
           <div
             ref={spinRefs[slotIndex]}
             className="absolute top-0 left-0 w-full overflow-hidden"
-            style={{ transform: 'translateY(0)' }}
+            style={{
+              transform: 'translate3d(0, 0, 0)',
+              willChange: 'transform',
+              backfaceVisibility: 'hidden',
+            }}
           >
-            {Array.from({ length: minCards }, (_, index) => {
-              const sponsor = sponsors[index % sponsors.length];
-              return (
-                <div
-                  key={`${slotIndex}-${index}`}
-                  className="w-full flex flex-col items-center justify-center  gap-2"
-                  style={{ height: `${SLOT_CARD_HEIGHT}px` }}
-                >
-                  <img
-                    src={sponsor.logo}
-                    alt={sponsor.name}
-                    className="object-contain"
-                    style={{ maxHeight: '26px', maxWidth: '60%' }}
-                  />
-                  {sponsor.text && (
-                    <p
-                      className="text-[#111D21] text-center line-clamp-2 text-xs mt-0.5"
-                      style={{ fontFamily: 'Roboto, sans-serif' }}
-                    >
-                      {sponsor.text}
-                    </p>
-                  )}
-                  <div
-                    className="w-10 h-px mt-1"
-                    style={{
-                      background:
-                        'linear-gradient(to right, transparent 0%, #B5B5B5 20%, #B5B5B5 80%, transparent 100%)',
-                    }}
-                  />
-                </div>
-              );
-            })}
+            {Array.from({ length: minCards }, (_, index) => (
+              <SlotCard
+                key={`${slotIndex}-${index}`}
+                sponsor={sponsors[index % sponsors.length]}
+              />
+            ))}
           </div>
         </div>
       ))}
@@ -126,3 +158,5 @@ export function SlotMachineContent({ spinRefs, sponsors }: SlotMachineContentPro
     </div>
   );
 }
+
+export const SlotMachineContent = memo(SlotMachineContentInner);

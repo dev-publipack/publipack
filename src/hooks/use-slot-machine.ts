@@ -17,6 +17,25 @@ interface UseSlotMachineProps {
   onAutoSpinStarted?: () => void;
 }
 
+function applyTransformWithReset(
+  el: HTMLDivElement,
+  resetTransform: string,
+  animationTransform: string,
+  transitionStyle: string
+) {
+  el.style.transition = "none";
+  el.style.transform = resetTransform;
+
+
+  el.offsetHeight;
+
+
+  requestAnimationFrame(() => {
+    el.style.transition = transitionStyle;
+    el.style.transform = animationTransform;
+  });
+}
+
 export function useSlotMachine({
   sponsors,
   onComplete,
@@ -72,29 +91,18 @@ export function useSlotMachine({
     const duration = TIMING.SPONSORS_SCROLL_DURATION ?? 5000;
 
     spinRefs.forEach((scrollRef, index) => {
-      if (scrollRef.current) {
-        const offset = columnOffsets[index];
-        scrollRef.current.style.transition = "none";
-        scrollRef.current.style.transform = `translateY(-${offset * SLOT_CARD_HEIGHT}px)`;
-      }
-    });
+      if (!scrollRef.current) return;
 
-    void document.body.offsetHeight;
+      const offset = columnOffsets[index];
+      const totalSpins = GAME_RULES.SCROLL_MIN_ROTATIONS * sponsors.length + offset;
+      const targetPosition = -(totalSpins * SLOT_CARD_HEIGHT);
 
-    spinRefs.forEach((scrollRef, index) => {
-      if (scrollRef.current) {
-        const offset = columnOffsets[index];
-        const totalSpins =
-          GAME_RULES.SCROLL_MIN_ROTATIONS * sponsors.length + offset;
-        const targetPosition = -(totalSpins * SLOT_CARD_HEIGHT);
-
-        setTimeout(() => {
-          if (scrollRef.current) {
-            scrollRef.current.style.transition = `transform ${duration}ms ${EASING.SCROLL}`;
-            scrollRef.current.style.transform = `translateY(${targetPosition}px)`;
-          }
-        }, 10);
-      }
+      applyTransformWithReset(
+        scrollRef.current,
+        `translate3d(0, -${offset * SLOT_CARD_HEIGHT}px, 0)`,
+        `translate3d(0, ${targetPosition}px, 0)`,
+        `transform ${duration}ms ${EASING.SCROLL}`
+      );
     });
 
     sponsorsScrollTimeoutRef.current = setTimeout(() => {
@@ -117,36 +125,42 @@ export function useSlotMachine({
     };
 
     const CENTER_OFFSET = Math.floor(SLOT_VISIBLE_CARDS / 2);
+    const baseDuration = TIMING.SPIN_DURATION || 7000;
     const slotDurations = [
-      TIMING.SPIN_DURATION || 7000,
-      (TIMING.SPIN_DURATION || 7000) + 300,
-      (TIMING.SPIN_DURATION || 7000) + 600,
+      baseDuration,
+      baseDuration + 300,
+      baseDuration + 600,
     ];
 
     spinRefs.forEach((scrollRef, index) => {
-      if (scrollRef.current) {
-        const randomStartOffset = Math.floor(Math.random() * sponsors.length);
+      if (!scrollRef.current) return;
 
-        scrollRef.current.style.transition = "none";
-        scrollRef.current.style.transform = `translateY(-${randomStartOffset * SLOT_CARD_HEIGHT}px)`;
+      const randomStartOffset = Math.floor(Math.random() * sponsors.length);
+      const targetIndex = winners[index];
+      const extraSpins = Math.floor(Math.random() * 3);
+      const MIN_SPINS = GAME_RULES.MIN_FULL_ROTATIONS || 3;
+      const totalSpins =
+        (MIN_SPINS + extraSpins) * sponsors.length + targetIndex - CENTER_OFFSET;
+      const targetPosition = -(totalSpins * SLOT_CARD_HEIGHT);
 
-        void scrollRef.current.offsetHeight;
+      // Небольшая задержка между колонками через setTimeout,
+      // но сама анимация стартует через applyTransformWithReset (без вложенных rAF)
+      const delay = index * 50;
 
-        const targetIndex = winners[index];
-        const extraSpins = Math.floor(Math.random() * 3);
-        const MIN_SPINS = GAME_RULES.MIN_FULL_ROTATIONS || 3;
-        const totalSpins =
-          (MIN_SPINS + extraSpins) * sponsors.length +
-          targetIndex -
-          CENTER_OFFSET;
-        const targetPosition = -(totalSpins * SLOT_CARD_HEIGHT);
+      const startColumnSpin = () => {
+        if (!scrollRef.current) return;
+        applyTransformWithReset(
+          scrollRef.current,
+          `translate3d(0, -${randomStartOffset * SLOT_CARD_HEIGHT}px, 0)`,
+          `translate3d(0, ${targetPosition}px, 0)`,
+          `transform ${slotDurations[index]}ms cubic-bezier(0.25, 0.1, 0.25, 1)`
+        );
+      };
 
-        setTimeout(() => {
-          if (scrollRef.current) {
-            scrollRef.current.style.transition = `transform ${slotDurations[index]}ms cubic-bezier(0.25, 0.1, 0.25, 1)`;
-            scrollRef.current.style.transform = `translateY(${targetPosition}px)`;
-          }
-        }, 50);
+      if (delay > 0) {
+        setTimeout(startColumnSpin, delay);
+      } else {
+        startColumnSpin();
       }
     });
 
@@ -171,7 +185,7 @@ export function useSlotMachine({
 
     const timer = setTimeout(() => runSpin(), 100);
     return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- runSpin intentionally excluded to prevent double execution
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, sponsors.length]);
 
   const startSpin = useCallback(() => {
