@@ -9,21 +9,18 @@ import type { Sponsor } from "@/shared/types";
 
 interface SpinScreenProps {
   onComplete: (result: { winner: Sponsor | null; isWin: boolean }) => void;
-  /** Auto-start spin on mount (e.g. when coming from WinScreen Spin Again) */
+  /** Auto-start spin on mount (legacy behavior) */
   autoStart?: boolean;
-  /** Called when auto-start spin has been triggered */
-  onAutoSpinConsumed?: () => void;
 }
 
-export function SpinScreen({ onComplete, autoStart, onAutoSpinConsumed }: SpinScreenProps) {
+export function SpinScreen({ onComplete, autoStart = true }: SpinScreenProps) {
   const slotMachineProps = useMemo(
     () => ({
       sponsors: SPONSORS,
       onComplete,
       autoStart,
-      onAutoSpinStarted: onAutoSpinConsumed,
     }),
-    [onComplete, autoStart, onAutoSpinConsumed]
+    [onComplete, autoStart]
   );
 
   return (

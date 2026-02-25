@@ -33,23 +33,17 @@ export default function HomePage() {
   const game = useGame();
   const cooldownStartedRef = useRef(false);
   const [spinKey, setSpinKey] = useState(0);
-  const [autoSpinNext, setAutoSpinNext] = useState(false);
   // const [mockScreen, setMockScreen] = useState<GameScreen | "">("");
 
   const handleSpinAgain = useCallback(() => {
-    if (game.currentScreen === "youWon") {
-      setAutoSpinNext(true);
-    }
     setSpinKey((k) => k + 1);
     game.handleSpinAgain();
-  }, [game.handleSpinAgain, game.currentScreen]);
+  }, [game.handleSpinAgain]);
 
   const handlePlayAgain = useCallback(() => {
     setSpinKey((k) => k + 1);
     game.handlePlayAgainFromSuccess();
   }, [game.handlePlayAgainFromSuccess]);
-
-  const handleAutoSpinConsumed = useCallback(() => setAutoSpinNext(false), []);
 
   // 24h cooldown only after 3 attempts (youLost) or after claim success
   const isCooldownScreen =
@@ -94,8 +88,7 @@ export default function HomePage() {
           <SpinScreen
             key={spinKey}
             onComplete={game.handleSlotComplete}
-            autoStart={autoSpinNext}
-            onAutoSpinConsumed={handleAutoSpinConsumed}
+            autoStart
           />
         ) : activeScreen === "youWon" ? (
           <WinScreen

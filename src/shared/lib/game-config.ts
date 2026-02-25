@@ -1,9 +1,11 @@
 // Game timing configuration
 export const TIMING = {
   SPIN_DURATION: 12000, // Slot spin duration (+15% slower for better visibility)
-  SCROLL_DURATION: 7000, // Sponsors scroll duration
+  SCROLL_DURATION: 7000, // Sponsors scroll duration (legacy)
+  SPONSORS_SCROLL_DURATION: 5000, // Phase 1: slow scroll showing sponsors before spin
   COMBINED_DURATION: 15050, // Total duration (7s sponsors + 8.05s slots)
   RESULT_DISPLAY_DELAY: 1500,
+  SPIN_SETTLE_DELAY: 400, // Delay before showing win state (lets reels fully stop)
   COUNTDOWN_INITIAL: 5,
   AUTO_SPIN_DELAY: 600,
   TRANSITION_DELAY: 200,

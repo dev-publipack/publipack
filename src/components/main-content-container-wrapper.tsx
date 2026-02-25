@@ -50,10 +50,11 @@ const SlotMachineMainContent = memo(function SlotMachineMainContent({
   headerText,
   chainBlockText,
 }: SlotMachineProps & { headerText: string; chainBlockText: string }) {
-  const { isSpinning, isComplete, isWin, spinRefs, startSpin } =
+  const { phase, isSpinning, isComplete, isWin, spinRefs, startSpin } =
     useSlotMachine({ sponsors, onComplete, autoStart, onAutoSpinStarted });
 
   const lanternState = deriveLanternState(isSpinning, isComplete, isWin);
+  const isSpinButtonDisabled = phase === "slots" || isComplete;
 
   return (
     <MainContentContainer
@@ -64,7 +65,7 @@ const SlotMachineMainContent = memo(function SlotMachineMainContent({
       contentVariant={isComplete && isWin ? 'win' : 'default'}
       lanternState={lanternState}
       onChainBlockClick={startSpin}
-      chainBlockDisabled={isSpinning}
+      chainBlockDisabled={isSpinButtonDisabled}
     >
       <SlotMachineContent spinRefs={spinRefs} sponsors={sponsors} />
     </MainContentContainer>

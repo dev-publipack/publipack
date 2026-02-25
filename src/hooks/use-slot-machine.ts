@@ -1,12 +1,19 @@
 import { Sponsor } from "@/shared";
 import { useState, useRef, useCallback, useEffect, useMemo } from "react";
-import { TIMING, GAME_RULES, SLOT_CARD_HEIGHT, SLOT_VISIBLE_CARDS } from "@/shared/lib/game-config";
+import {
+  TIMING,
+  GAME_RULES,
+  EASING,
+  SLOT_CARD_HEIGHT,
+  SLOT_VISIBLE_CARDS,
+} from "@/shared/lib/game-config";
+
+type Phase = "sponsors" | "slots" | "complete";
 
 interface UseSlotMachineProps {
   sponsors: Sponsor[];
   onComplete?: (result: { winner: Sponsor | null; isWin: boolean }) => void;
   autoStart?: boolean;
-  /** Called when auto-start spin has been triggered (to reset parent state) */
   onAutoSpinStarted?: () => void;
 }
 
@@ -16,16 +23,29 @@ export function useSlotMachine({
   autoStart = false,
   onAutoSpinStarted,
 }: UseSlotMachineProps) {
+  const [phase, setPhase] = useState<Phase>("sponsors");
   const [isComplete, setIsComplete] = useState(false);
   const [isWin, setIsWin] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const [isSpinning, setIsSpinning] = useState(false);
   const spinResultRef = useRef<{ winner: Sponsor | null; isWin: boolean } | null>(null);
+  const sponsorsScrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hasStartedRef = useRef(false);
+  const spinStartedRef = useRef(false);
 
   const ref0 = useRef<HTMLDivElement>(null);
   const ref1 = useRef<HTMLDivElement>(null);
   const ref2 = useRef<HTMLDivElement>(null);
   const spinRefs = useMemo(() => [ref0, ref1, ref2], []);
+
+  const columnOffsets = useMemo(
+    () => [
+      0,
+      Math.floor(sponsors.length / 3),
+      Math.floor((sponsors.length * 2) / 3),
+    ],
+    [sponsors.length]
+  );
 
   const selectWinners = useCallback((winResult: boolean): number[] => {
     if (winResult) {
@@ -33,27 +53,59 @@ export function useSlotMachine({
       return [winningSponsorIndex, winningSponsorIndex, winningSponsorIndex];
     }
 
-    // Гарантируем что все 3 индекса разные
     const len = sponsors.length;
-    if (len === 1) return [0, 0, 0]; // единственный вариант
+    if (len === 1) return [0, 0, 0];
+    if (len === 2) return [0, 1, 0];
 
-    if (len === 2) {
-      // Только два варианта — хотя бы два барабана разные
-      return [0, 1, 0];
-    }
-
-    // len >= 3: выбираем 3 уникальных индекса без повторений
     const shuffled = Array.from({ length: len }, (_, i) => i)
       .sort(() => Math.random() - 0.5);
     return [shuffled[0], shuffled[1], shuffled[2]];
   }, [sponsors.length]);
 
-  const startSpin = useCallback(() => {
-    if (isSpinning || sponsors.length === 0) return;
+  const runSponsorsScroll = useCallback(() => {
+    if (sponsors.length === 0 || hasStartedRef.current) return;
+    hasStartedRef.current = true;
 
-    setIsComplete(false);
     setHasStarted(true);
     setIsSpinning(true);
+
+    const duration = TIMING.SPONSORS_SCROLL_DURATION ?? 5000;
+
+    spinRefs.forEach((scrollRef, index) => {
+      if (scrollRef.current) {
+        const offset = columnOffsets[index];
+        scrollRef.current.style.transition = "none";
+        scrollRef.current.style.transform = `translateY(-${offset * SLOT_CARD_HEIGHT}px)`;
+      }
+    });
+
+    void document.body.offsetHeight;
+
+    spinRefs.forEach((scrollRef, index) => {
+      if (scrollRef.current) {
+        const offset = columnOffsets[index];
+        const totalSpins =
+          GAME_RULES.SCROLL_MIN_ROTATIONS * sponsors.length + offset;
+        const targetPosition = -(totalSpins * SLOT_CARD_HEIGHT);
+
+        setTimeout(() => {
+          if (scrollRef.current) {
+            scrollRef.current.style.transition = `transform ${duration}ms ${EASING.SCROLL}`;
+            scrollRef.current.style.transform = `translateY(${targetPosition}px)`;
+          }
+        }, 10);
+      }
+    });
+
+    sponsorsScrollTimeoutRef.current = setTimeout(() => {
+      sponsorsScrollTimeoutRef.current = null;
+      setPhase("slots");
+    }, duration + 100);
+  }, [sponsors.length, columnOffsets, spinRefs]);
+
+  const runSpin = useCallback(() => {
+    if (sponsors.length === 0 || spinStartedRef.current) return;
+    spinStartedRef.current = true;
 
     const winResult = Math.random() < GAME_RULES.WIN_PROBABILITY;
     setIsWin(winResult);
@@ -65,8 +117,6 @@ export function useSlotMachine({
     };
 
     const CENTER_OFFSET = Math.floor(SLOT_VISIBLE_CARDS / 2);
-    const MIN_SPINS = GAME_RULES.MIN_FULL_ROTATIONS || 3;
-
     const slotDurations = [
       TIMING.SPIN_DURATION || 7000,
       (TIMING.SPIN_DURATION || 7000) + 300,
@@ -77,16 +127,14 @@ export function useSlotMachine({
       if (scrollRef.current) {
         const randomStartOffset = Math.floor(Math.random() * sponsors.length);
 
-        scrollRef.current.style.transition = 'none';
+        scrollRef.current.style.transition = "none";
         scrollRef.current.style.transform = `translateY(-${randomStartOffset * SLOT_CARD_HEIGHT}px)`;
 
         void scrollRef.current.offsetHeight;
 
         const targetIndex = winners[index];
         const extraSpins = Math.floor(Math.random() * 3);
-
-        // randomStartOffset NOT included — it only affects the visual start,
-        // not where the reel lands. Middle card = totalSpins + 1 = targetIndex (mod len).
+        const MIN_SPINS = GAME_RULES.MIN_FULL_ROTATIONS || 3;
         const totalSpins =
           (MIN_SPINS + extraSpins) * sponsors.length +
           targetIndex -
@@ -103,31 +151,59 @@ export function useSlotMachine({
     });
 
     const maxDuration = Math.max(...slotDurations);
+    const settleDelay = TIMING.SPIN_SETTLE_DELAY ?? 400;
+
     setTimeout(() => {
       setIsSpinning(false);
       setIsComplete(true);
+      setPhase("complete");
 
       setTimeout(() => {
         if (onComplete && spinResultRef.current) {
           onComplete(spinResultRef.current);
         }
       }, TIMING.RESULT_DISPLAY_DELAY || 500);
-    }, maxDuration);
-
-  }, [isSpinning, sponsors, selectWinners, onComplete]);
+    }, maxDuration + settleDelay);
+  }, [sponsors, selectWinners, onComplete, spinRefs]);
 
   useEffect(() => {
-    if (!autoStart || hasStarted) return;
+    if (phase !== "slots" || sponsors.length === 0) return;
+
+    const timer = setTimeout(() => runSpin(), 100);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- runSpin intentionally excluded to prevent double execution
+  }, [phase, sponsors.length]);
+
+  const startSpin = useCallback(() => {
+    if (phase !== "sponsors" || sponsors.length === 0) return;
+
+    if (!hasStartedRef.current) {
+      runSponsorsScroll();
+      return;
+    }
+
+    if (sponsorsScrollTimeoutRef.current) {
+      clearTimeout(sponsorsScrollTimeoutRef.current);
+      sponsorsScrollTimeoutRef.current = null;
+    }
+    setPhase("slots");
+  }, [phase, sponsors.length, runSponsorsScroll]);
+
+  useEffect(() => {
+    if (!autoStart || hasStartedRef.current) return;
 
     const timer = setTimeout(() => {
-      startSpin();
+      runSponsorsScroll();
       onAutoSpinStarted?.();
-    }, 500);
+    }, TIMING.AUTO_SPIN_DELAY);
     return () => clearTimeout(timer);
-  }, [autoStart, hasStarted, startSpin, onAutoSpinStarted]);
+  }, [autoStart, runSponsorsScroll, onAutoSpinStarted]);
+
+  const isAnimating = phase === "sponsors" || phase === "slots";
 
   return {
-    isSpinning,
+    phase,
+    isSpinning: isAnimating,
     isComplete,
     isWin,
     spinRefs,
