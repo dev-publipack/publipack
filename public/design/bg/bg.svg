@@ -1,49 +1,44 @@
-<svg width="393" height="852" viewBox="0 0 393 852" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<mask id="mask0_8_517" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="393" height="852">
+<svg width="393" height="852" viewBox="0 0 393 852" fill="none" xmlns="http://www.w3.org/2000/svg">
 <rect width="393" height="852" fill="#8FCCEA"/>
-</mask>
-<g mask="url(#mask0_8_517)">
-<rect width="393" height="852" fill="#8FCCEA"/>
-<g id="Repeat group 1_inner" data-figma-trr="r24p1600-0f">
-<g filter="url(#filter0_d_8_517)">
-<path d="M-30.926 -1169.96L52.538 -1177.46L136.002 -1184.97L197.572 435.31L-30.926 -1169.96Z" fill="#72C2F0"/>
-<path d="M-30.926 -1169.96L52.538 -1177.46L136.002 -1184.97L197.572 435.31L-30.926 -1169.96Z" stroke="#BDE2F4" stroke-width="2"/>
-</g>
-</g>
-<use xlink:href="#Repeat%20group%201_inner" transform="translate(116.884 -36.4061) rotate(15)"/>
-<use xlink:href="#Repeat%20group%201_inner" transform="translate(239.208 -41.32) rotate(30)"/>
-<use xlink:href="#Repeat%20group%201_inner" transform="translate(358.636 -14.4066) rotate(45)"/>
-<use xlink:href="#Repeat%20group%201_inner" transform="translate(467.028 42.4998) rotate(60)"/>
-<use xlink:href="#Repeat%20group%201_inner" transform="translate(556.999 125.521) rotate(75)"/>
-<use xlink:href="#Repeat%20group%201_inner" transform="translate(622.416 229) rotate(90)"/>
-<use xlink:href="#Repeat%20group%201_inner" transform="translate(658.822 345.884) rotate(105)"/>
-<use xlink:href="#Repeat%20group%201_inner" transform="translate(663.736 468.208) rotate(120)"/>
-<use xlink:href="#Repeat%20group%201_inner" transform="translate(636.823 587.635) rotate(135)"/>
-<use xlink:href="#Repeat%20group%201_inner" transform="translate(579.916 696.028) rotate(150)"/>
-<use xlink:href="#Repeat%20group%201_inner" transform="translate(496.895 785.999) rotate(165)"/>
-<use xlink:href="#Repeat%20group%201_inner" transform="translate(393.416 851.416) rotate(-180)"/>
-<use xlink:href="#Repeat%20group%201_inner" transform="translate(276.532 887.822) rotate(-165)"/>
-<use xlink:href="#Repeat%20group%201_inner" transform="translate(154.208 892.736) rotate(-150)"/>
-<use xlink:href="#Repeat%20group%201_inner" transform="translate(34.7806 865.823) rotate(-135)"/>
-<use xlink:href="#Repeat%20group%201_inner" transform="translate(-73.6119 808.916) rotate(-120)"/>
-<use xlink:href="#Repeat%20group%201_inner" transform="translate(-163.583 725.895) rotate(-105)"/>
-<use xlink:href="#Repeat%20group%201_inner" transform="translate(-229 622.416) rotate(-90)"/>
-<use xlink:href="#Repeat%20group%201_inner" transform="translate(-265.406 505.532) rotate(-75)"/>
-<use xlink:href="#Repeat%20group%201_inner" transform="translate(-270.32 383.208) rotate(-60)"/>
-<use xlink:href="#Repeat%20group%201_inner" transform="translate(-243.407 263.78) rotate(-45)"/>
-<use xlink:href="#Repeat%20group%201_inner" transform="translate(-186.5 155.388) rotate(-30)"/>
-<use xlink:href="#Repeat%20group%201_inner" transform="translate(-103.479 65.4174) rotate(-15)"/>
-</g>
 <defs>
-<filter id="filter0_d_8_517" x="-52.0644" y="-1206.06" width="270.635" height="1661.51" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<filter id="ray_shadow" x="-52.0644" y="-1206.06" width="270.635" height="1661.51" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
 <feFlood flood-opacity="0" result="BackgroundImageFix"/>
 <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
 <feOffset/>
 <feGaussianBlur stdDeviation="10"/>
 <feComposite in2="hardAlpha" operator="out"/>
 <feColorMatrix type="matrix" values="0 0 0 0 0.741176 0 0 0 0 0.886275 0 0 0 0 0.956863 0 0 0 1 0"/>
-<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_8_517"/>
-<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_8_517" result="shape"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"/>
 </filter>
 </defs>
+<g id="ray">
+<g filter="url(#ray_shadow)">
+<path d="M-30.926 -1169.96L52.538 -1177.46L136.002 -1184.97L197.572 435.31L-30.926 -1169.96Z" fill="#72C2F0"/>
+<path d="M-30.926 -1169.96L52.538 -1177.46L136.002 -1184.97L197.572 435.31L-30.926 -1169.96Z" stroke="#BDE2F4" stroke-width="2"/>
+</g>
+</g>
+<use href="#ray" transform="translate(116.884 -36.4061) rotate(15)"/>
+<use href="#ray" transform="translate(239.208 -41.32) rotate(30)"/>
+<use href="#ray" transform="translate(358.636 -14.4066) rotate(45)"/>
+<use href="#ray" transform="translate(467.028 42.4998) rotate(60)"/>
+<use href="#ray" transform="translate(556.999 125.521) rotate(75)"/>
+<use href="#ray" transform="translate(622.416 229) rotate(90)"/>
+<use href="#ray" transform="translate(658.822 345.884) rotate(105)"/>
+<use href="#ray" transform="translate(663.736 468.208) rotate(120)"/>
+<use href="#ray" transform="translate(636.823 587.635) rotate(135)"/>
+<use href="#ray" transform="translate(579.916 696.028) rotate(150)"/>
+<use href="#ray" transform="translate(496.895 785.999) rotate(165)"/>
+<use href="#ray" transform="translate(393.416 851.416) rotate(-180)"/>
+<use href="#ray" transform="translate(276.532 887.822) rotate(-165)"/>
+<use href="#ray" transform="translate(154.208 892.736) rotate(-150)"/>
+<use href="#ray" transform="translate(34.7806 865.823) rotate(-135)"/>
+<use href="#ray" transform="translate(-73.6119 808.916) rotate(-120)"/>
+<use href="#ray" transform="translate(-163.583 725.895) rotate(-105)"/>
+<use href="#ray" transform="translate(-229 622.416) rotate(-90)"/>
+<use href="#ray" transform="translate(-265.406 505.532) rotate(-75)"/>
+<use href="#ray" transform="translate(-270.32 383.208) rotate(-60)"/>
+<use href="#ray" transform="translate(-243.407 263.78) rotate(-45)"/>
+<use href="#ray" transform="translate(-186.5 155.388) rotate(-30)"/>
+<use href="#ray" transform="translate(-103.479 65.4174) rotate(-15)"/>
 </svg>
