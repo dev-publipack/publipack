@@ -181,19 +181,13 @@ const ClaimReward = React.forwardRef<HTMLDivElement, ClaimRewardProps>(
               
               <p style="margin-top: 30px;">
                 Cheers,<br>
-                <strong>The app.publipacks.com Team</strong><br>
-                <a href="https://app.publipacks.com" style="color: #44D2FD; text-decoration: none;">app.publipacks.com</a>
+                <strong>The app.publipacks.com Team</strong>
               </p>
               
               <hr style="border: none; border-top: 1px solid #ddd; margin: 40px 0 20px 0;">
               
               <div style="text-align: center; font-size: 12px; color: #666; margin-top: 20px;">
                 <p style="margin: 5px 0;">©️ 2025 Publicpacks.com. All rights reserved.</p>
-                <p style="margin: 5px 0;">
-                  <a href="#" style="color: #666; text-decoration: none; margin: 0 10px;">Terms & Conditions</a> |
-                  <a href="#" style="color: #666; text-decoration: none; margin: 0 10px;">Privacy Policy</a> |
-                  <a href="#" style="color: #666; text-decoration: none; margin: 0 10px;">Data Protection Policy</a>
-                </p>
               </div>
             </div>
           `,
@@ -213,8 +207,7 @@ Keep playing, keep winning, and keep discovering amazing rewards!
 Cheers,
 The app.publipacks.com Team
 
-©️ 2025 app.publipacks.com. All rights reserved.
-Terms & Conditions | Privacy Policy | Data Protection Policy`,
+©️ 2025 Publicpacks.com. All rights reserved.`,
         });
 
         if (emailSuccess) {

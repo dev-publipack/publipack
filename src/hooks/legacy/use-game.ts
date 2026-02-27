@@ -119,15 +119,14 @@ export function useGame() {
               <p>Enjoy free prizes and exclusive discounts all around the world.</p>
               <p>Sign up to receive free offers directly to your email, — <a href="${winner.url || ""}" style="color: #44D2FD; text-decoration: none;"> click here to join</a>.</p>
               <p>Keep playing, keep winning, and keep discovering amazing rewards!</p>
-              <p style="margin-top: 30px;">Cheers,<br><strong>The app.publipacks.com Team</strong><br><a href="https://app.publipacks.com" style="color: #44D2FD; text-decoration: none;">app.publipacks.com</a></p>
+              <p style="margin-top: 30px;">Cheers,<br><strong>The app.publipacks.com Team</strong></p>
               <hr style="border: none; border-top: 1px solid #ddd; margin: 40px 0 20px 0;">
               <div style="text-align: center; font-size: 12px; color: #666; margin-top: 20px;">
                 <p style="margin: 5px 0;">©️ 2025 Publicpacks.com. All rights reserved.</p>
-                <p style="margin: 5px 0;"><a href="#" style="color: #666; text-decoration: none; margin: 0 10px;">Terms & Conditions</a> | <a href="#" style="color: #666; text-decoration: none; margin: 0 10px;">Privacy Policy</a> | <a href="#" style="color: #666; text-decoration: none; margin: 0 10px;">Data Protection Policy</a></p>
               </div>
             </div>
           `,
-            textContent: `Hi ${data.fullName},\n\nThank you for playing with publipacks.com! The safest platform to win amazing awards near you!\n\n👉 Congratulations — you've won a prize!\n${winner.name}: ${winner.reward}\n\nEnjoy free prizes and exclusive discounts all around the world.\n\nSign up to receive free offers directly to your email, — click here to join: ${winner.url || ""}\n\nKeep playing, keep winning, and keep discovering amazing rewards!\n\nCheers,\nThe app.publipacks.com Team\n\n©️ 2025 app.publipacks.com. All rights reserved.\nTerms & Conditions | Privacy Policy | Data Protection Policy`,
+            textContent: `Hi ${data.fullName},\n\nThank you for playing! The safest platform to win amazing awards near you!\n\n👉 Congratulations — you've won a prize!\n${winner.name}: ${winner.reward}\n\nEnjoy free prizes and exclusive discounts all around the world.\n\nSign up to receive free offers directly to your email, — click here to join: ${winner.url || ""}\n\nKeep playing, keep winning, and keep discovering amazing rewards!\n\nCheers,\nThe app.publipacks.com Team\n\n©️ 2025 Publipacks.com. All rights reserved.`,
           });
         } catch (err) {
           console.error("Claim submit error (Pipedream/Brevo):", err);
