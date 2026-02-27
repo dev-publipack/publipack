@@ -21,6 +21,21 @@ jobs:
           npm ci --include=optional || npm install --include=optional
           npm rebuild
 
+      - name: Verify Brevo secrets (without exposing values)
+        run: |
+          echo "Checking required secrets for Brevo..."
+          if [ -z "${{ secrets.VITE_BREVO_API_KEY }}" ]; then
+            echo "::warning::VITE_BREVO_API_KEY is not set in GitHub Secrets (production environment)"
+            echo "Email sending will fail on production. Add it in Settings → Secrets → production"
+          else
+            echo "✅ VITE_BREVO_API_KEY is set"
+          fi
+          if [ -z "${{ secrets.VITE_BREVO_FROM_EMAIL }}" ]; then
+            echo "::warning::VITE_BREVO_FROM_EMAIL is not set (will use default dev@publipacks.com)"
+          else
+            echo "✅ VITE_BREVO_FROM_EMAIL is set"
+          fi
+
       - name: Build
         env:
           VITE_PIPEDREAM_WEBHOOK: ${{ secrets.VITE_PIPEDREAM_WEBHOOK }}

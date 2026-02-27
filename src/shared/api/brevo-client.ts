@@ -27,9 +27,9 @@ class BrevoClient {
     }
     this.apiKey = envApiKey;
 
-    // Hardcoded values
-    this.fromEmail = "publipack25@gmail.com";
-    this.fromName = "El Pack";
+    // Hardcoded values (fallback if env not set)
+    this.fromEmail = import.meta.env.VITE_BREVO_FROM_EMAIL || "dev@publipacks.com";
+    this.fromName = import.meta.env.VITE_BREVO_FROM_NAME || "El Pack";
 
     // Log configuration on initialization (without sensitive data)
     console.log("🔧 BrevoClient initialized", {
