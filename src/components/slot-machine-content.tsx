@@ -174,9 +174,10 @@ function SlotMachineContentInner({ spinRefs, sponsors }: SlotMachineContentProps
           No GPU hints (translateZ / backfaceVisibility) — this is a static
           element; promoting it to a compositor layer makes iOS render inset
           box-shadow relative to the GPU layer bounds instead of the element
-          bounds, which causes the "shadow spread" artifact. */}
+          bounds, which causes the "shadow spread" artifact.
+          -inset-px extends border beyond content to fully cover background gaps. */}
       <div
-        className="absolute inset-0 pointer-events-none z-20 rounded-[60px] border-4 border-[#FF8B00]"
+        className="absolute -inset-px pointer-events-none z-20 rounded-[57px] border-4 border-[#FF8B00]"
         style={{
           boxShadow:
             'inset 0 6px 16px rgba(0,0,0,0.12), inset 0 -2px 8px rgba(0,0,0,0.04), inset 4px 0 12px rgba(0,0,0,0.06), inset -4px 0 12px rgba(0,0,0,0.06), inset 0 0 20px 8px rgba(255,162,220,0.3)',
