@@ -103,6 +103,7 @@ export function ClaimForm({ onSubmit, formRef, onSubmittingChange }: ClaimFormPr
           value={formData.firstName}
           onChange={handleChange('firstName')}
           placeholder="FIRST NAME"
+          autoComplete="given-name"
           className={inputClass('firstName')}
         />
         {errors.firstName && (
@@ -117,6 +118,7 @@ export function ClaimForm({ onSubmit, formRef, onSubmittingChange }: ClaimFormPr
           value={formData.lastName}
           onChange={handleChange('lastName')}
           placeholder="LAST NAME"
+          autoComplete="family-name"
           className={inputClass('lastName')}
         />
         {errors.lastName && (
@@ -131,6 +133,7 @@ export function ClaimForm({ onSubmit, formRef, onSubmittingChange }: ClaimFormPr
           value={formData.email}
           onChange={handleChange('email')}
           placeholder="EMAIL"
+          autoComplete="email"
           className={inputClass('email')}
         />
         {errors.email && (
@@ -145,6 +148,7 @@ export function ClaimForm({ onSubmit, formRef, onSubmittingChange }: ClaimFormPr
           value={formData.phone}
           onChange={handleChange('phone')}
           placeholder="PHONE"
+          autoComplete="tel"
           className={inputClass('phone')}
         />
       </div>

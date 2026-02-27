@@ -74,6 +74,7 @@
 
 @layer utilities {
   .bg-page {
+    background-color: #8FCCEA;
     background-image: url('/design/bg/bg.svg');
     background-size: cover;
     background-position: center;

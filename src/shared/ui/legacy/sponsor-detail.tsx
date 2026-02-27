@@ -4,20 +4,7 @@ import { cn } from "../../lib/utils";
 import type { Sponsor } from "../../types";
 import { WinButtons } from "./win-buttons";
 import { useLanguage } from "../../../providers/language-provider";
-
-type LottieAnimationData = {
-  v?: string;
-  fr?: number;
-  ip?: number;
-  op?: number;
-  w?: number;
-  h?: number;
-  nm?: string;
-  ddd?: number;
-  assets?: unknown[];
-  layers?: unknown[];
-  [key: string]: unknown;
-};
+import giftData from "@/assets/animations/gift-box.json";
 
 export interface SponsorDetailProps {
   sponsor: Sponsor;
@@ -33,32 +20,13 @@ export const SponsorDetail = React.forwardRef<
   SponsorDetailProps
 >(({ sponsor, onClose, onClaim, onSpinAgain, showCooldown = false, className, ...props }, ref) => {
   const { t } = useLanguage();
-  const [giftData, setGiftData] = React.useState<LottieAnimationData | null>(null);
   const lottieRef = React.useRef<any>(null);
-
-  React.useEffect(() => {
-    const loadAnimation = async () => {
-      try {
-        const response = await fetch("/animations/Gift box.json");
-        if (response.ok) {
-          const data = await response.json();
-          if (data && (data.v || data.layers)) {
-            setGiftData(data);
-          }
-        }
-      } catch (error) {
-        console.warn("Failed to load animation:", error);
-      }
-    };
-
-    loadAnimation();
-  }, []);
 
   React.useEffect(() => {
     if (lottieRef.current && lottieRef.current.setSpeed) {
       lottieRef.current.setSpeed(0.65);
     }
-  }, [giftData]);
+  }, []);
 
   return (
     <div
@@ -129,19 +97,18 @@ export const SponsorDetail = React.forwardRef<
         </div>
 
         {/* Gift Animation - Lottie */}
-        {giftData && (
-          <div className="flex items-center justify-center w-full">
-            <div className="w-full max-w-[400px] h-48 sm:h-56 md:h-64 lg:h-72 flex items-center justify-center">
-              <Lottie
-                lottieRef={lottieRef}
-                animationData={giftData}
-                loop={false}
-                autoplay={true}
-                className="w-full h-full"
-              />
-            </div>
+        <div className="flex items-center justify-center w-full">
+          <div className="w-full max-w-[400px] h-48 sm:h-56 md:h-64 lg:h-72 flex items-center justify-center">
+            <Lottie
+              lottieRef={lottieRef}
+              animationData={giftData}
+              renderer="svg"
+              loop={false}
+              autoplay={true}
+              className="w-full h-full"
+            />
           </div>
-        )}
+        </div>
       </div>
 
       {/* Win Buttons - outside container */}

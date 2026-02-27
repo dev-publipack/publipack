@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
+import gsap from 'gsap';
 import { useResponsiveCardHeight } from './use-responsive-card-height';
 
 interface SlotConfig {
@@ -23,8 +24,8 @@ interface SlotAnimationResult {
 }
 
 /**
- * Shared hook for slot-based animations (both carousel scroll and slot machine spin)
- * Eliminates duplication between use-sponsors-scroll and use-slot-machine
+ * Shared hook for slot-based animations (carousel scroll and slot machine spin).
+ * Uses GSAP for reliable cross-browser animation including Safari WebKit.
  */
 export function useSlotAnimation({
   itemsCount,
@@ -42,21 +43,31 @@ export function useSlotAnimation({
     useRef<HTMLDivElement>(null),
   ];
 
-  // Sync ref with state
   useEffect(() => {
     isAnimatingRef.current = isAnimating;
   }, [isAnimating]);
+
+  // Kill all GSAP tweens on unmount
+  useEffect(() => {
+    return () => {
+      scrollRefs.forEach((r) => {
+        if (r.current) gsap.killTweensOf(r.current);
+      });
+      setIsAnimating(false);
+      isAnimatingRef.current = false;
+      setCompletedSlots(new Set());
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSlotComplete = useCallback(
     (slotIndex: number) => {
       setCompletedSlots((prev) => {
         const newSet = new Set(prev);
         newSet.add(slotIndex);
-
         if (newSet.size === 3 && onComplete) {
           setTimeout(onComplete, 500);
         }
-
         return newSet;
       });
     },
@@ -68,8 +79,8 @@ export function useSlotAnimation({
       if (scrollRef.current) {
         const columnOffset = config.columnOffsets?.[index] || 0;
         const cardHeight = getCardHeight();
-        scrollRef.current.style.transition = 'none';
-        scrollRef.current.style.transform = `translateY(-${columnOffset * cardHeight}px)`;
+        gsap.killTweensOf(scrollRef.current);
+        gsap.set(scrollRef.current, { y: -(columnOffset * cardHeight) });
       }
     });
   }, [config.columnOffsets, getCardHeight]);
@@ -84,67 +95,39 @@ export function useSlotAnimation({
 
       const CARD_HEIGHT = getCardHeight();
       const columnOffsets = config.columnOffsets || [0, 0, 0];
+      const durationSec = config.duration / 1000;
 
-      // Reset with column offsets
       scrollRefs.forEach((scrollRef, index) => {
-        if (scrollRef.current) {
-          const columnOffset = columnOffsets[index];
-          scrollRef.current.style.transition = 'none';
-          scrollRef.current.style.transform = `translateY(-${columnOffset * CARD_HEIGHT}px)`;
-        }
-      });
+        if (!scrollRef.current) return;
 
-      // Force reflow
-      void document.body.offsetHeight;
+        const columnOffset = columnOffsets[index];
+        const targetIndex = targetIndices?.[index] || 0;
+        const totalSpins = config.minRotations * itemsCount + columnOffset + targetIndex;
+        const startY = -(columnOffset * CARD_HEIGHT);
+        const endY = -(totalSpins * CARD_HEIGHT);
 
-      // Animate each slot
-      scrollRefs.forEach((scrollRef, index) => {
-        if (scrollRef.current) {
-          const columnOffset = columnOffsets[index];
-          const targetIndex = targetIndices?.[index] || 0;
-          const totalSpins = config.minRotations * itemsCount + columnOffset + targetIndex;
-          const targetPosition = -(totalSpins * CARD_HEIGHT);
-
-          const currentSlot = scrollRef.current;
-          const handleTransitionEnd = (e: TransitionEvent) => {
-            if (e.propertyName === 'transform') {
-              handleSlotComplete(index);
-              currentSlot.removeEventListener('transitionend', handleTransitionEnd);
-            }
-          };
-
-          setTimeout(() => {
-            if (scrollRef.current) {
-              scrollRef.current.style.transition = `transform ${config.duration}ms ${config.easing}`;
-              scrollRef.current.style.transform = `translateY(${targetPosition}px)`;
-              scrollRef.current.addEventListener('transitionend', handleTransitionEnd);
-            }
-          }, 10);
-        }
+        gsap.killTweensOf(scrollRef.current);
+        gsap.fromTo(
+          scrollRef.current,
+          { y: startY },
+          {
+            y: endY,
+            duration: durationSec,
+            ease: 'power1.inOut',
+            overwrite: true,
+            force3D: true,
+            onComplete: () => handleSlotComplete(index),
+          }
+        );
       });
 
       setTimeout(() => {
         setIsAnimating(false);
         isAnimatingRef.current = false;
-      }, config.duration);
+      }, config.duration + 100);
     },
     [itemsCount, config, handleSlotComplete, getCardHeight]
   );
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      setIsAnimating(false);
-      isAnimatingRef.current = false;
-      setCompletedSlots(new Set());
-      scrollRefs.forEach((scrollRef) => {
-        if (scrollRef.current) {
-          scrollRef.current.style.transition = 'none';
-          scrollRef.current.style.transform = 'translateY(0)';
-        }
-      });
-    };
-  }, []);
 
   return {
     isAnimating,
@@ -154,4 +137,3 @@ export function useSlotAnimation({
     resetSlots,
   };
 }
-

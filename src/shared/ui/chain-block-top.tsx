@@ -92,9 +92,18 @@ export function ChainBlockTop({ text, lines, className = '', animate = false }: 
           <div
             className={cn(
               'flex flex-col items-center justify-center text-center',
-              animate && 'transition-all duration-300 ease-out',
               animate && !isVisible && 'opacity-0 translate-y-2'
             )}
+            style={animate ? {
+              // transition-[opacity,transform] instead of transition-all:
+              // only opacity and transform are GPU-compositable on iOS Safari.
+              // transition-all causes Safari to animate layout properties via software.
+              transition: 'opacity 300ms ease-out, transform 300ms ease-out',
+              willChange: 'opacity, transform',
+              transform: !isVisible ? 'translate3d(0, 8px, 0)' : 'translate3d(0, 0, 0)',
+              backfaceVisibility: 'hidden',
+              WebkitBackfaceVisibility: 'hidden',
+            } : undefined}
           >
             <span
               className="text-[24px] leading-tight text-[#2066BB] uppercase whitespace-nowrap"
@@ -113,10 +122,17 @@ export function ChainBlockTop({ text, lines, className = '', animate = false }: 
           <span
             className={cn(
               'text-[24px] leading-none text-[#2066BB] whitespace-nowrap',
-              animate && 'transition-all duration-300 ease-out',
-              animate && !isVisible && 'opacity-0 translate-y-2'
+              animate && !isVisible && 'opacity-0'
             )}
-            style={textStyle}
+            style={animate ? {
+              display: 'block',
+              transition: 'opacity 300ms ease-out, transform 300ms ease-out',
+              willChange: 'opacity, transform',
+              transform: !isVisible ? 'translate3d(0, 8px, 0)' : 'translate3d(0, 0, 0)',
+              backfaceVisibility: 'hidden',
+              WebkitBackfaceVisibility: 'hidden',
+              ...textStyle,
+            } : textStyle}
           >
             {displayContent.top}
           </span>

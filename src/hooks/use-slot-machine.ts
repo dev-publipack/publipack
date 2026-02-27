@@ -1,12 +1,21 @@
 import { Sponsor } from "@/shared";
 import { useState, useRef, useCallback, useEffect, useMemo } from "react";
+import gsap from "gsap";
 import {
   TIMING,
   GAME_RULES,
-  EASING,
   SLOT_CARD_HEIGHT,
   SLOT_VISIBLE_CARDS,
 } from "@/shared/lib/game-config";
+
+// Force translate3d on all tweens — iOS Safari degrades to 2D otherwise.
+gsap.config({ force3D: true });
+
+// Disable lag-smoothing catch-up: when iOS throttles rAF (background tab,
+// scroll, or any interruption), GSAP normally fast-forwards to compensate
+// — that produces the "1 frame then jump" effect. Setting 0 keeps the
+// timeline running at real-time without catch-up jumps.
+gsap.ticker.lagSmoothing(0);
 
 type Phase = "sponsors" | "slots" | "complete";
 
@@ -15,25 +24,6 @@ interface UseSlotMachineProps {
   onComplete?: (result: { winner: Sponsor | null; isWin: boolean }) => void;
   autoStart?: boolean;
   onAutoSpinStarted?: () => void;
-}
-
-function applyTransformWithReset(
-  el: HTMLDivElement,
-  resetTransform: string,
-  animationTransform: string,
-  transitionStyle: string
-) {
-  el.style.transition = "none";
-  el.style.transform = resetTransform;
-
-
-  el.offsetHeight;
-
-
-  requestAnimationFrame(() => {
-    el.style.transition = transitionStyle;
-    el.style.transform = animationTransform;
-  });
 }
 
 export function useSlotMachine({
@@ -48,7 +38,6 @@ export function useSlotMachine({
   const [hasStarted, setHasStarted] = useState(false);
   const [isSpinning, setIsSpinning] = useState(false);
   const spinResultRef = useRef<{ winner: Sponsor | null; isWin: boolean } | null>(null);
-  const sponsorsScrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hasStartedRef = useRef(false);
   const spinStartedRef = useRef(false);
 
@@ -65,6 +54,49 @@ export function useSlotMachine({
     ],
     [sponsors.length]
   );
+
+  // Pre-position columns at their staggered offsets on mount.
+  // Without this, gsap.fromTo in runSponsorsScroll snaps columns 1 and 2
+  // to startY on the first frame (visible as a jump).
+  // Also set willChange here — after gsap.set applies the initial 3D transform,
+  // iOS pre-rasterises the layers in idle time (600ms before autoStart fires),
+  // so the first animation frame starts without a rasterisation freeze.
+  useEffect(() => {
+    spinRefs.forEach((scrollRef, index) => {
+      if (!scrollRef.current) return;
+      const offset = columnOffsets[index];
+      gsap.set(scrollRef.current, {
+        y: -(offset * SLOT_CARD_HEIGHT),
+        force3D: true,
+      });
+      scrollRef.current.style.willChange = 'transform';
+    });
+  }, [spinRefs, columnOffsets]);
+
+  // Pause GSAP when iOS hides the page (background tab / home button).
+  // Without this, GSAP fast-forwards on resume → instant jump to end frame.
+  useEffect(() => {
+    const onVisibilityChange = () => {
+      document.hidden
+        ? gsap.globalTimeline.pause()
+        : gsap.globalTimeline.resume();
+    };
+    const onPageHide = () => gsap.globalTimeline.pause();
+    const onPageShow = () => gsap.globalTimeline.resume();
+
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    window.addEventListener("pagehide", onPageHide);
+    window.addEventListener("pageshow", onPageShow);
+
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      window.removeEventListener("pagehide", onPageHide);
+      window.removeEventListener("pageshow", onPageShow);
+      spinRefs.forEach((r) => {
+        if (r.current) gsap.killTweensOf(r.current);
+      });
+    };
+  }, [spinRefs]);
 
   const selectWinners = useCallback((winResult: boolean): number[] => {
     if (winResult) {
@@ -88,27 +120,38 @@ export function useSlotMachine({
     setHasStarted(true);
     setIsSpinning(true);
 
-    const duration = TIMING.SPONSORS_SCROLL_DURATION ?? 5000;
+    const duration = (TIMING.SPONSORS_SCROLL_DURATION ?? 5000) / 1000;
+    const lastIndex = spinRefs.length - 1;
 
     spinRefs.forEach((scrollRef, index) => {
       if (!scrollRef.current) return;
 
       const offset = columnOffsets[index];
       const totalSpins = GAME_RULES.SCROLL_MIN_ROTATIONS * sponsors.length + offset;
-      const targetPosition = -(totalSpins * SLOT_CARD_HEIGHT);
+      const startY = -(offset * SLOT_CARD_HEIGHT);
+      const endY = -(totalSpins * SLOT_CARD_HEIGHT);
 
-      applyTransformWithReset(
+      gsap.killTweensOf(scrollRef.current);
+      gsap.fromTo(
         scrollRef.current,
-        `translate3d(0, -${offset * SLOT_CARD_HEIGHT}px, 0)`,
-        `translate3d(0, ${targetPosition}px, 0)`,
-        `transform ${duration}ms ${EASING.SCROLL}`
+        { y: startY },
+        {
+          y: endY,
+          duration,
+          ease: "power1.inOut",
+          overwrite: true,
+          force3D: true,
+          // Use GSAP onComplete instead of a parallel setTimeout to eliminate
+          // the race condition where iOS slower timers trigger runSpin before
+          // the scroll tween finishes.
+          ...(index === lastIndex && {
+            onComplete: () => {
+              setPhase("slots");
+            },
+          }),
+        }
       );
     });
-
-    sponsorsScrollTimeoutRef.current = setTimeout(() => {
-      sponsorsScrollTimeoutRef.current = null;
-      setPhase("slots");
-    }, duration + 100);
   }, [sponsors.length, columnOffsets, spinRefs]);
 
   const runSpin = useCallback(() => {
@@ -125,59 +168,60 @@ export function useSlotMachine({
     };
 
     const CENTER_OFFSET = Math.floor(SLOT_VISIBLE_CARDS / 2);
-    const baseDuration = TIMING.SPIN_DURATION || 7000;
+    const baseDuration = (TIMING.SPIN_DURATION || 7000) / 1000;
     const slotDurations = [
       baseDuration,
-      baseDuration + 300,
-      baseDuration + 600,
+      baseDuration + 0.3,
+      baseDuration + 0.6,
     ];
 
     spinRefs.forEach((scrollRef, index) => {
       if (!scrollRef.current) return;
 
-      const randomStartOffset = Math.floor(Math.random() * sponsors.length);
       const targetIndex = winners[index];
       const extraSpins = Math.floor(Math.random() * 3);
       const MIN_SPINS = GAME_RULES.MIN_FULL_ROTATIONS || 3;
       const totalSpins =
         (MIN_SPINS + extraSpins) * sponsors.length + targetIndex - CENTER_OFFSET;
-      const targetPosition = -(totalSpins * SLOT_CARD_HEIGHT);
+      const endY = -(totalSpins * SLOT_CARD_HEIGHT);
 
-      // Небольшая задержка между колонками через setTimeout,
-      // но сама анимация стартует через applyTransformWithReset (без вложенных rAF)
-      const delay = index * 50;
-
-      const startColumnSpin = () => {
-        if (!scrollRef.current) return;
-        applyTransformWithReset(
-          scrollRef.current,
-          `translate3d(0, -${randomStartOffset * SLOT_CARD_HEIGHT}px, 0)`,
-          `translate3d(0, ${targetPosition}px, 0)`,
-          `transform ${slotDurations[index]}ms cubic-bezier(0.25, 0.1, 0.25, 1)`
-        );
-      };
-
-      if (delay > 0) {
-        setTimeout(startColumnSpin, delay);
-      } else {
-        startColumnSpin();
-      }
+      if (!scrollRef.current) return;
+      // gsap.to from CURRENT position — no backward snap.
+      // Using gsap delay instead of setTimeout: GSAP delay is tied to the
+      // internal rAF ticker and is reliable on iOS; setTimeout can be
+      // throttled during heavy rendering.
+      gsap.to(scrollRef.current, {
+        y: endY,
+        duration: slotDurations[index],
+        ease: "power4.out",
+        overwrite: true,
+        force3D: true,
+        delay: index * 0.05,
+      });
     });
 
-    const maxDuration = Math.max(...slotDurations);
+    const maxDurationMs = Math.max(...slotDurations) * 1000;
     const settleDelay = TIMING.SPIN_SETTLE_DELAY ?? 400;
 
-    setTimeout(() => {
+    // gsap.delayedCall is rAF-synced and respects globalTimeline pause/resume,
+    // so it survives iOS background-tab throttling that would stall setTimeout.
+    gsap.delayedCall((maxDurationMs + settleDelay) / 1000, () => {
       setIsSpinning(false);
       setIsComplete(true);
       setPhase("complete");
 
-      setTimeout(() => {
-        if (onComplete && spinResultRef.current) {
-          onComplete(spinResultRef.current);
-        }
-      }, TIMING.RESULT_DISPLAY_DELAY || 500);
-    }, maxDuration + settleDelay);
+      // Release GPU layers after reels stop — holding willChange wastes
+      // compositor memory when nothing is animating.
+      spinRefs.forEach((r) => {
+        if (r.current) r.current.style.willChange = "auto";
+      });
+
+      if (onComplete && spinResultRef.current) {
+        gsap.delayedCall((TIMING.RESULT_DISPLAY_DELAY || 500) / 1000, () => {
+          onComplete(spinResultRef.current!);
+        });
+      }
+    });
   }, [sponsors, selectWinners, onComplete, spinRefs]);
 
   useEffect(() => {
@@ -196,12 +240,14 @@ export function useSlotMachine({
       return;
     }
 
-    if (sponsorsScrollTimeoutRef.current) {
-      clearTimeout(sponsorsScrollTimeoutRef.current);
-      sponsorsScrollTimeoutRef.current = null;
-    }
+    // User tapped "spin" mid-scroll: kill all scroll tweens and jump to spin phase.
+    // sponsorsScrollTimeoutRef is no longer used for phase transition (moved to
+    // GSAP onComplete), so we just kill tweens to skip ahead.
+    spinRefs.forEach((r) => {
+      if (r.current) gsap.killTweensOf(r.current);
+    });
     setPhase("slots");
-  }, [phase, sponsors.length, runSponsorsScroll]);
+  }, [phase, sponsors.length, runSponsorsScroll, spinRefs]);
 
   useEffect(() => {
     if (!autoStart || hasStartedRef.current) return;
@@ -220,6 +266,7 @@ export function useSlotMachine({
     isSpinning: isAnimating,
     isComplete,
     isWin,
+    hasStarted,
     spinRefs,
     startSpin,
   };

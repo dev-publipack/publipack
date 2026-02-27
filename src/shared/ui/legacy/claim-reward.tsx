@@ -304,6 +304,7 @@ Terms & Conditions | Privacy Policy | Data Protection Policy`,
                 }}
                 onBlur={() => handleFieldBlur("fullName", fullName)}
                 placeholder={t('claimReward.fullNamePlaceholder')}
+                autoComplete="name"
                 className="w-full bg-transparent border-none outline-none text-center text-base sm:text-lg md:text-xl lg:text-2xl font-body-semibold text-[#154F6A] placeholder:text-[#154F6A] placeholder:opacity-70"
                 required
               />
@@ -335,6 +336,7 @@ Terms & Conditions | Privacy Policy | Data Protection Policy`,
                 }}
                 onBlur={() => handleFieldBlur("phone", phone)}
                 placeholder={t('claimReward.phonePlaceholder')}
+                autoComplete="tel"
                 className="w-full bg-transparent border-none outline-none text-center text-base sm:text-lg md:text-xl lg:text-2xl font-body-semibold text-[#154F6A] placeholder:text-[#154F6A] placeholder:opacity-70"
                 required
               />
@@ -366,6 +368,7 @@ Terms & Conditions | Privacy Policy | Data Protection Policy`,
                 }}
                 onBlur={() => handleFieldBlur("email", email)}
                 placeholder={t('claimReward.emailPlaceholder')}
+                autoComplete="email"
                 className="w-full bg-transparent border-none outline-none text-center text-base sm:text-lg md:text-xl lg:text-2xl font-body-semibold text-[#154F6A] placeholder:text-[#154F6A] placeholder:opacity-70"
                 required
               />
