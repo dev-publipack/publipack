@@ -59,7 +59,7 @@ export function MainContentContainer({
                 {noCreamWrapper ? (
                     <div
                         className={cn(
-                            'relative z-5 w-full h-full rounded-[60px] transition-all duration-1000',
+                            'relative z-5 w-full h-full rounded-[60px] transition-colors duration-1000',
                             'flex flex-col items-center justify-center overflow-visible',
                             contentVariant === 'win' &&
                             'bg-linear-to-b from-[#3FD2A1] to-[#44D1F8]'
@@ -70,7 +70,7 @@ export function MainContentContainer({
                 ) : (
                     <div
                         className={cn(
-                            'relative z-5 w-full h-full rounded-[60px] border-4 border-[#FF8B00] transition-all duration-1000',
+                            'relative z-5 w-full h-full rounded-[60px] border-4 border-[#FF8B00] transition-colors duration-1000',
                             contentVariant === 'win'
                                 ? 'bg-linear-to-b from-[#3FD2A1] to-[#44D1F8]'
                                 : 'bg-[#FFEDD9]',
