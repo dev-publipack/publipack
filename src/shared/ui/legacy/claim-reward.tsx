@@ -163,7 +163,7 @@ const ClaimReward = React.forwardRef<HTMLDivElement, ClaimRewardProps>(
               
               <p>Hi ${fullName},</p>
               
-              <p>Thank you for playing with publipacks.com! The safest platform to win amazing awards near you!</p>
+              <p>Thank you for playing with publipacks! The safest platform to win amazing awards near you!</p>
               
               <div style="background: #E9F9FF; padding: 20px; border-radius: 12px; margin: 20px 0; border-left: 4px solid #44D2FD;">
                 <p style="margin: 0; font-weight: bold; color: #124258;">👉 Congratulations — you've won a prize!</p>

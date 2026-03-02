@@ -111,7 +111,7 @@ export function useGame() {
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
               <h1 style="color: #163446; text-align: center; margin-bottom: 30px;">🎉 Thanks for playing!</h1>
               <p>Hi ${data.fullName},</p>
-              <p>Thank you for playing with publipacks.com! The safest platform to win amazing awards near you!</p>
+              <p>Thank you for playing with publipacks! The safest platform to win amazing awards near you!</p>
               <div style="background: #E9F9FF; padding: 20px; border-radius: 12px; margin: 20px 0; border-left: 4px solid #44D2FD;">
                 <p style="margin: 0; font-weight: bold; color: #124258;">👉 Congratulations — you've won a prize!</p>
                 <p style="margin: 10px 0 0 0; color: #154F6A;">${winner.name}: ${winner.reward}</p>
