@@ -96,7 +96,7 @@ export const translations = {
     emailMessage: { en: "Your prize has been sent to {email}", es: "Tu premio ha sido enviado a {email}" }, // {email} is placeholder
     checkInbox: { en: "Check your inbox", es: "Revisa tu bandeja de entrada" },
     rewardSaved: { en: "Your reward is also saved in My Rewards", es: "Tu recompensa también está guardada en Mis Recompensas" },
-    downloadRewardButton: { en: "Download Reward", es: "Descargar Recompensa" },
+    downloadRewardButton: { en: "Download PDF", es: "Descargar PDF" },
     playAgainButton: { en: "Play Again", es: "Jugar de Nuevo" },
   },
 

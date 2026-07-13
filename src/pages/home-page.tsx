@@ -40,19 +40,19 @@ export default function HomePage() {
     game.handleSpinAgain();
   }, [game.handleSpinAgain]);
 
-  const handlePlayAgain = useCallback(() => {
-    setSpinKey((k) => k + 1);
-    game.handlePlayAgainFromSuccess();
-  }, [game.handlePlayAgainFromSuccess]);
-
-  // 24h cooldown only after 3 attempts (youLost) or after claim success
+  // 24h cooldown after 3 attempts (youLost) or after claim success
   const isCooldownScreen =
     game.currentScreen === "youLost" || game.currentScreen === "claimSuccess";
 
   const cooldown = useCooldownTimer({
-    isActive: isCooldownScreen,
-    onComplete: game.handlePlayAgainFromSuccess,
+    isActive: isCooldownScreen || game.isCooldown,
   });
+
+  const handlePlayAgain = useCallback(() => {
+    if (cooldown.remainingSeconds > 0) return;
+    setSpinKey((k) => k + 1);
+    game.handlePlayAgainFromSuccess();
+  }, [game.handlePlayAgainFromSuccess, cooldown.remainingSeconds]);
 
   useEffect(() => {
     if (!isCooldownScreen) {
@@ -84,7 +84,16 @@ export default function HomePage() {
         </div>
         */}
 
-        {activeScreen === "main" || activeScreen === "slotMachine" ? (
+        {game.isCooldown &&
+        (activeScreen === "main" || activeScreen === "slotMachine") ? (
+          <TryAgainScreen
+            isCooldown
+            formattedTime={cooldown.formattedTime}
+            remainingSeconds={cooldown.remainingSeconds}
+            remainingAttempts={0}
+            onSpinAgain={handlePlayAgain}
+          />
+        ) : activeScreen === "main" || activeScreen === "slotMachine" ? (
           <SpinScreen
             key={spinKey}
             onComplete={game.handleSlotComplete}
@@ -108,6 +117,7 @@ export default function HomePage() {
             formattedTime={cooldown.formattedTime}
             remainingSeconds={cooldown.remainingSeconds}
             onPlayAgain={handlePlayAgain}
+            onDownloadPdf={game.handleDownloadClaimPdf}
           />
         ) : activeScreen === "successConfetti" ? (
           <SuccessConfettiScreen

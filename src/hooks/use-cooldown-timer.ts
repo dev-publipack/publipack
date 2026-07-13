@@ -1,7 +1,13 @@
-import { useState, useEffect, useCallback } from "react";
-import { COOLDOWN_DURATION_SECONDS } from "@/config/redesign-game-config";
+import { useState, useEffect, useCallback, useRef } from "react";
+import {
+  COOLDOWN_STORAGE_KEY,
+  startCooldown as persistStartCooldown,
+  clearCooldown as persistClearCooldown,
+  getRemainingCooldownSeconds,
+  isCooldownActive,
+} from "@/shared/lib/game-session-storage";
 
-export const COOLDOWN_STORAGE_KEY = "publipack_cooldown_end";
+export { COOLDOWN_STORAGE_KEY };
 
 function pad2(n: number): string {
   return n.toString().padStart(2, "0");
@@ -21,57 +27,42 @@ interface UseCooldownTimerProps {
 }
 
 export function useCooldownTimer({ isActive, onComplete }: UseCooldownTimerProps) {
-  const [remainingSeconds, setRemainingSeconds] = useState(0);
+  const [remainingSeconds, setRemainingSeconds] = useState(() =>
+    isActive || isCooldownActive() ? getRemainingCooldownSeconds() : 0
+  );
+  const completedRef = useRef(false);
 
   const startCooldown = useCallback(() => {
-    const endTime = Date.now() + COOLDOWN_DURATION_SECONDS * 1000;
-    try {
-      localStorage.setItem(COOLDOWN_STORAGE_KEY, String(endTime));
-    } catch {
-      // ignore
-    }
-    setRemainingSeconds(COOLDOWN_DURATION_SECONDS);
+    completedRef.current = false;
+    persistStartCooldown();
+    setRemainingSeconds(getRemainingCooldownSeconds());
   }, []);
 
   const clearCooldown = useCallback(() => {
-    try {
-      localStorage.removeItem(COOLDOWN_STORAGE_KEY);
-    } catch {
-      // ignore
-    }
+    persistClearCooldown();
     setRemainingSeconds(0);
   }, []);
 
   const isInCooldown = remainingSeconds > 0;
 
   useEffect(() => {
-    if (!isActive) return;
+    if (!isActive && !isCooldownActive()) return;
 
     const tick = () => {
-      try {
-        const stored = localStorage.getItem(COOLDOWN_STORAGE_KEY);
-        if (!stored) {
-          setRemainingSeconds(0);
-          return;
+      const remaining = getRemainingCooldownSeconds();
+      setRemainingSeconds(remaining);
+      if (remaining <= 0) {
+        if (!completedRef.current) {
+          completedRef.current = true;
+          // Do not auto-reset session; user clicks Spin Now
         }
-        const endTime = Number(stored);
-        const now = Date.now();
-        const remaining = Math.max(0, Math.ceil((endTime - now) / 1000));
-        setRemainingSeconds(remaining);
-        if (remaining <= 0) {
-          clearCooldown();
-          // Don't call onComplete here - let user click Spin Now button
-        }
-      } catch {
-        setRemainingSeconds(0);
       }
     };
 
     tick();
     const intervalId = setInterval(tick, 1000);
-
     return () => clearInterval(intervalId);
-  }, [isActive, clearCooldown]);
+  }, [isActive, onComplete]);
 
   return {
     remainingSeconds,

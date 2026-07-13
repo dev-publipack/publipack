@@ -1,23 +1,52 @@
 import { useState, useCallback } from "react";
 import type { Sponsor } from "@/shared/types";
 import type { GameScreen } from "./use-game-state";
+import {
+  loadPersistedGameSession,
+  type StoredWinner,
+} from "@/shared/lib/game-session-storage";
 
 interface GameNavigationState {
   currentScreen: GameScreen;
   winner: Sponsor | null;
   claimEmail: string | null;
+  claimFullName: string | null;
+}
+
+function toSponsor(winner: StoredWinner | null): Sponsor | null {
+  if (!winner) return null;
+  return {
+    name: winner.name,
+    reward: winner.reward,
+    logo: winner.logo,
+    url: winner.url || "",
+  };
+}
+
+function getInitialState(): GameNavigationState {
+  const persisted = loadPersistedGameSession();
+  if (persisted.cooldownActive && persisted.lockScreen) {
+    return {
+      currentScreen: persisted.lockScreen,
+      winner: toSponsor(persisted.winner),
+      claimEmail: null,
+      claimFullName: null,
+    };
+  }
+  return {
+    currentScreen: "main",
+    winner: null,
+    claimEmail: null,
+    claimFullName: null,
+  };
 }
 
 /**
  * Hook for managing game screen navigation and related state
- * Handles transitions between different game screens
+ * Restores lock screens (youLost / claimSuccess) after refresh during cooldown
  */
 export function useGameNavigation() {
-  const [state, setState] = useState<GameNavigationState>({
-    currentScreen: "main",
-    winner: null,
-    claimEmail: null,
-  });
+  const [state, setState] = useState<GameNavigationState>(getInitialState);
 
   const isMainScreen = state.currentScreen === "main";
 
@@ -37,11 +66,16 @@ export function useGameNavigation() {
     setState((prev) => ({ ...prev, claimEmail: email }));
   }, []);
 
+  const setClaimFullName = useCallback((fullName: string | null) => {
+    setState((prev) => ({ ...prev, claimFullName: fullName }));
+  }, []);
+
   const reset = useCallback(() => {
     setState({
       currentScreen: "main",
       winner: null,
       claimEmail: null,
+      claimFullName: null,
     });
   }, []);
 
@@ -49,11 +83,12 @@ export function useGameNavigation() {
     currentScreen: state.currentScreen,
     winner: state.winner,
     claimEmail: state.claimEmail,
+    claimFullName: state.claimFullName,
     isMainScreen,
     goToScreen,
     setWinner,
     setClaimEmail,
+    setClaimFullName,
     reset,
   };
 }
-

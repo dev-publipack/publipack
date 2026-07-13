@@ -1,26 +1,32 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { GAME_RULES } from "@/shared/lib/game-config";
+import {
+  loadPersistedGameSession,
+  writeAttempts,
+  clearGameSession,
+} from "@/shared/lib/game-session-storage";
 
 /**
  * Hook for managing game attempts logic
- * Handles attempt counting and cooldown state
+ * Persists attempt count across page refreshes
  */
 export function useGameAttempts() {
-  const [attempts, setAttempts] = useState(0);
-  const attemptsRef = useRef(0);
+  const persisted = loadPersistedGameSession();
+  const [attempts, setAttempts] = useState(persisted.attempts);
+  const attemptsRef = useRef(persisted.attempts);
 
-  // Sync ref with state for immediate access
   useEffect(() => {
     attemptsRef.current = attempts;
   }, [attempts]);
 
   const isCooldown = attempts >= GAME_RULES.MAX_ATTEMPTS;
-  const remainingAttempts = GAME_RULES.MAX_ATTEMPTS - attempts;
+  const remainingAttempts = Math.max(0, GAME_RULES.MAX_ATTEMPTS - attempts);
 
   const incrementAttempt = useCallback(() => {
     setAttempts((prev) => {
-      const newAttempts = prev + 1;
+      const newAttempts = Math.min(prev + 1, GAME_RULES.MAX_ATTEMPTS);
       attemptsRef.current = newAttempts;
+      writeAttempts(newAttempts);
       return newAttempts;
     });
   }, []);
@@ -28,6 +34,13 @@ export function useGameAttempts() {
   const resetAttempts = useCallback(() => {
     attemptsRef.current = 0;
     setAttempts(0);
+    writeAttempts(0);
+  }, []);
+
+  const clearSession = useCallback(() => {
+    attemptsRef.current = 0;
+    setAttempts(0);
+    clearGameSession();
   }, []);
 
   const getCurrentAttempts = useCallback(() => attemptsRef.current, []);
@@ -39,7 +52,7 @@ export function useGameAttempts() {
     maxAttempts: GAME_RULES.MAX_ATTEMPTS,
     incrementAttempt,
     resetAttempts,
+    clearSession,
     getCurrentAttempts,
   };
 }
-

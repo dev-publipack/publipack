@@ -84,6 +84,8 @@ export { useSlotAnimation } from './hooks/use-slot-animation';
 // API
 export { apiClient, ApiClient } from './api/api-client';
 export type { ApiError } from './api/api-client';
-export { brevoClient } from './api/brevo-client';
-export type { EmailData, BrevoEmailResponse } from './api/brevo-client';
+export { pipedreamClient } from './api/pipedream-client';
+export type { LeadData } from './api/pipedream-client';
+export { buildClaimEmail } from './lib/build-claim-email';
+export { downloadClaimPdf } from './lib/download-claim-pdf';
 

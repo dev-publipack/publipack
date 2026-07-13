@@ -8,6 +8,7 @@ import {
   FailedAnimation,
   SuccessConfettiAnimation,
   ActivityNotification,
+  downloadClaimPdf,
 } from "../../shared";
 import type { Sponsor } from "../../shared/types";
 import type { GameScreen } from "../../hooks/legacy/use-game-state";
@@ -54,6 +55,15 @@ export function GameScreens({
         <ClaimSuccess
           email={claimEmail}
           onPlayAgain={onPlayAgainFromSuccess}
+          onDownloadReward={async () => {
+            if (!winner) return;
+            await downloadClaimPdf({
+              fullName: "Player",
+              sponsorName: winner.name,
+              sponsorReward: winner.reward,
+              brandUrl: winner.url,
+            });
+          }}
         />
       </main>
     );
